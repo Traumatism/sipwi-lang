@@ -16,6 +16,8 @@ end
 
 ## Fibonacci
 
+(not fully implemented yet)
+
 ```
 fib <- fnc [n; a; b] do
     if n == 0 do

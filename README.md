@@ -15,7 +15,7 @@ end
 
 ## Fibonacci
 
-(not fully implemented yet)
+(not fully implemented yet, but that how it should look)
 
 ```
 fib <- fnc [n; a; b] do

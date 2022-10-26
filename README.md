@@ -1,5 +1,4 @@
-# sipwi programming lang
-
+# sipwi programming language
 
 ## Hello, world!
 

@@ -42,8 +42,8 @@ impl Sipwi {
     }
 
     pub fn run(&mut self) {
-        self.register_std_func("puts", standard::std_print); // ["hello"] |> puts
-        self.register_std_func("sum", standard::std_sum); // [1; 2; 3] |> sum
+        self.register_std_func("puts", standard::std_print);
+        self.register_std_func("sum", standard::std_sum);
         self.register_std_func("range", standard::std_range);
         self.register_std_func("irange", standard::std_range_inclusive);
 

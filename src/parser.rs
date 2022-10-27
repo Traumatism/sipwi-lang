@@ -21,9 +21,7 @@ impl<'a> Parser<'a> {
             match token {
                 // f(g(x)) <=> x |> g |> f
                 Token::Chain => {
-                    self.tokens_peeker.cursor -= 2;
-
-                    let first_input = self.tokens_peeker.next().unwrap();
+                    let first_input = self.tokens_peeker.previous().unwrap();
                     let mut functions = Vec::new();
 
                     while let Some(next_token) = self.tokens_peeker.next() {

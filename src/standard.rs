@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use crate::sipwi::Sipwi;
 use crate::structs::StdFuncResult;
 use crate::token::Token;
@@ -7,13 +9,14 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
 
     if let Token::List(lst_content) = token {
         if lst_content.len() != 2 {
-            panic!("(range) expected two arguments")
+            panic!("(irange) expected two arguments")
         }
 
         for lst in lst_content {
             if lst.len() != 1 {
-                panic!("(range) expected one number or identifier for each element")
+                panic!("(irange) expected one number or identifier for each element")
             }
+
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
@@ -23,17 +26,17 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
                             .expect(&format!("(range): undefined identifier: {}", identifier))
                             .clone(),
                     ),
-                    _ => panic!(),
+                    _ => panic!("(irange) expected one number or identifier for each element"),
                 }
             }
         }
     }
 
-    let numbers = (start_end[0].clone()..=start_end[1].clone())
+    let numbers = vec![(start_end[0].clone()..=start_end[1].clone())
         .map(|n| Token::Number(n))
-        .collect();
+        .collect()];
 
-    Some(StdFuncResult::new(Token::List(vec![numbers])))
+    Some(StdFuncResult::new(Token::List(numbers)))
 }
 
 pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
@@ -57,17 +60,17 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                             .expect(&format!("(range): undefined identifier: {}", identifier))
                             .clone(),
                     ),
-                    _ => panic!(),
+                    _ => panic!("(irange) expected one number or identifier for each element"),
                 }
             }
         }
     }
 
-    let numbers = (start_end[0].clone()..start_end[1].clone())
+    let numbers = vec![(start_end[0].clone()..start_end[1].clone())
         .map(|n| Token::Number(n))
-        .collect();
+        .collect()];
 
-    Some(StdFuncResult::new(Token::List(vec![numbers])))
+    Some(StdFuncResult::new(Token::List(numbers)))
 }
 
 pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
@@ -101,8 +104,12 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
         lst_content.iter().for_each(|lst| {
             for element in lst {
                 match element {
-                    Token::String(content) => print!("{}", content),
-                    Token::Number(content) => print!("{}", content),
+                    Token::String(content) => {
+                        let _ = std::io::stdout().write(content.as_bytes());
+                    }
+                    Token::Number(content) => {
+                        let _ = std::io::stdout().write(content.to_string().as_bytes());
+                    }
                     Token::Identifier(identifier) => {
                         let potential_string = env.variables_strings.get(identifier.as_str());
 
@@ -112,9 +119,10 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                                 .get(identifier.as_str())
                                 .expect(&format!("(puts): undefined identifier: {}", identifier));
 
-                            print!("{}", potential_number)
+                            let _ =
+                                std::io::stdout().write(potential_number.to_string().as_bytes());
                         } else {
-                            print!("{}", potential_string.unwrap())
+                            let _ = std::io::stdout().write(potential_string.unwrap().as_bytes());
                         }
                     }
                     _ => panic!(),

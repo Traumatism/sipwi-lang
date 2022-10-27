@@ -8,6 +8,11 @@ impl<T: Clone> Peeker<T> {
         Self { values, cursor: 0 }
     }
 
+    pub fn previous(&mut self) -> Option<T> {
+        self.cursor -= 2;
+        self.next()
+    }
+
     pub fn next(&mut self) -> Option<T> {
         if self.cursor >= self.values.len() {
             return None;

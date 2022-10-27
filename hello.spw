@@ -1,7 +1,8 @@
 main <- fnc [] do
     ["25 to 50 exclusive => "] |> puts
+
     [25; 50] |> range |> sum |> puts
-    
+
     [nl] |> puts
 
     ["25 to 50 inclusive => "] |> puts

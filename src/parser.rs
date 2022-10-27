@@ -19,7 +19,6 @@ impl<'a> Parser<'a> {
     pub fn parse_tokens(&mut self) {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
-                // f(g(x)) <=> x |> g |> f
                 Token::Chain => {
                     let first_input = self.tokens_peeker.previous().unwrap();
                     let mut functions = Vec::new();

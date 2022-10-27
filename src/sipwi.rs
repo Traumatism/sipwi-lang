@@ -4,7 +4,7 @@ use crate::parser::Parser;
 use crate::standard;
 use crate::structs::{Func, StdFunc, StdFuncResult};
 use crate::token::Token;
-use crate::verify::verify_do_end;
+use crate::verify;
 
 use std::collections::HashMap;
 
@@ -51,7 +51,7 @@ impl Sipwi {
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();
 
-        if !verify_do_end(&tokens) {
+        if !verify::verify_do_end(&tokens) {
             panic!("there isn't the same number of 'do' and 'end', kekw")
         }
 

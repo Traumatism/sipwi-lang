@@ -8,16 +8,19 @@
 
 `./sipwi <path.spw>`
 
+## Variable definition
+
+```
+main <- fnc [] do
+    name <- "this is a string"
+    name_b <- -12
+end
+```
+
 ## Hello, world!
 
 ```
 main <- fnc [] do
-    
-    a <- "hello, world!"
-    [a] |> puts
-
-    `or`
-
     ["hello, world!"] |> puts
 end
 ```

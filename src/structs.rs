@@ -23,10 +23,28 @@ pub struct StdFuncResult {
     pub tokens: Token,
 }
 
+impl StdFuncResult {
+    pub fn new(tokens: Token) -> Self {
+        match tokens {
+            Token::List(_) => Self { tokens: tokens },
+            _ => panic!(),
+        }
+    }
+}
+
 /// Describes a function
 pub struct Func {
     pub fnc_args: Vec<String>,
     pub fnc_tokens: Vec<Token>,
+}
+
+impl Func {
+    pub fn new(args: Vec<String>, tokens: Vec<Token>) -> Self {
+        Self {
+            fnc_args: args,
+            fnc_tokens: tokens,
+        }
+    }
 }
 
 /// Describe a standard function written in Rust

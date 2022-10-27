@@ -10,12 +10,17 @@
 
 ## Variable definition
 
-```
-main <- fnc [] do
-    name <- "this is a string"
-    name_b <- -12
-end
-```
+`name <- "string"` (string)
+
+`name <- -123` (isize)
+
+## Function calling
+
+`name_b(name_a(arg1, arg2))` (Python)
+
+<=>
+
+`[arg1; arg2] |> name_a |> name_b` (Sipwi)
 
 ## Hello, world!
 
@@ -33,7 +38,21 @@ main <- fnc [] do
 end
 ```
 
-## sum of all numbers from 25 to 50 (inclusive and exclusive)
+## Calling other 'functions'
+
+At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though, which are written in Rust.
+
+```
+f <- fnc [] do
+    ["something"] |> puts
+end
+
+main <- fnc [] do
+    [] |> f
+end
+```
+
+## Sum of all numbers from 25 to 50 (inclusive and exclusive)
 
 ```
 main <- fnc [] do

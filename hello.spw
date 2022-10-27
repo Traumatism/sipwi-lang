@@ -1,4 +1,5 @@
 main <- fnc [] do
-    a <- "Hello, World!"
-    [a] |> puts
+    a <- "hello, world"    
+    [a; nl] |> puts
+    [10; 10; 5] |> sum |> puts
 end

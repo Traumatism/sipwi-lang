@@ -3,30 +3,15 @@
 ## Hello, world!
 
 ```
-`this is a comment`
-
 main <- fnc [] do
-    hello_world <- "Hello, world!"
-    [hello_world] |> puts
-end
-```
 
-## Fibonacci
+    `set 'a' to "hello, world"`
+    a <- "hello, world"    
 
-(not fully implemented yet, but that how it would look)
+    `prints a and \n`
+    [a; nl] |> puts
 
-```
-fib <- fnc [n; a; b] do
-    if n == 0 do
-        [a] |> return
-    end elif n == 1 do
-        [b] |> return
-    end else do
-        [{n-1}; b; {a+b}] |> fib |> return
-    end
-end
-
-main <- fnc [] do
-    [10; 0; 1] |> fib |> puts
+    `prints 25`
+    [10; 10; 5] |> sum |> puts  
 end
 ```

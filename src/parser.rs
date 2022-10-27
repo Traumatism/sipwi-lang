@@ -20,28 +20,51 @@ impl<'a> Parser<'a> {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
                 Token::Chain => {
-                    let func_id = self
-                        .tokens_peeker
-                        .next()
-                        .expect("Expected a function name after chain!");
+                    self.tokens_peeker.cursor -= 2;
 
-                    let func_name = match func_id {
-                        Token::Identifier(name) => name,
-                        _ => panic!(),
-                    };
+                    let first_input = self.tokens_peeker.next().unwrap();
+                    let mut functions = Vec::new();
 
-                    let func = self.env.std_functions.get(&func_name).unwrap();
+                    while let Some(next_token) = self.tokens_peeker.next() {
+                        if next_token == Token::Chain {
+                            if let Some(Token::Identifier(identifier)) = self.tokens_peeker.next() {
+                                functions.push(identifier)
+                            } else {
+                                panic!("expected only functions identifiers in chain calls");
+                            }
 
-                    self.tokens_peeker.cursor -= 3;
+                            continue;
+                        }
 
-                    let previous = self.tokens_peeker.next().unwrap();
+                        self.tokens_peeker.cursor -= 1;
+                        break;
+                    }
 
-                    match &previous {
-                        Token::List(_) => &(func.call)(&self.env, previous),
-                        _ => panic!("Chain element must be list OR functions"),
-                    };
+                    let mut last_output = vec![first_input];
 
-                    self.tokens_peeker.cursor += 1;
+                    for (idx, func_name) in functions.iter().enumerate() {
+                        // grab the FuncDef
+                        let func = self
+                            .env
+                            .std_functions
+                            .get(func_name)
+                            .expect(&format!("unknown function: {}", func_name));
+
+                        // call the next function with the last arguments
+                        let new_output =
+                            &(func.call)(&self.env, last_output.clone().get(0).unwrap().clone());
+
+                        if new_output.is_none() {
+                            // check if the call that returned None is the last one.
+                            // if it's not, panic!
+                            if idx != functions.len() - 1 {
+                                panic!()
+                            }
+                        } else {
+                            // set the
+                            last_output = vec![new_output.as_ref().unwrap().tokens.clone()];
+                        }
+                    }
                 }
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {

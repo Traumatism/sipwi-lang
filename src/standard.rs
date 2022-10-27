@@ -1,25 +1,36 @@
 use crate::sipwi::Sipwi;
-use crate::structs::FuncResult;
+use crate::structs::StdFuncResult;
 use crate::token::Token;
 
-pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<FuncResult> {
+pub fn _std_concat(_env: &&mut Sipwi, _token: Token) -> Option<StdFuncResult> {
+    None
+}
+
+pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
     let mut sum = 0;
 
     match token {
         Token::List(lst_content) => lst_content.iter().for_each(|lst| match &lst[0] {
             Token::Number(number) => sum += number,
+            Token::Identifier(identifier) => {
+                sum += env
+                    .variables_numbers
+                    .get(identifier)
+                    .expect(&format!("undefined identifier: {}", identifier))
+            }
             _ => panic!(),
         }),
         _ => panic!(),
     }
 
-    Some(FuncResult {
-        data: sum.to_string(),
-        to_tokens: |data: String| vec![Token::Number(data.parse::<isize>().unwrap())],
+    let sum_as_token = Token::Number(sum);
+
+    Some(StdFuncResult {
+        tokens: Token::List(vec![vec![sum_as_token]]),
     })
 }
 
-pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<FuncResult> {
+pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
     match token {
         Token::List(lst_content) => lst_content.iter().for_each(|lst| match &lst[0] {
             Token::String(content) => print!("{}", content),
@@ -33,6 +44,7 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<FuncResult> {
                     if potential_number.is_none() {
                         panic!()
                     }
+
                     print!("{}", potential_number.unwrap())
                 } else {
                     print!("{}", potential_string.unwrap())

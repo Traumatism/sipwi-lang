@@ -1,7 +1,7 @@
 use crate::lexer::Lexer;
 use crate::parser::Parser;
-use crate::standard::std_print;
-use crate::structs::{Func, FuncResult, StdFunc};
+use crate::standard;
+use crate::structs::{Func, StdFunc, StdFuncResult};
 use crate::token::Token;
 use crate::verify::verify_do_end;
 
@@ -29,14 +29,22 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> Option<FuncResult>,
+        func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> Option<StdFuncResult>,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));
     }
 
+    pub fn register_string(&mut self, name: &str, value: &str) {
+        self.variables_strings
+            .insert(String::from(name), String::from(value));
+    }
+
     pub fn run(&mut self) {
-        self.register_std_func("puts", std_print);
+        self.register_std_func("puts", standard::std_print); // ["hello"] |> puts
+        self.register_std_func("sum", standard::std_sum); // [1; 2; 3] |> sum
+
+        self.register_string("nl", "\n");
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();
 

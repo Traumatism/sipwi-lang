@@ -12,6 +12,8 @@ pub const KEYWORDS: [&str; 8] = [
     "else", // else condition
 ];
 
+pub const MAIN_FUNCTION: &str = "main";
+
 // Booleans
 pub const BOOLEANS: [&str; 2] = [
     "false", // 0

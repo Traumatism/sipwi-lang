@@ -47,7 +47,7 @@ impl Func {
     }
 }
 
-/// Describe a standard function written in Rust
+/// Describes a standard function written in Rust
 pub struct StdFunc {
     pub call: Box<dyn Fn(&&mut Sipwi, Token) -> Option<StdFuncResult>>,
 }

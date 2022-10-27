@@ -1,3 +1,4 @@
+use crate::consts::MAIN_FUNCTION;
 use crate::lexer::Lexer;
 use crate::parser::Parser;
 use crate::standard;
@@ -49,12 +50,15 @@ impl Sipwi {
         let tokens = Lexer::new(&self.code).lex_into_tokens();
 
         if !verify_do_end(&tokens) {
-            panic!("hum...")
+            panic!("there isn't the same number of 'do' and 'end', kekw")
         }
 
         Parser::new(tokens, self).parse_tokens();
 
-        let main_fn = self.functions.get("main").expect("No main function!");
+        let main_fn = self
+            .functions
+            .get(MAIN_FUNCTION)
+            .expect(&format!("{} function not found.", MAIN_FUNCTION));
 
         Parser::new(main_fn.fnc_tokens.clone(), self).parse_tokens();
     }

@@ -40,7 +40,7 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                     let potential_number = env
                         .variables_numbers
                         .get(identifier.as_str())
-                        .expect(&format!("(print): undefined identifier: {}", identifier));
+                        .expect(&format!("(puts): undefined identifier: {}", identifier));
 
                     print!("{}", potential_number)
                 } else {

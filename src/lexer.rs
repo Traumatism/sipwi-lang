@@ -81,8 +81,13 @@ impl Lexer {
     }
 
     /// Parse the next number (no float)
-    fn parse_number(&mut self, char: char) -> Token {
-        let mut content = String::from(char);
+    fn parse_number(&mut self, char: char, neg: bool) -> Token {
+        let mut content = String::new();
+        if neg == true {
+            content.push('-');
+        }
+
+        content.push(char);
 
         while let Some(next_char) = self.chars_peeker.next() {
             if !NUMBERS.contains(&next_char) {
@@ -91,6 +96,7 @@ impl Lexer {
             }
             content.push(next_char)
         }
+
         Token::Number(content.parse::<isize>().unwrap())
     }
 
@@ -204,20 +210,23 @@ impl Lexer {
                 COMMENT_MARK => self.parse_comment(),
 
                 'a'..='z' | 'A'..='Z' => self.parse_identifier(char),
-                '0'..='9' => self.parse_number(char),
+                '0'..='9' => self.parse_number(char, false),
 
-                '-' => match self.chars_peeker.next() {
-                    // -123
-                    Some('0'..='9') => self.parse_number(char),
+                '-' => {
+                    let next = self.chars_peeker.next();
+                    match next {
+                        // -123
+                        Some('0'..='9') => self.parse_number(next.unwrap(), true),
 
-                    // -
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Min
+                        // -
+                        Some(_) => {
+                            self.chars_peeker.cursor -= 1;
+                            todo!();
+                            Token::Min
+                        }
+                        None => panic!("EOF"),
                     }
-                    None => panic!("EOF"),
-                },
+                }
 
                 '~' => match self.chars_peeker.next() {
                     // ~>

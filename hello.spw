@@ -4,6 +4,9 @@ end
 
 main <- fnc [] do
     [] |> x
+    a <- -1
+
+    [a; 1] |> sum |> puts
 
     ["25 to 50 exclusive => "] |> puts
     [25; 50] |> range |> sum |> puts

@@ -19,6 +19,7 @@ impl<'a> Parser<'a> {
     pub fn parse_tokens(&mut self) {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
+                // f(g(x)) <=> x |> g |> f
                 Token::Chain => {
                     self.tokens_peeker.cursor -= 2;
 
@@ -62,7 +63,7 @@ impl<'a> Parser<'a> {
                             }
                         } else {
                             // set the
-                            last_output = vec![new_output.as_ref().unwrap().tokens.clone()];
+                            last_output = vec![new_output.as_ref().unwrap().get_tokens().clone()];
                         }
                     }
                 }

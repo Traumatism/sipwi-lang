@@ -20,7 +20,7 @@ impl Expression {
 
 /// Describes a standard function output
 pub struct StdFuncResult {
-    pub tokens: Token,
+    tokens: Token,
 }
 
 impl StdFuncResult {
@@ -29,6 +29,10 @@ impl StdFuncResult {
             Token::List(_) => Self { tokens: tokens },
             _ => panic!(),
         }
+    }
+
+    pub fn get_tokens(&self) -> &Token {
+        &self.tokens
     }
 }
 

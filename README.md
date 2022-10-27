@@ -6,16 +6,14 @@
 `this is a comment`
 
 main <- fnc [] do
-    `variable names are global!`
     hello_world <- "Hello, world!"
-
     [hello_world] |> puts
 end
 ```
 
 ## Fibonacci
 
-(not fully implemented yet, but that how it should look)
+(not fully implemented yet, but that how it would look)
 
 ```
 fib <- fnc [n; a; b] do

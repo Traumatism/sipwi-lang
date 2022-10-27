@@ -42,25 +42,29 @@ impl<'a> Parser<'a> {
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         // grab the FuncDef
-                        let func = self
-                            .env
-                            .std_functions
-                            .get(func_name.as_str())
-                            .expect(&format!("unknown function: {}", func_name));
+                        let func = self.env.std_functions.get(func_name.as_str());
 
-                        // call the next function with the last arguments
-                        let new_output =
-                            &(func.call)(&self.env, last_output.clone().get(0).unwrap().clone());
+                        if !(func.is_none()) {
+                            // call the next function with the last arguments
+                            let new_output = &(func.unwrap().call)(
+                                &self.env,
+                                last_output.clone().get(0).unwrap().clone(),
+                            );
 
-                        if new_output.is_none() {
-                            // check if the call that returned None is the last one.
-                            // if it's not, panic!
-                            if idx != functions.len() - 1 {
-                                panic!()
+                            if new_output.is_none() {
+                                // check if the call that returned None is the last one.
+                                // if it's not, panic!
+                                if idx != functions.len() - 1 {
+                                    panic!()
+                                }
+                            } else {
+                                // set the
+                                last_output =
+                                    vec![new_output.as_ref().unwrap().get_tokens().clone()];
                             }
                         } else {
-                            // set the
-                            last_output = vec![new_output.as_ref().unwrap().get_tokens().clone()];
+                            let func = self.env.functions.get(func_name.as_str());
+                            Parser::new(func.unwrap().tokens.clone(), self.env).parse_tokens();
                         }
                     }
                 }

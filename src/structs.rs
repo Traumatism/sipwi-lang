@@ -6,6 +6,11 @@ pub enum Variable {
     Number(isize),
 }
 
+pub enum Function {
+    NonStd(Func),
+    Std(StdFunc),
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Expression {
     pub tokens: Vec<Token>,

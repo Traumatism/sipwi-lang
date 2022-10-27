@@ -42,7 +42,7 @@ impl Sipwi {
         self.variables.insert(identifier, variable);
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::std_print);
         self.register_std_func("sum", standard::std_sum);
         self.register_std_func("range", standard::std_range);
@@ -64,5 +64,7 @@ impl Sipwi {
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
         Parser::new(main_fn.tokens.clone(), self).parse_tokens();
+
+        Ok(())
     }
 }

@@ -65,14 +65,12 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
         }
     }
 
-    let numbers = std::vec::from_elem(
+    Some(StdFuncResult::new(Token::List(std::vec::from_elem(
         (start_end[0].clone()..start_end[1].clone())
             .map(|n| Token::Number(n))
             .collect(),
         1,
-    );
-
-    Some(StdFuncResult::new(Token::List(numbers)))
+    ))))
 }
 
 pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {

@@ -1,12 +1,11 @@
 main <- fnc [] do
+    ["25 to 50 exclusive => "] |> puts
+    [25; 50] |> range |> sum |> puts
+    
+    [nl] |> puts
 
-    `set 'a' to "hello, world"`
-    a <- "hello, world"    
+    ["25 to 50 inclusive => "] |> puts
+    [25; 50] |> irange |> sum |> puts
 
-    `prints a and \n`
-    [a; nl] |> puts
-
-    `calculate the result of
-    10+10+5 and print it to stdout`
-    [10; 10; 5] |> sum |> puts  
+    [nl] |> puts
 end

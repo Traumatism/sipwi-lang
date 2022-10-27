@@ -30,6 +30,19 @@ main <- fnc [] do
 end
 ```
 
+## sum of all numbers from 25 to 50 (inclusive and exclusive)
+
+```
+main <- fnc [] do
+    ["25 to 50 exclusive => "] |> puts
+    [25; 50] |> range |> puts
+    [nl] |> puts
+    ["25 to 50 inclusive => "] |> puts
+    [25; 50] |> irange |> puts
+end
+
+```
+
 ## Writing standard function
 
 ```rust

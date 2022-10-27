@@ -40,7 +40,7 @@ end
 
 ## Calling other 'functions'
 
-At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though, which are written in Rust.
+At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though (they are written in Rust)
 
 ```
 f <- fnc [] do

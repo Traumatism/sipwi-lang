@@ -1,20 +1,31 @@
 # sipwi programming language
 
+## Compile
+
+`cargo build --release && mv target/release/sipwi .`
+
+## Execute sipwi file
+
+`./sipwi <path.spw>`
+
 ## Hello, world!
 
 ```
 main <- fnc [] do
+    
+    a <- "hello, world!"
+    [a] |> puts
 
-    `set 'a' to "hello, world"`
+    `or`
 
-    a <- "hello, world"    
+    ["hello, world!"] |> puts
+end
+```
 
-    `prints a and \n`
+## 1+1
 
-    [a; nl] |> puts
-
-    ` calculate the result of 10+10+5 `
-    ` and then print it to stdout     `
-    [10; 10; 5] |> sum |> puts  
+```
+main <- fnc [] do
+    [1; 1] |> sum |> puts
 end
 ```

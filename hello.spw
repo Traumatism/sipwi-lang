@@ -1,5 +1,12 @@
 main <- fnc [] do
+
+    `set 'a' to "hello, world"`
     a <- "hello, world"    
+
+    `prints a and \n`
     [a; nl] |> puts
-    [10; 10; 5] |> sum |> puts
+
+    `calculate the result of
+    10+10+5 and print it to stdout`
+    [10; 10; 5] |> sum |> puts  
 end

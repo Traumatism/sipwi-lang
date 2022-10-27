@@ -53,7 +53,7 @@ impl Sipwi {
         let tokens = Lexer::new(&self.code).lex_into_tokens();
 
         if !verify::verify_do_end(&tokens) {
-            panic!("there isn't the same number of 'do' and 'end', kekw")
+            panic!()
         }
 
         Parser::new(tokens, self).parse_tokens();

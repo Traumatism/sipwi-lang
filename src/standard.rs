@@ -9,12 +9,12 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
 
     if let Token::List(lst_content) = token {
         if lst_content.len() != 2 {
-            panic!("(irange) expected two arguments")
+            panic!()
         }
 
         for lst in lst_content {
             if lst.len() != 1 {
-                panic!("(irange) expected one number or identifier for each element")
+                panic!()
             }
 
             for element in lst {
@@ -24,15 +24,18 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
-                    _ => panic!("(irange) expected one number or identifier for each element"),
+                    _ => panic!(),
                 }
             }
         }
     }
 
-    let numbers = vec![(start_end[0].clone()..=start_end[1].clone())
-        .map(|n| Token::Number(n))
-        .collect()];
+    let numbers = std::vec::from_elem(
+        (start_end[0].clone()..=start_end[1].clone())
+            .map(|n| Token::Number(n))
+            .collect(),
+        1,
+    );
 
     Some(StdFuncResult::new(Token::List(numbers)))
 }
@@ -42,12 +45,12 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
 
     if let Token::List(lst_content) = token {
         if lst_content.len() != 2 {
-            panic!("(range) expected two arguments")
+            panic!()
         }
 
         for lst in lst_content {
             if lst.len() != 1 {
-                panic!("(range) expected one number or identifier for each element")
+                panic!()
             }
             for element in lst {
                 match element {
@@ -56,15 +59,18 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
-                    _ => panic!("(irange) expected one number or identifier for each element"),
+                    _ => panic!(),
                 }
             }
         }
     }
 
-    let numbers = vec![(start_end[0].clone()..start_end[1].clone())
-        .map(|n| Token::Number(n))
-        .collect()];
+    let numbers = std::vec::from_elem(
+        (start_end[0].clone()..start_end[1].clone())
+            .map(|n| Token::Number(n))
+            .collect(),
+        1,
+    );
 
     Some(StdFuncResult::new(Token::List(numbers)))
 }
@@ -84,14 +90,16 @@ pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                             _ => panic!(),
                         }
                     }
-                    token => panic!("(sum): can't perform sum with token: {:?}", token),
+                    _ => panic!(),
                 }
             }
         })
     }
 
-    let sum_as_token = Token::Number(sum);
-    let func_result = StdFuncResult::new(Token::List(vec![vec![sum_as_token]]));
+    let func_result = StdFuncResult::new(Token::List(std::vec::from_elem(
+        std::vec::from_elem(Token::Number(sum), 1),
+        1,
+    )));
 
     Some(func_result)
 }

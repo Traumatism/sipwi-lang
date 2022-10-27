@@ -28,7 +28,7 @@ impl<'a> Parser<'a> {
                             if let Some(Token::Identifier(identifier)) = self.tokens_peeker.next() {
                                 functions.push(identifier)
                             } else {
-                                panic!("expected only functions identifiers in chain calls");
+                                panic!();
                             }
 
                             continue;
@@ -38,7 +38,7 @@ impl<'a> Parser<'a> {
                         break;
                     }
 
-                    let mut last_output = vec![first_input];
+                    let mut last_output = std::vec::from_elem(first_input, 1);
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         // grab the FuncDef
@@ -58,12 +58,18 @@ impl<'a> Parser<'a> {
                                     panic!()
                                 }
                             } else {
-                                // set the
-                                last_output =
-                                    vec![new_output.as_ref().unwrap().get_tokens().clone()];
+                                last_output = std::vec::from_elem(
+                                    new_output.as_ref().unwrap().get_tokens().clone(),
+                                    1,
+                                )
                             }
                         } else {
                             let func = self.env.functions.get(func_name.as_str());
+
+                            if func.is_none() {
+                                panic!()
+                            }
+
                             Parser::new(func.unwrap().tokens.clone(), self.env).parse_tokens();
                         }
                     }
@@ -90,14 +96,11 @@ impl<'a> Parser<'a> {
                                     let mut fnc_args = Vec::new();
 
                                     // get function arguments names
-                                    let panic_msg =
-                                        "expected a list of single identifiers after function assignement";
-
                                     if let Some(Token::List(list)) = self.tokens_peeker.next() {
                                         for element in &list {
                                             // we want a single identifier <=> a single token
                                             if element.len() != 1 {
-                                                panic!("{}", panic_msg)
+                                                panic!()
                                             }
 
                                             if let Some(Token::Identifier(argument_name)) =
@@ -105,24 +108,21 @@ impl<'a> Parser<'a> {
                                             {
                                                 fnc_args.push(argument_name.clone())
                                             } else {
-                                                panic!("{}", panic_msg)
+                                                panic!()
                                             }
                                         }
                                     } else {
-                                        panic!("{}", panic_msg)
+                                        panic!()
                                     }
 
                                     // verify "do"
-                                    let panic_msg =
-                                        "expected 'do' after function arguments definition";
-
                                     if let Some(Token::Keyword(keyword)) = self.tokens_peeker.next()
                                     {
                                         if keyword != "do" {
-                                            panic!("{}", panic_msg)
+                                            panic!()
                                         }
                                     } else {
-                                        panic!("{}", panic_msg)
+                                        panic!()
                                     }
 
                                     // prevent stopping a function after the
@@ -157,18 +157,12 @@ impl<'a> Parser<'a> {
                                             Some(token) => fnc_tokens.push(token),
 
                                             // forgot 'end'
-                                            None => panic!(
-                                                "error parsing function {}: did you forgot the end keyword to finish the function?",
-                                                &identifier
-                                            ),
+                                            None => panic!(),
                                         }
                                     }
 
                                     if identifier == String::from("main") && fnc_args.len() > 0 {
-                                        panic!(
-                                            "error parsing function {}: {} function shouldn't take any argument", 
-                                            &identifier, &identifier
-                                        )
+                                        panic!()
                                     }
 
                                     self.env
@@ -178,7 +172,7 @@ impl<'a> Parser<'a> {
                                 _ => {}
                             },
                             _ => {
-                                panic!("expected a string, a number of or a function definition")
+                                panic!()
                             }
                         },
                         _ => self.tokens_peeker.cursor -= 1,

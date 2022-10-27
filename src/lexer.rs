@@ -150,7 +150,7 @@ impl Lexer {
                     element_content = String::new(); // flush content for the next element
                     continue;
                 }
-                Some('[') => content.push(vec![self.parse_list()]),
+                Some('[') => content.push(std::vec::from_elem(self.parse_list(), 1)),
                 // Same element
                 Some(next_char) => element_content.push(next_char),
                 // List never ends until EOF

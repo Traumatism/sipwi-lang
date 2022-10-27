@@ -15,7 +15,7 @@ pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
             Token::Identifier(identifier) => {
                 sum += env
                     .variables_numbers
-                    .get(identifier)
+                    .get(identifier.as_str())
                     .expect(&format!("(sum): undefined identifier: {}", identifier))
             }
             token => panic!("(sum): can't perform sum with token: {:?}", token),
@@ -34,12 +34,12 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
             Token::String(content) => print!("{}", content),
             Token::Number(content) => print!("{}", content),
             Token::Identifier(identifier) => {
-                let potential_string = env.variables_strings.get(identifier);
+                let potential_string = env.variables_strings.get(identifier.as_str());
 
                 if potential_string.is_none() {
                     let potential_number = env
                         .variables_numbers
-                        .get(identifier)
+                        .get(identifier.as_str())
                         .expect(&format!("(print): undefined identifier: {}", identifier));
 
                     print!("{}", potential_number)

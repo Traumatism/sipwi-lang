@@ -48,7 +48,7 @@ impl<'a> Parser<'a> {
                         let func = self
                             .env
                             .std_functions
-                            .get(func_name)
+                            .get(func_name.as_str())
                             .expect(&format!("unknown function: {}", func_name));
 
                         // call the next function with the last arguments
@@ -68,6 +68,8 @@ impl<'a> Parser<'a> {
                     }
                 }
                 Token::Identifier(identifier) => {
+                    let identifier = identifier;
+
                     match self.tokens_peeker.next() {
                         // name <- ...--
                         Some(Token::Assignement) => match self.tokens_peeker.next() {

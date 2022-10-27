@@ -30,7 +30,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> Option<StdFuncResult>,
+        func: for<'b, 'c> fn(&'b &'c mut Sipwi, Token) -> Option<StdFuncResult>,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));

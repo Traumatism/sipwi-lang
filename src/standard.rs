@@ -1,7 +1,8 @@
 use crate::sipwi::Sipwi;
+use crate::structs::FuncResult;
 use crate::token::Token;
 
-pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<()> {
+pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<FuncResult> {
     let mut sum = 0;
 
     match token {
@@ -12,10 +13,13 @@ pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<()> {
         _ => panic!(),
     }
 
-    None
+    Some(FuncResult {
+        data: sum.to_string(),
+        to_tokens: |data: String| vec![Token::Number(data.parse::<isize>().unwrap())],
+    })
 }
 
-pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<()> {
+pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<FuncResult> {
     match token {
         Token::List(lst_content) => lst_content.iter().for_each(|lst| match &lst[0] {
             Token::String(content) => print!("{}", content),

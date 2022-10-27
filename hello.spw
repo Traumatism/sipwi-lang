@@ -1,12 +1,4 @@
-`to be implemented`
-f <- fnc [x] do
-    [{x+1}] |> return
-end
-
-`main func`
 main <- fnc [] do
-    x <- "hello"
-    y <- "world"
-    z <- 123
-    [x; " "; y; " "; z] |> puts
+    a <- "Hello, World!"
+    [a] |> puts
 end

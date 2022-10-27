@@ -1,7 +1,7 @@
 use crate::lexer::Lexer;
 use crate::parser::Parser;
 use crate::standard::std_print;
-use crate::structs::{Func, StdFunc};
+use crate::structs::{Func, FuncResult, StdFunc};
 use crate::token::Token;
 
 use std::collections::HashMap;
@@ -28,7 +28,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> Option<()>,
+        func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> Option<FuncResult>,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));

@@ -19,7 +19,6 @@ impl<'a> Parser<'a> {
     pub fn parse_tokens(&mut self) {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
-                // [...] |> f |> g |> h
                 Token::Chain => {
                     let func_id = self
                         .tokens_peeker
@@ -44,7 +43,6 @@ impl<'a> Parser<'a> {
 
                     self.tokens_peeker.cursor += 1;
                 }
-                // name
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {
                         // name <- ...--

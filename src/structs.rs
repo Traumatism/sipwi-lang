@@ -1,6 +1,11 @@
 use crate::sipwi::Sipwi;
 use crate::token::Token;
 
+pub enum Variable {
+    Str(String),
+    Number(isize),
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Expression {
     pub tokens: Vec<Token>,
@@ -12,9 +17,9 @@ impl Expression {
     }
 
     pub fn _evaluate(&self, _env: &&mut Sipwi) -> Vec<Token> {
-        let tokens = Vec::new();
+        // self.tokens.iter().map(|token| token);
 
-        tokens
+        Vec::new()
     }
 }
 
@@ -26,7 +31,7 @@ pub struct StdFuncResult {
 impl StdFuncResult {
     pub fn new(tokens: Token) -> Self {
         match tokens {
-            Token::List(_) => Self { tokens: tokens },
+            Token::List(_) => Self { tokens },
             _ => panic!(),
         }
     }
@@ -38,16 +43,13 @@ impl StdFuncResult {
 
 /// Describes a function
 pub struct Func {
-    pub fnc_args: Vec<String>,
-    pub fnc_tokens: Vec<Token>,
+    pub args: Vec<String>,
+    pub tokens: Vec<Token>,
 }
 
 impl Func {
     pub fn new(args: Vec<String>, tokens: Vec<Token>) -> Self {
-        Self {
-            fnc_args: args,
-            fnc_tokens: tokens,
-        }
+        Self { args, tokens }
     }
 }
 

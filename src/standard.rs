@@ -1,7 +1,7 @@
 use std::io::Write;
 
 use crate::sipwi::Sipwi;
-use crate::structs::StdFuncResult;
+use crate::structs::{StdFuncResult, Variable};
 use crate::token::Token;
 
 pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
@@ -20,12 +20,10 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => start_end.push(
-                        env.variables_numbers
-                            .get(identifier.as_str())
-                            .expect(&format!("(range): undefined identifier: {}", identifier))
-                            .clone(),
-                    ),
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                        Some(&Variable::Number(value)) => start_end.push(value),
+                        _ => panic!(),
+                    },
                     _ => panic!("(irange) expected one number or identifier for each element"),
                 }
             }
@@ -54,12 +52,10 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => start_end.push(
-                        env.variables_numbers
-                            .get(identifier.as_str())
-                            .expect(&format!("(range): undefined identifier: {}", identifier))
-                            .clone(),
-                    ),
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                        Some(&Variable::Number(value)) => start_end.push(value),
+                        _ => panic!(),
+                    },
                     _ => panic!("(irange) expected one number or identifier for each element"),
                 }
             }
@@ -82,10 +78,11 @@ pub fn std_sum(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                 match element {
                     Token::Number(number) => sum += number,
                     Token::Identifier(identifier) => {
-                        sum += env
-                            .variables_numbers
-                            .get(identifier.as_str())
-                            .expect(&format!("(sum): undefined identifier: {}", identifier))
+                        let value = env.get_variable(identifier);
+                        match value {
+                            Some(Variable::Number(content)) => sum += content,
+                            _ => panic!(),
+                        }
                     }
                     token => panic!("(sum): can't perform sum with token: {:?}", token),
                 }
@@ -111,18 +108,15 @@ pub fn std_print(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
                         let _ = std::io::stdout().write(content.to_string().as_bytes());
                     }
                     Token::Identifier(identifier) => {
-                        let potential_string = env.variables_strings.get(identifier.as_str());
-
-                        if potential_string.is_none() {
-                            let potential_number = env
-                                .variables_numbers
-                                .get(identifier.as_str())
-                                .expect(&format!("(puts): undefined identifier: {}", identifier));
-
-                            let _ =
-                                std::io::stdout().write(potential_number.to_string().as_bytes());
-                        } else {
-                            let _ = std::io::stdout().write(potential_string.unwrap().as_bytes());
+                        let value = env.get_variable(identifier);
+                        match value {
+                            Some(Variable::Str(content)) => {
+                                let _ = std::io::stdout().write(content.to_string().as_bytes());
+                            }
+                            Some(Variable::Number(content)) => {
+                                let _ = std::io::stdout().write(content.to_string().as_bytes());
+                            }
+                            _ => panic!(),
                         }
                     }
                     _ => panic!(),

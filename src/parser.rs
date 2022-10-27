@@ -1,6 +1,6 @@
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
-use crate::structs::Func;
+use crate::structs::{Func, Variable};
 use crate::token::Token;
 
 pub struct Parser<'a> {
@@ -72,11 +72,12 @@ impl<'a> Parser<'a> {
                         Some(Token::Assignement) => match self.tokens_peeker.next() {
                             // name <- "Hello, World!"
                             Some(Token::String(value)) => {
-                                self.env.variables_strings.insert(identifier, value);
+                                self.env.register_variable(identifier, Variable::Str(value));
                             }
                             // name <- 123
                             Some(Token::Number(value)) => {
-                                self.env.variables_numbers.insert(identifier, value);
+                                self.env
+                                    .register_variable(identifier, Variable::Number(value));
                             }
                             // name <- fnc
                             Some(Token::Keyword(keyword)) => match keyword.as_str() {

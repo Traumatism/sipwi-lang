@@ -1,6 +1,23 @@
 use crate::sipwi::Sipwi;
 use crate::token::Token;
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct Expression {
+    pub tokens: Vec<Token>,
+}
+
+impl Expression {
+    pub fn new(tokens: Vec<Token>) -> Self {
+        Self { tokens }
+    }
+
+    pub fn _evaluate(&self, _env: &&mut Sipwi) -> Vec<Token> {
+        let tokens = Vec::new();
+
+        tokens
+    }
+}
+
 pub struct FuncResult {
     pub data: String,
     pub to_tokens: fn(String) -> Vec<Token>,

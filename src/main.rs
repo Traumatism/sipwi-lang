@@ -6,6 +6,7 @@ mod sipwi;
 mod standard;
 mod structs;
 mod token;
+mod verify;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let code = std::fs::read_to_string(

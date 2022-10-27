@@ -2,6 +2,7 @@
 
 use crate::consts::*;
 use crate::peeker::Peeker;
+use crate::structs::Expression;
 use crate::token::Token;
 
 pub struct Lexer {
@@ -115,7 +116,7 @@ impl Lexer {
             }
         }
 
-        Token::Expression(content)
+        Token::Expression(Expression::new(content))
     }
 
     /// Parse the next list

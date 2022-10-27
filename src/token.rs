@@ -1,3 +1,5 @@
+use crate::structs::Expression;
+
 // Tokens
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
@@ -43,7 +45,7 @@ pub enum Token {
     True,                   // true
     False,                  // false
     List(Vec<Vec<Token>>),  // [a; b; c]
-    Expression(Vec<Token>), // { ... }
+    Expression(Expression), // { ... }
     String(String),         // "hello world"
     Number(isize),          // -123
     Keyword(String),        // proc

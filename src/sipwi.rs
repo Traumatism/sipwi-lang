@@ -3,6 +3,7 @@ use crate::parser::Parser;
 use crate::standard::std_print;
 use crate::structs::{Func, FuncResult, StdFunc};
 use crate::token::Token;
+use crate::verify::verify_do_end;
 
 use std::collections::HashMap;
 
@@ -38,6 +39,10 @@ impl Sipwi {
         self.register_std_func("puts", std_print);
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();
+
+        if !verify_do_end(&tokens) {
+            panic!("hum...")
+        }
 
         Parser::new(tokens, self).parse_tokens();
 

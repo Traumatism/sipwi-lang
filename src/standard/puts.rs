@@ -9,7 +9,7 @@ fn write_to_stdout(content: &str) {
     let _ = std::io::stdout().write(content.as_bytes());
 }
 
-pub fn std_puts(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
     if let Token::List(lst_content) = token {
         lst_content.iter().for_each(|lst| {
             for element in lst {

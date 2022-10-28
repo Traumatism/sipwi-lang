@@ -2,7 +2,7 @@ use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
 use crate::sipwi::Sipwi;
 
-pub fn std_sum(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut sum = 0;
 
     if let Token::List(list_content) = token {

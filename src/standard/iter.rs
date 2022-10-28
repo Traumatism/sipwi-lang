@@ -2,7 +2,7 @@ use crate::lexing::token::Token;
 use crate::parsing::structs::{Function, StdFuncResult};
 use crate::sipwi::Sipwi;
 
-pub fn std_for_each(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_for_each(env: &Sipwi, token: Token) -> StdFuncResult {
     if let Token::List(list_content) = token {
         let function = match list_content.get(1).unwrap().get(0) {
             Some(Token::Identifier(function_name)) => env.get_function(function_name),

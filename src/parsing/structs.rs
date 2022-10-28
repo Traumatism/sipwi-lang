@@ -62,11 +62,11 @@ impl Func {
 
 /// Describes a standard function written in Rust
 pub struct StdFunc {
-    pub call: Box<dyn Fn(&&mut Sipwi, Token) -> StdFuncResult>,
+    pub call: Box<dyn Fn(&Sipwi, Token) -> StdFuncResult>,
 }
 
 impl StdFunc {
-    pub fn new(func: for<'a, 'b> fn(&'a &'b mut Sipwi, Token) -> StdFuncResult) -> Self {
+    pub fn new(func: for<'a> fn(&'a Sipwi, Token) -> StdFuncResult) -> Self {
         Self {
             call: Box::new(func),
         }

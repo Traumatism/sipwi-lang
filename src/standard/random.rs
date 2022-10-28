@@ -4,11 +4,11 @@ use crate::sipwi::Sipwi;
 
 use fastrand::Rng;
 
-pub fn _std_shuffle(_env: &&mut Sipwi, _token: Token) -> StdFuncResult {
+pub fn _std_shuffle(_env: &Sipwi, _token: Token) -> StdFuncResult {
     StdFuncResult::new(Token::List(Vec::new()))
 }
 
-pub fn std_randint(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
     if let Token::List(lst_content) = token {

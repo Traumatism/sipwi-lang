@@ -77,9 +77,9 @@ use crate::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::StdFuncResult;
 
-// - 'env' can be used to manage variables ect.
+// - 'env' can be used to read variables ect.
 // - 'token' should be a Token::List
-pub fn std_name(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_name(env: &Sipwi, token: Token) -> StdFuncResult {
  
     // your code here ...
 

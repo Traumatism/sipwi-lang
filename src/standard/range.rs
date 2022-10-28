@@ -2,7 +2,7 @@ use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
 use crate::sipwi::Sipwi;
 
-pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
     if let Token::List(lst_content) = token {
@@ -39,7 +39,7 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     StdFuncResult::new(Token::List(numbers))
 }
 
-pub fn std_range(env: &&mut Sipwi, token: Token) -> StdFuncResult {
+pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
     if let Token::List(lst_content) = token {

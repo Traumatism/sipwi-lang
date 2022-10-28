@@ -40,16 +40,13 @@ end
 
 ## Calling other 'functions'
 
-At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though (they are written in Rust). So calling
-a function is equivalent to a "goto".
-
 ```
-f <- fnc [] do
-    ["something"] |> puts
+f <- fnc [arg_a; arg_b] do
+    [arg_a; arg_b] |> sum |> puts
 end
 
 main <- fnc [] do
-    [] |> f
+    [5; 5] |> f
 end
 ```
 

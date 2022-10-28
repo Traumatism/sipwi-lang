@@ -79,7 +79,23 @@ impl<'a> Parser<'a> {
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
                             Some(Function::NonStd(fnc)) => {
-                                Parser::new(fnc.tokens.to_owned(), self.env, false).parse_tokens();
+                                let mut base = Vec::new();
+
+                                if let Some(Token::List(args_list)) = last_output.get(0) {
+                                    for (idx, arg) in fnc.args.iter().enumerate() {
+                                        base.push(Token::Identifier(arg.to_owned()));
+                                        base.push(Token::Assignement);
+                                        base.push(
+                                            args_list.get(idx).unwrap().get(0).unwrap().to_owned(),
+                                        );
+                                    }
+
+                                    base.append(&mut fnc.tokens.to_owned());
+
+                                    Parser::new(base, self.env, false).parse_tokens();
+                                } else {
+                                    panic!()
+                                }
                             }
                             None => {
                                 panic!()
@@ -182,7 +198,7 @@ impl<'a> Parser<'a> {
                                     self.env.register_function(
                                         &identifier,
                                         Func::new(fnc_args, fnc_tokens),
-                                    )
+                                    );
                                 }
                                 _ => {}
                             },
@@ -193,7 +209,8 @@ impl<'a> Parser<'a> {
                         _ => self.tokens_peeker.cursor -= 1,
                     }
                 }
-                _ => panic!(),
+                Token::Newline => {}
+                _ => {}
             }
         }
     }

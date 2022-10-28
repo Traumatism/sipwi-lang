@@ -1,9 +1,22 @@
+f <- fnc [a; b; c] do
+    [
+        "this is arg a: "; a; nl;
+        "this is arg b: "; b; nl;
+        "this is arg c: "; c; nl;
+    ] |> puts
+end
+
+dice <- fnc [] do
+    [1; 6] |> randint |> puts
+    [nl] |> puts
+end
 
 main <- fnc [] do
-    a <- 1
+    [1337; "kawai"; -123] |> f
 
-    [a] |> immutable
+    [nl] |> puts
 
-    a <- 2
-    [a] |> puts
+    [] |> dice
+    [] |> dice
+    [] |> dice
 end

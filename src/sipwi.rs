@@ -64,6 +64,7 @@ impl Sipwi {
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
         self.register_std_func("for_each", standard::iter::std_for_each);
+        self.register_std_func("randint", standard::random::std_randint);
 
         self.register_variable(String::from("nl"), Variable::Str(String::from("\n")));
 

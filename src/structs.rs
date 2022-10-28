@@ -6,9 +6,9 @@ pub enum Variable {
     Number(isize),
 }
 
-pub enum Function {
-    NonStd(Func),
-    Std(StdFunc),
+pub enum Function<'a> {
+    NonStd(&'a Func),
+    Std(&'a StdFunc),
 }
 
 #[derive(Debug, Clone, PartialEq)]

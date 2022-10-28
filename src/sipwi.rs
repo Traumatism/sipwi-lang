@@ -2,16 +2,16 @@ use crate::consts::MAIN_FUNCTION;
 use crate::lexer::Lexer;
 use crate::parser::Parser;
 use crate::standard;
-use crate::structs::{Func, StdFunc, StdFuncResult, Variable};
+use crate::structs::{Func, Function, StdFunc, StdFuncResult, Variable};
 use crate::token::Token;
 use crate::verify;
 
 use std::collections::HashMap;
 
 pub struct Sipwi {
-    pub variables: HashMap<String, Variable>,
-    pub functions: HashMap<String, Func>,
-    pub std_functions: HashMap<String, StdFunc>,
+    variables: HashMap<String, Variable>,
+    functions: HashMap<String, Func>,
+    std_functions: HashMap<String, StdFunc>,
     code: String,
 }
 
@@ -36,6 +36,22 @@ impl Sipwi {
 
     pub fn get_variable(&self, identifier: &str) -> Option<&Variable> {
         self.variables.get(identifier)
+    }
+
+    pub fn get_function(&self, identifier: &str) -> Option<Function> {
+        if let Some(fnc) = self.std_functions.get(&String::from(identifier)) {
+            return Some(Function::Std(fnc));
+        }
+
+        if let Some(fnc) = self.functions.get(&String::from(identifier)) {
+            return Some(Function::NonStd(fnc));
+        }
+
+        return None;
+    }
+
+    pub fn register_function(&mut self, identifier: &str, fnc: Func) {
+        self.functions.insert(String::from(identifier), fnc);
     }
 
     pub fn register_variable(&mut self, identifier: String, variable: Variable) {

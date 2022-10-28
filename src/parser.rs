@@ -1,6 +1,6 @@
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
-use crate::structs::{Func, Variable};
+use crate::structs::{Func, Function, Variable};
 use crate::token::Token;
 
 pub struct Parser<'a> {
@@ -42,35 +42,34 @@ impl<'a> Parser<'a> {
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         // grab the FuncDef
-                        let func = self.env.std_functions.get(func_name.as_str());
+                        let func = self.env.get_function(func_name.as_str());
 
-                        if !(func.is_none()) {
-                            // call the next function with the last arguments
-                            let new_output = &(func.unwrap().call)(
-                                &self.env,
-                                last_output.clone().get(0).unwrap().clone(),
-                            );
+                        match func {
+                            Some(Function::Std(fnc)) => {
+                                let new_output = &(fnc.call)(
+                                    &self.env,
+                                    last_output.clone().get(0).unwrap().clone(),
+                                );
 
-                            if new_output.is_none() {
-                                // check if the call that returned None is the last one.
-                                // if it's not, panic!
-                                if idx != functions.len() - 1 {
-                                    panic!()
+                                if new_output.is_none() {
+                                    // check if the call that returned None is the last one.
+                                    // if it's not, panic!
+                                    if idx != functions.len() - 1 {
+                                        panic!()
+                                    }
+                                } else {
+                                    last_output = std::vec::from_elem(
+                                        new_output.as_ref().unwrap().get_tokens().clone(),
+                                        1,
+                                    )
                                 }
-                            } else {
-                                last_output = std::vec::from_elem(
-                                    new_output.as_ref().unwrap().get_tokens().clone(),
-                                    1,
-                                )
                             }
-                        } else {
-                            let func = self.env.functions.get(func_name.as_str());
-
-                            if func.is_none() {
+                            Some(Function::NonStd(fnc)) => {
+                                Parser::new(fnc.tokens.clone(), self.env).parse_tokens();
+                            }
+                            _ => {
                                 panic!()
                             }
-
-                            Parser::new(func.unwrap().tokens.clone(), self.env).parse_tokens();
                         }
                     }
                 }
@@ -165,9 +164,10 @@ impl<'a> Parser<'a> {
                                         panic!()
                                     }
 
-                                    self.env
-                                        .functions
-                                        .insert(identifier, Func::new(fnc_args, fnc_tokens));
+                                    self.env.register_function(
+                                        &identifier,
+                                        Func::new(fnc_args, fnc_tokens),
+                                    )
                                 }
                                 _ => {}
                             },

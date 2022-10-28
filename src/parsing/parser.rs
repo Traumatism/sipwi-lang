@@ -193,7 +193,7 @@ impl<'a> Parser<'a> {
                         _ => self.tokens_peeker.cursor -= 1,
                     }
                 }
-                _ => {}
+                _ => panic!(),
             }
         }
     }

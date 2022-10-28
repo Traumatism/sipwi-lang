@@ -88,10 +88,8 @@ impl<'a> Parser<'a> {
                     }
                 }
                 Token::Identifier(identifier) => {
-                    let identifier = identifier;
-
                     match self.tokens_peeker.next() {
-                        // name <- ...--
+                        // name <- ...
                         Some(Token::Assignement) => match self.tokens_peeker.next() {
                             // name <- "Hello, World!"
                             Some(Token::String(value)) => {

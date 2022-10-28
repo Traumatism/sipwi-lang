@@ -25,8 +25,8 @@ impl Expression {
         Self { tokens }
     }
 
-    pub fn evaluate(&self, env: &mut Sipwi) {
-        Parser::new(self.tokens.clone(), env, true).parse_tokens()
+    pub fn evaluate(self, env: &mut Sipwi) {
+        Parser::new(self.tokens, env, true).parse_tokens()
     }
 }
 

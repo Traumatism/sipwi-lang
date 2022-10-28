@@ -18,7 +18,8 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> StdFuncResult {
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
+                    {
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
@@ -29,7 +30,7 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     }
 
     let numbers = std::vec::from_elem(
-        (start_end[0].clone()..=start_end[1].clone())
+        (start_end[0].to_owned()..=start_end[1].to_owned())
             .map(|n| Token::Number(n))
             .collect(),
         1,
@@ -53,7 +54,8 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> StdFuncResult {
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
+                    {
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
@@ -64,7 +66,7 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     }
 
     StdFuncResult::new(Token::List(std::vec::from_elem(
-        (start_end[0].clone()..start_end[1].clone())
+        (start_end[0].to_owned()..start_end[1].to_owned())
             .map(|n| Token::Number(n))
             .collect(),
         1,

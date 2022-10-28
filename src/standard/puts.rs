@@ -4,6 +4,11 @@ use crate::sipwi::Sipwi;
 
 use std::io::Write;
 
+// Write content to stdout (no nl)
+fn write_to_stdout(content: &str) {
+    let _ = std::io::stdout().write(content.as_bytes());
+}
+
 pub fn std_puts(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     if let Token::List(lst_content) = token {
         lst_content.iter().for_each(|lst| {
@@ -18,11 +23,9 @@ pub fn std_puts(env: &&mut Sipwi, token: Token) -> StdFuncResult {
                     Token::Identifier(identifier) => {
                         let value = env.get_variable(identifier);
                         match value {
-                            Some(Variable::Str(content)) => {
-                                let _ = std::io::stdout().write(content.to_string().as_bytes());
-                            }
+                            Some(Variable::Str(content)) => write_to_stdout(content),
                             Some(Variable::Number(content)) => {
-                                let _ = std::io::stdout().write(content.to_string().as_bytes());
+                                let _ = write_to_stdout(content.to_string().as_str());
                             }
                             _ => panic!(),
                         }

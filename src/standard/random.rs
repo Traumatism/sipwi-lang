@@ -20,7 +20,8 @@ pub fn std_shuffle(env: &&mut Sipwi, token: Token) -> StdFuncResult {
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
+                    {
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
@@ -32,7 +33,7 @@ pub fn std_shuffle(env: &&mut Sipwi, token: Token) -> StdFuncResult {
 
     StdFuncResult::new(Token::List(std::vec::from_elem(
         std::vec::from_elem(
-            Token::Number(Rng::new().isize(start_end[0].clone()..start_end[1].clone())),
+            Token::Number(Rng::new().isize(start_end[0].to_owned()..start_end[1].to_owned())),
             1,
         ),
         1,
@@ -55,7 +56,8 @@ pub fn std_randint(env: &&mut Sipwi, token: Token) -> StdFuncResult {
             for element in lst {
                 match element {
                     Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => match env.get_variable(&identifier).clone() {
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
+                    {
                         Some(&Variable::Number(value)) => start_end.push(value),
                         _ => panic!(),
                     },
@@ -67,7 +69,7 @@ pub fn std_randint(env: &&mut Sipwi, token: Token) -> StdFuncResult {
 
     StdFuncResult::new(Token::List(std::vec::from_elem(
         std::vec::from_elem(
-            Token::Number(Rng::new().isize(start_end[0].clone()..start_end[1].clone())),
+            Token::Number(Rng::new().isize(start_end[0].to_owned()..start_end[1].to_owned())),
             1,
         ),
         1,

@@ -62,7 +62,7 @@ impl<'a> Parser<'a> {
                             Some(Function::Std(fnc)) => {
                                 let new_output = &(fnc.call)(
                                     &self.env,
-                                    last_output.clone().get(0).unwrap().clone(),
+                                    last_output.to_owned().get(0).unwrap().to_owned(),
                                 );
 
                                 let new_output_tokens = new_output.get_tokens();
@@ -76,10 +76,10 @@ impl<'a> Parser<'a> {
                                     _ => panic!(),
                                 }
 
-                                last_output = std::vec::from_elem(new_output_tokens.clone(), 1);
+                                last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
                             Some(Function::NonStd(fnc)) => {
-                                Parser::new(fnc.tokens.clone(), self.env, false).parse_tokens();
+                                Parser::new(fnc.tokens.to_owned(), self.env, false).parse_tokens();
                             }
                             None => {
                                 panic!()
@@ -93,12 +93,13 @@ impl<'a> Parser<'a> {
                         Some(Token::Assignement) => match self.tokens_peeker.next() {
                             // name <- "Hello, World!"
                             Some(Token::String(value)) => {
-                                self.env.register_variable(identifier, Variable::Str(value));
+                                self.env
+                                    .register_variable(&identifier, Variable::Str(value));
                             }
                             // name <- 123
                             Some(Token::Number(value)) => {
                                 self.env
-                                    .register_variable(identifier, Variable::Number(value));
+                                    .register_variable(&identifier, Variable::Number(value));
                             }
                             // name <- fnc
                             Some(Token::Keyword(keyword)) => match keyword.as_str() {
@@ -117,7 +118,7 @@ impl<'a> Parser<'a> {
                                             if let Some(Token::Identifier(argument_name)) =
                                                 element.first()
                                             {
-                                                fnc_args.push(argument_name.clone())
+                                                fnc_args.push(argument_name.to_owned())
                                             } else {
                                                 panic!()
                                             }
@@ -162,7 +163,7 @@ impl<'a> Parser<'a> {
                                                 }
 
                                                 // we want the keyword still
-                                                fnc_tokens.push(Token::Keyword(keyword.clone()));
+                                                fnc_tokens.push(Token::Keyword(keyword.to_owned()));
                                             }
 
                                             Some(token) => fnc_tokens.push(token),

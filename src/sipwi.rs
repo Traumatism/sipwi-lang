@@ -9,15 +9,17 @@ use crate::standard;
 use std::collections::HashMap;
 
 pub struct Sipwi {
-    variables: HashMap<String, Variable>,
-    functions: HashMap<String, Func>,
-    std_functions: HashMap<String, StdFunc>,
+    pub variables: HashMap<String, Variable>,
+    pub functions: HashMap<String, Func>,
+    pub std_functions: HashMap<String, StdFunc>,
+    pub immutables: Vec<String>,
     code: String,
 }
 
 impl Sipwi {
     pub fn new(code: &str) -> Self {
         Self {
+            immutables: Vec::new(),
             variables: HashMap::new(),
             std_functions: HashMap::new(),
             functions: HashMap::new(),
@@ -54,27 +56,36 @@ impl Sipwi {
         self.functions.insert(String::from(identifier), fnc);
     }
 
-    pub fn register_variable(&mut self, identifier: String, variable: Variable) {
-        self.variables.insert(identifier, variable);
+    pub fn register_variable(&mut self, identifier: &str, variable: Variable) {
+        if self.immutables.contains(&identifier.to_string()) {
+            panic!()
+        }
+
+        self.variables.insert(String::from(identifier), variable);
+    }
+
+    pub fn register_immutable(&mut self, identifier: &str) {
+        self.immutables.push(String::from(identifier))
     }
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::puts::std_puts);
-
         self.register_std_func("sum", standard::operations::std_sum);
-
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
-
         self.register_std_func("for_each", standard::iter::std_for_each);
-
         self.register_std_func("randint", standard::random::std_randint);
-        self.register_std_func("@shuffle", standard::random::std_shuffle);
+        self.register_std_func("@shuffle", standard::random::std_shuffle); // shuffle is not implemented yet
+        self.register_std_func("immutable", standard::variable::std_immutable);
 
-        self.register_variable(String::from("true"), Variable::Bool(true));
-        self.register_variable(String::from("false"), Variable::Bool(false));
+        self.register_variable("true", Variable::Bool(true));
+        self.register_immutable("true");
 
-        self.register_variable(String::from("nl"), Variable::Str(String::from("\n")));
+        self.register_variable("false", Variable::Bool(false));
+        self.register_immutable("false");
+
+        self.register_variable("nl", Variable::Str(String::from("\n")));
+        self.register_immutable("nl");
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();
 
@@ -89,7 +100,7 @@ impl Sipwi {
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
-        Parser::new(main_fn.tokens.clone(), self, false).parse_tokens();
+        Parser::new(main_fn.tokens.to_owned(), self, false).parse_tokens();
 
         Ok(())
     }

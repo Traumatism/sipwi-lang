@@ -12,7 +12,7 @@ pub fn std_for_each(env: &&mut Sipwi, token: Token) -> StdFuncResult {
         if let Some(Token::List(elements)) = lst_content.get(0).unwrap().get(0) {
             elements.iter().for_each(|element| match fnc {
                 Some(Function::Std(fnc)) => {
-                    let _ = &((fnc.call)(&env, Token::List(vec![element.clone()])));
+                    let _ = &((fnc.call)(env, Token::List(vec![element.to_owned()])));
                 }
                 _ => {
                     panic!();

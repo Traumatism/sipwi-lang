@@ -164,7 +164,7 @@ impl Lexer {
 
         content.iter().for_each(|element| {
             if element.len() > 0 {
-                new_content.push(element.clone())
+                new_content.push(element.to_owned())
             }
         });
 
@@ -375,13 +375,13 @@ impl Lexer {
             // Remove doubles-newlines
             Token::Newline => {
                 if double_nl == false {
-                    filtered_tokens.push(token.clone());
+                    filtered_tokens.push(token.to_owned());
                     double_nl = true;
                 }
             }
             _ => {
                 double_nl = false;
-                filtered_tokens.push(token.clone());
+                filtered_tokens.push(token.to_owned());
             }
         });
 

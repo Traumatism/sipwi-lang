@@ -1,5 +1,6 @@
 use core::panic;
 
+use crate::lexing::consts::MAIN_FUNCTION;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{Func, Function, Variable};
 use crate::peeker::Peeker;
@@ -172,7 +173,9 @@ impl<'a> Parser<'a> {
                                         }
                                     }
 
-                                    if identifier == String::from("main") && fnc_args.len() > 0 {
+                                    if identifier == String::from(MAIN_FUNCTION)
+                                        && fnc_args.len() > 0
+                                    {
                                         panic!()
                                     }
 

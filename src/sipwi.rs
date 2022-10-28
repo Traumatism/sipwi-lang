@@ -75,8 +75,6 @@ impl Sipwi {
         self.register_std_func("irange", standard::range::std_range_inclusive);
         self.register_std_func("for_each", standard::iter::std_for_each);
         self.register_std_func("randint", standard::random::std_randint);
-        self.register_std_func("@shuffle", standard::random::std_shuffle); // shuffle is not implemented yet
-        self.register_std_func("immutable", standard::variable::std_immutable);
 
         self.register_variable("true", Variable::Bool(true));
         self.register_immutable("true");

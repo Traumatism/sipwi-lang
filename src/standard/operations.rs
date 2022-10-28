@@ -5,9 +5,9 @@ use crate::sipwi::Sipwi;
 pub fn std_sum(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     let mut sum = 0;
 
-    if let Token::List(lst_content) = token {
-        lst_content.iter().for_each(|lst| {
-            for element in lst {
+    if let Token::List(list_content) = token {
+        list_content.iter().for_each(|list| {
+            for element in list {
                 match element {
                     Token::Number(number) => sum += number,
                     Token::Identifier(identifier) => {

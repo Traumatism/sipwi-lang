@@ -59,10 +59,10 @@ impl Sipwi {
     }
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        self.register_std_func("puts", standard::std_print);
-        self.register_std_func("sum", standard::std_sum);
-        self.register_std_func("range", standard::std_range);
-        self.register_std_func("irange", standard::std_range_inclusive);
+        self.register_std_func("puts", standard::puts::std_puts);
+        self.register_std_func("sum", standard::operations::std_sum);
+        self.register_std_func("range", standard::range::std_range);
+        self.register_std_func("irange", standard::range::std_range_inclusive);
 
         self.register_variable(String::from("nl"), Variable::Str(String::from("\n")));
 

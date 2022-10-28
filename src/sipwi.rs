@@ -66,6 +66,9 @@ impl Sipwi {
         self.register_std_func("for_each", standard::iter::std_for_each);
         self.register_std_func("randint", standard::random::std_randint);
 
+        self.register_variable(String::from("true"), Variable::Bool(true));
+        self.register_variable(String::from("false"), Variable::Bool(false));
+
         self.register_variable(String::from("nl"), Variable::Str(String::from("\n")));
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();

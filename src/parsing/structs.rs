@@ -1,9 +1,11 @@
 use crate::lexing::token::Token;
 use crate::sipwi::Sipwi;
 
+// Every variable type
 pub enum Variable {
     Str(String),
     Number(isize),
+    Bool(bool),
 }
 
 pub enum Function<'a> {

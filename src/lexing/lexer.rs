@@ -68,13 +68,6 @@ impl Lexer {
         if KEYWORDS.contains(&str_content) {
             // token is a keyword
             Token::Keyword(content)
-        } else if BOOLEANS.contains(&str_content) {
-            // token is a boolean
-            match str_content {
-                "true" => Token::True,
-                "false" => Token::False,
-                _ => panic!("EOF"),
-            }
         } else {
             Token::Identifier(content) // token is NOT(keyword OR std function OR boolean)
         }

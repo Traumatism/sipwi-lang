@@ -14,12 +14,6 @@ pub const KEYWORDS: [&str; 8] = [
 
 pub const MAIN_FUNCTION: &str = "main";
 
-// Booleans
-pub const BOOLEANS: [&str; 2] = [
-    "false", // 0
-    "true",  // 1
-];
-
 // COMMENT_MARK comment_content COMMENT_MARK
 pub const COMMENT_MARK: char = '`';
 

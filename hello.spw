@@ -1,13 +1,8 @@
-test <- fnc [] do
-    [["hello"; nl; "world"; nl]; puts] |> for_each
+dice <- fnc [] do
+    [1; 6] |> randint |> puts
+    [nl] |> puts
 end
 
 main <- fnc [] do
-    [] |> test
-
-    [25; 50] |> range |> sum |> puts
-    [nl] |> puts
-
-    [25; 50] |> irange |> sum |> puts
-    [nl] |> puts
+    [] |> dice
 end

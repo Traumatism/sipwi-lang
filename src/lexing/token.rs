@@ -42,8 +42,6 @@ pub enum Token {
     StrictGreaterThan,      // >
     Pipe,                   // |
     Assignement,            // <-
-    True,                   // true
-    False,                  // false
     List(Vec<Vec<Token>>),  // [a; b; c]
     Expression(Expression), // { ... }
     String(String),         // "hello world"

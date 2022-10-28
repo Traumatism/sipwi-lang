@@ -1,6 +1,7 @@
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
 use crate::sipwi::Sipwi;
+use fastrand::Rng;
 
 pub fn std_randint(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
@@ -28,10 +29,7 @@ pub fn std_randint(env: &&mut Sipwi, token: Token) -> StdFuncResult {
         }
     }
 
-    StdFuncResult::new(Token::List(std::vec::from_elem(
-        (start_end[0].clone()..start_end[1].clone())
-            .map(|n| Token::Number(n))
-            .collect(),
-        1,
-    )))
+    let n = Rng::new().isize(start_end[0].clone()..start_end[1].clone());
+
+    StdFuncResult::new(Token::List(vec![vec![Token::Number(n)]]))
 }

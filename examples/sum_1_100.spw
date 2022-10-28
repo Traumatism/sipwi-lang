@@ -1,11 +1,14 @@
-sum_1_to_100_included <- fnc [] do
-    [1; 100] |> irange |> sum |> puts
+sum_a_to_b <- fnc [a; b] do
+    [a; b] |> range |> sum |> puts
     [nl] |> puts
 end
 
+sum_1_to_100_included <- fnc [] do
+    [1; 101] |> sum_a_to_b
+end
+
 sum_1_to_100 <- fnc [] do
-    [1; 100] |> range |> sum |> puts
-    [nl] |> puts
+    [1; 100] |> sum_a_to_b
 end
 
 main <- fnc [] do

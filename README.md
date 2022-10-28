@@ -40,7 +40,8 @@ end
 
 ## Calling other 'functions'
 
-At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though (they are written in Rust)
+At the moment, functions arguments/return aren't implemented. There are fully implemented in standard functions though (they are written in Rust). So calling
+a function is equivalent to a "goto".
 
 ```
 f <- fnc [] do

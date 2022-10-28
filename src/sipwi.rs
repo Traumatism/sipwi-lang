@@ -68,7 +68,7 @@ impl Sipwi {
 
         self.register_std_func("for_each", standard::iter::std_for_each);
 
-        self.register_std_func("rsandint", standard::random::std_randint);
+        self.register_std_func("randint", standard::random::std_randint);
         self.register_std_func("@shuffle", standard::random::std_shuffle);
 
         self.register_variable(String::from("true"), Variable::Bool(true));
@@ -82,14 +82,14 @@ impl Sipwi {
             panic!()
         }
 
-        Parser::new(tokens, self).parse_tokens();
+        Parser::new(tokens, self, false).parse_tokens();
 
         let main_fn = self
             .functions
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
-        Parser::new(main_fn.tokens.clone(), self).parse_tokens();
+        Parser::new(main_fn.tokens.clone(), self, false).parse_tokens();
 
         Ok(())
     }

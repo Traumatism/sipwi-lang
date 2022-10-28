@@ -1,28 +1,29 @@
 use core::panic;
 
 use crate::lexing::token::Token;
-use crate::parsing::structs::{Expression, Func, Function, Variable};
+use crate::parsing::structs::{Func, Function, Variable};
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
 
 pub struct Parser<'a> {
     tokens_peeker: Peeker<Token>,
     env: &'a mut Sipwi,
+    expression: bool,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(tokens: Vec<Token>, env: &'a mut Sipwi) -> Self {
+    pub fn new(tokens: Vec<Token>, env: &'a mut Sipwi, expression: bool) -> Self {
         Self {
+            expression: expression,
             tokens_peeker: Peeker::new(tokens),
             env,
         }
     }
 
-    pub fn parse_expression(&mut self, expression: Expression) {}
-
     pub fn parse_tokens(&mut self) {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
+                Token::Expression(expr) => expr.evaluate(self.env),
                 Token::Chain => {
                     let first_input = self.tokens_peeker.previous().unwrap();
 
@@ -52,6 +53,7 @@ impl<'a> Parser<'a> {
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         // grab the FuncDef
+
                         let func = self.env.get_function(func_name.as_str());
 
                         match func {
@@ -65,10 +67,8 @@ impl<'a> Parser<'a> {
 
                                 match new_output_tokens {
                                     Token::List(lst_content) => {
-                                        if lst_content.len() <= 0 {
-                                            if idx != functions.len() - 1 {
-                                                panic!()
-                                            }
+                                        if lst_content.len() <= 0 && idx != functions.len() - 1 {
+                                            panic!()
                                         }
                                     }
                                     _ => panic!(),
@@ -77,9 +77,9 @@ impl<'a> Parser<'a> {
                                 last_output = std::vec::from_elem(new_output_tokens.clone(), 1);
                             }
                             Some(Function::NonStd(fnc)) => {
-                                Parser::new(fnc.tokens.clone(), self.env).parse_tokens();
+                                Parser::new(fnc.tokens.clone(), self.env, false).parse_tokens();
                             }
-                            _ => {
+                            None => {
                                 panic!()
                             }
                         }

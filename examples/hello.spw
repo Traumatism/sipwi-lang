@@ -1,0 +1,3 @@
+main <- fnc [] do
+    ["Hello, world!"] |> puts
+end

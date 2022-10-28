@@ -23,6 +23,12 @@ impl<'a> Parser<'a> {
             match token {
                 Token::Chain => {
                     let first_input = self.tokens_peeker.previous().unwrap();
+
+                    match first_input {
+                        Token::List(_) => {}
+                        _ => panic!(),
+                    }
+
                     let mut functions = Vec::new();
 
                     while let Some(next_token) = self.tokens_peeker.next() {

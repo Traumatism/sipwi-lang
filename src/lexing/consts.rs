@@ -12,6 +12,7 @@ pub const KEYWORDS: [&str; 8] = [
     "else", // else condition
 ];
 
+// This function name will be used as the main function
 pub const MAIN_FUNCTION: &str = "main";
 
 // COMMENT_MARK comment_content COMMENT_MARK

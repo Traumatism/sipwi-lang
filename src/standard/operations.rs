@@ -1,6 +1,6 @@
+use crate::lexing::token::Token;
+use crate::parsing::structs::{StdFuncResult, Variable};
 use crate::sipwi::Sipwi;
-use crate::structs::{StdFuncResult, Variable};
-use crate::token::Token;
 
 pub fn std_sum(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     let mut sum = 0;

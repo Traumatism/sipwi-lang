@@ -1,6 +1,6 @@
+use crate::lexing::token::Token;
+use crate::parsing::structs::{Function, StdFuncResult};
 use crate::sipwi::Sipwi;
-use crate::structs::{Function, StdFuncResult};
-use crate::token::Token;
 
 pub fn std_for_each(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     if let Token::List(lst_content) = token {

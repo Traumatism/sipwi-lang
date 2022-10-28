@@ -1,9 +1,9 @@
 #![allow(unreachable_code)]
 
-use crate::consts::*;
+use crate::lexing::consts::*;
+use crate::lexing::token::Token;
+use crate::parsing::structs::Expression;
 use crate::peeker::Peeker;
-use crate::structs::Expression;
-use crate::token::Token;
 
 pub struct Lexer {
     chars_peeker: Peeker<char>,

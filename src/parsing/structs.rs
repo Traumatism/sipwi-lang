@@ -1,5 +1,5 @@
+use crate::lexing::token::Token;
 use crate::sipwi::Sipwi;
-use crate::token::Token;
 
 pub enum Variable {
     Str(String),

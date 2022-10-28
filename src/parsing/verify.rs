@@ -1,4 +1,4 @@
-use crate::token::Token;
+use crate::lexing::token::Token;
 
 pub fn verify_do_end(tokens: &Vec<Token>) -> bool {
     let mut s = 0;

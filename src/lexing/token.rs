@@ -1,4 +1,4 @@
-use crate::structs::Expression;
+use crate::parsing::structs::Expression;
 
 // Tokens
 #[derive(Debug, Clone, PartialEq)]

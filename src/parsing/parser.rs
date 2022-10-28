@@ -1,9 +1,9 @@
 use core::panic;
 
+use crate::lexing::token::Token;
+use crate::parsing::structs::{Func, Function, Variable};
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
-use crate::structs::{Func, Function, Variable};
-use crate::token::Token;
 
 pub struct Parser<'a> {
     tokens_peeker: Peeker<Token>,

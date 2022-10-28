@@ -77,17 +77,17 @@ end
 
 // import required modules
 use crate::sipwi::Sipwi;
-use crate::token::Token;
-use crate::structs::StdFuncResult;
+use crate::lexing::token::Token;
+use crate::parsing::structs::StdFuncResult;
 
 // - 'env' can be used to manage variables ect.
 // - 'token' should be a Token::List
-pub fn std_name(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
+pub fn std_name(env: &&mut Sipwi, token: Token) -> StdFuncResult {
  
     // your code here ...
 
     // The result should also be a Token::List
-    Some(StdFuncResult::new(Token::List(...)))
+    StdFuncResult::new(Token::List(...))
 }
 ```
 

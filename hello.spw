@@ -1,18 +1,13 @@
-x <- fnc [] do
-    ["test"; nl] |> puts
+test <- fnc [] do
+    [["hello"; nl; "world"; nl]; puts] |> for_each
 end
 
 main <- fnc [] do
-    [] |> x
-    a <- -1
+    [] |> test
 
-    [a; 1] |> sum |> puts
-
-    ["25 to 50 exclusive => "] |> puts
     [25; 50] |> range |> sum |> puts
     [nl] |> puts
 
-    ["25 to 50 inclusive => "] |> puts
     [25; 50] |> irange |> sum |> puts
     [nl] |> puts
 end

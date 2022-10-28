@@ -28,7 +28,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'b, 'c> fn(&'b &'c mut Sipwi, Token) -> Option<StdFuncResult>,
+        func: for<'b, 'c> fn(&'b &'c mut Sipwi, Token) -> StdFuncResult,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));
@@ -63,6 +63,7 @@ impl Sipwi {
         self.register_std_func("sum", standard::operations::std_sum);
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
+        self.register_std_func("for_each", standard::iter::std_for_each);
 
         self.register_variable(String::from("nl"), Variable::Str(String::from("\n")));
 

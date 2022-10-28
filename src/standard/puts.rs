@@ -4,7 +4,7 @@ use crate::token::Token;
 
 use std::io::Write;
 
-pub fn std_puts(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
+pub fn std_puts(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     if let Token::List(lst_content) = token {
         lst_content.iter().for_each(|lst| {
             for element in lst {
@@ -33,5 +33,5 @@ pub fn std_puts(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
         });
     }
 
-    None
+    StdFuncResult::new(Token::List(Vec::new()))
 }

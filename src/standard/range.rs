@@ -2,7 +2,7 @@ use crate::sipwi::Sipwi;
 use crate::structs::{StdFuncResult, Variable};
 use crate::token::Token;
 
-pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
+pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
     if let Token::List(lst_content) = token {
@@ -35,10 +35,10 @@ pub fn std_range_inclusive(env: &&mut Sipwi, token: Token) -> Option<StdFuncResu
         1,
     );
 
-    Some(StdFuncResult::new(Token::List(numbers)))
+    StdFuncResult::new(Token::List(numbers))
 }
 
-pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
+pub fn std_range(env: &&mut Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
     if let Token::List(lst_content) = token {
@@ -63,10 +63,10 @@ pub fn std_range(env: &&mut Sipwi, token: Token) -> Option<StdFuncResult> {
         }
     }
 
-    Some(StdFuncResult::new(Token::List(std::vec::from_elem(
+    StdFuncResult::new(Token::List(std::vec::from_elem(
         (start_end[0].clone()..start_end[1].clone())
             .map(|n| Token::Number(n))
             .collect(),
         1,
-    ))))
+    )))
 }

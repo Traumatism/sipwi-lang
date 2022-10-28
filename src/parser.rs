@@ -1,3 +1,5 @@
+use core::panic;
+
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
 use crate::structs::{Func, Function, Variable};
@@ -51,18 +53,20 @@ impl<'a> Parser<'a> {
                                     last_output.clone().get(0).unwrap().clone(),
                                 );
 
-                                if new_output.is_none() {
-                                    // check if the call that returned None is the last one.
-                                    // if it's not, panic!
-                                    if idx != functions.len() - 1 {
-                                        panic!()
+                                let new_output_tokens = new_output.get_tokens();
+
+                                match new_output_tokens {
+                                    Token::List(lst_content) => {
+                                        if lst_content.len() <= 0 {
+                                            if idx != functions.len() - 1 {
+                                                panic!()
+                                            }
+                                        }
                                     }
-                                } else {
-                                    last_output = std::vec::from_elem(
-                                        new_output.as_ref().unwrap().get_tokens().clone(),
-                                        1,
-                                    )
+                                    _ => panic!(),
                                 }
+
+                                last_output = std::vec::from_elem(new_output_tokens.clone(), 1);
                             }
                             Some(Function::NonStd(fnc)) => {
                                 Parser::new(fnc.tokens.clone(), self.env).parse_tokens();

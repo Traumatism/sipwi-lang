@@ -1,0 +1,9 @@
+
+main <- fnc [] do
+    f <- fnc [a] do
+        [a; nl] |> puts
+        [a] |> f
+    end
+
+    ["uwu overflowo ~"] |> f
+end

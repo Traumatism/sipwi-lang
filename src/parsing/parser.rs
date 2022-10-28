@@ -16,7 +16,7 @@ pub struct Parser<'a> {
 impl<'a> Parser<'a> {
     pub fn new(tokens: Vec<Token>, env: &'a mut Sipwi, expression: bool) -> Self {
         Self {
-            expression: expression,
+            expression,
             tokens_peeker: Peeker::new(tokens),
             env,
         }
@@ -54,13 +54,9 @@ impl<'a> Parser<'a> {
                     let mut last_output = std::vec::from_elem(first_input, 1);
 
                     for (idx, func_name) in functions.iter().enumerate() {
-                        // grab the FuncDef
-
-                        let func = self.env.get_function(func_name.as_str());
-
-                        match func {
-                            Some(Function::Std(fnc)) => {
-                                let new_output = &(fnc.call)(
+                        match self.env.get_function(&func_name) {
+                            Some(Function::Std(func)) => {
+                                let new_output = &(func.call)(
                                     &self.env,
                                     last_output.to_owned().get(0).unwrap().to_owned(),
                                 );
@@ -68,8 +64,8 @@ impl<'a> Parser<'a> {
                                 let new_output_tokens = new_output.get_tokens();
 
                                 match new_output_tokens {
-                                    Token::List(lst_content) => {
-                                        if lst_content.len() <= 0 && idx != functions.len() - 1 {
+                                    Token::List(list_content) => {
+                                        if list_content.len() <= 0 && idx != functions.len() - 1 {
                                             panic!()
                                         }
                                     }
@@ -78,11 +74,11 @@ impl<'a> Parser<'a> {
 
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
-                            Some(Function::NonStd(fnc)) => {
+                            Some(Function::NonStd(func)) => {
                                 let mut base = Vec::new();
 
                                 if let Some(Token::List(args_list)) = last_output.get(0) {
-                                    for (idx, arg) in fnc.args.iter().enumerate() {
+                                    for (idx, arg) in func.args.iter().enumerate() {
                                         base.push(Token::Identifier(arg.to_owned()));
                                         base.push(Token::Assignement);
                                         base.push(
@@ -90,7 +86,7 @@ impl<'a> Parser<'a> {
                                         );
                                     }
 
-                                    base.append(&mut fnc.tokens.to_owned());
+                                    base.append(&mut func.tokens.to_owned());
 
                                     Parser::new(base, self.env, false).parse_tokens();
                                 } else {
@@ -202,9 +198,7 @@ impl<'a> Parser<'a> {
                                 }
                                 _ => {}
                             },
-                            _ => {
-                                panic!()
-                            }
+                            _ => {}
                         },
                         _ => self.tokens_peeker.cursor -= 1,
                     }

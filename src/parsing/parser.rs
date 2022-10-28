@@ -6,6 +6,7 @@ use crate::parsing::structs::{Func, Function, Variable};
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
 
+#[allow(dead_code)]
 pub struct Parser<'a> {
     tokens_peeker: Peeker<Token>,
     env: &'a mut Sipwi,

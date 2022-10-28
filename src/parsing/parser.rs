@@ -1,7 +1,7 @@
 use core::panic;
 
 use crate::lexing::token::Token;
-use crate::parsing::structs::{Func, Function, Variable};
+use crate::parsing::structs::{Expression, Func, Function, Variable};
 use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
 
@@ -17,6 +17,8 @@ impl<'a> Parser<'a> {
             env,
         }
     }
+
+    pub fn parse_expression(&mut self, expression: Expression) {}
 
     pub fn parse_tokens(&mut self) {
         while let Some(token) = self.tokens_peeker.next() {

@@ -60,11 +60,16 @@ impl Sipwi {
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::puts::std_puts);
+
         self.register_std_func("sum", standard::operations::std_sum);
+
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
+
         self.register_std_func("for_each", standard::iter::std_for_each);
-        self.register_std_func("randint", standard::random::std_randint);
+
+        self.register_std_func("rsandint", standard::random::std_randint);
+        self.register_std_func("@shuffle", standard::random::std_shuffle);
 
         self.register_variable(String::from("true"), Variable::Bool(true));
         self.register_variable(String::from("false"), Variable::Bool(false));

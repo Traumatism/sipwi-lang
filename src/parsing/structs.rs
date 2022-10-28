@@ -1,4 +1,5 @@
 use crate::lexing::token::Token;
+use crate::parsing::parser::Parser;
 use crate::sipwi::Sipwi;
 
 // Every variable type
@@ -8,6 +9,7 @@ pub enum Variable {
     Bool(bool),
 }
 
+// Every function type
 pub enum Function<'a> {
     NonStd(&'a Func),
     Std(&'a StdFunc),
@@ -23,10 +25,8 @@ impl Expression {
         Self { tokens }
     }
 
-    pub fn _evaluate(&self, _env: &&mut Sipwi) -> Vec<Token> {
-        // self.tokens.iter().map(|token| token);
-
-        Vec::new()
+    pub fn evaluate(&self, env: &mut Sipwi) {
+        Parser::new(self.tokens.clone(), env).parse_tokens()
     }
 }
 

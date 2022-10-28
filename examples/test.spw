@@ -1,0 +1,9 @@
+
+main <- fnc [] do
+    a <- 1
+
+    [a] |> immutable
+
+    a <- 2
+    [a] |> puts
+end

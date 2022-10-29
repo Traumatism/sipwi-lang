@@ -5,26 +5,28 @@ use crate::sipwi::Sipwi;
 pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut sum = 0;
 
-    if let Token::List(list_content) = token {
-        list_content.iter().for_each(|list| {
-            for element in list {
-                match element {
-                    Token::Number(number) => sum += number,
-                    Token::Identifier(identifier) => {
-                        let value = env.get_variable(identifier);
-                        match value {
-                            Some(Variable::Number(content)) => sum += content,
-                            _ => panic!(),
+    match token {
+        Token::List(list) => {
+            for sub_list in list {
+                for element in sub_list {
+                    match element {
+                        Token::Number(number) => sum += number,
+                        Token::Identifier(identifier) => {
+                            let value = env.get_variable(&identifier);
+                            match value {
+                                Some(Variable::Number(number)) => {
+                                    sum += number;
+                                }
+                                _ => panic!(),
+                            };
                         }
+                        _ => panic!(),
                     }
-                    _ => panic!(),
                 }
             }
-        })
+        }
+        _ => {}
     }
 
-    StdFuncResult::new(Token::List(std::vec::from_elem(
-        std::vec::from_elem(Token::Number(sum), 1),
-        1,
-    )))
+    StdFuncResult::new(Token::Number(sum))
 }

@@ -3,6 +3,7 @@ use crate::parsing::parser::Parser;
 use crate::sipwi::Sipwi;
 
 // Every variable type
+#[derive(Debug)]
 pub enum Variable {
     Str(String),
     Number(isize),
@@ -25,26 +26,23 @@ impl Expression {
         Self { tokens }
     }
 
-    pub fn evaluate(self, env: &mut Sipwi) {
+    pub fn evaluate(self, env: &mut Sipwi) -> Option<Token> {
         Parser::new(self.tokens, env, true).parse_tokens()
     }
 }
 
 /// Describes a standard function output
 pub struct StdFuncResult {
-    tokens: Token,
+    token: Token,
 }
 
 impl StdFuncResult {
-    pub fn new(tokens: Token) -> Self {
-        match tokens {
-            Token::List(_) => Self { tokens },
-            _ => panic!(),
-        }
+    pub fn new(token: Token) -> Self {
+        Self { token }
     }
 
     pub fn get_tokens(&self) -> &Token {
-        &self.tokens
+        &self.token
     }
 }
 

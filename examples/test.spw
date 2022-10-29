@@ -1,3 +1,9 @@
+main <- fnc [] do
+    "hello world" |> puts
+
+end
+
+`
 f <- fnc [a; b; c] do
     [
         "this is arg a: "; a; nl;
@@ -20,3 +26,4 @@ main <- fnc [] do
     [] |> dice
     [] |> dice
 end
+`

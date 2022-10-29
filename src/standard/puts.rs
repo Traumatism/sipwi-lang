@@ -10,30 +10,28 @@ fn write_to_stdout(content: &str) {
 }
 
 pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
-    if let Token::List(lst_content) = token {
-        lst_content.iter().for_each(|lst| {
-            for element in lst {
-                match element {
-                    Token::String(content) => {
-                        let _ = std::io::stdout().write(content.as_bytes());
-                    }
-                    Token::Number(content) => {
-                        let _ = std::io::stdout().write(content.to_string().as_bytes());
-                    }
-                    Token::Identifier(identifier) => {
-                        let value = env.get_variable(identifier);
-                        match value {
-                            Some(Variable::Str(content)) => write_to_stdout(content),
-                            Some(Variable::Number(content)) => {
-                                let _ = write_to_stdout(content.to_string().as_str());
-                            }
-                            _ => panic!(),
-                        }
-                    }
-                    _ => panic!(),
+    match token {
+        Token::Number(number) => write_to_stdout(&number.to_string()),
+        Token::String(string) => write_to_stdout(&string),
+        Token::Identifier(identifier) => {
+            let value = env.get_variable(&identifier);
+
+            if let Some(Variable::Number(number)) = value {
+                write_to_stdout(&number.to_string())
+            } else if let Some(Variable::Str(string)) = value {
+                write_to_stdout(&string)
+            } else {
+                panic!()
+            }
+        }
+        Token::List(list) => {
+            for sub_list in list {
+                for element in sub_list {
+                    std_puts(env, element);
                 }
             }
-        });
+        }
+        _ => {}
     }
 
     StdFuncResult::new(Token::List(Vec::new()))

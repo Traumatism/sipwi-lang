@@ -23,17 +23,16 @@ impl<'a> Parser<'a> {
         }
     }
 
-    pub fn parse_tokens(&mut self) {
+    pub fn parse_tokens(&mut self) -> Option<Token> {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
-                Token::Expression(expr) => expr.evaluate(self.env),
+                Token::Expression(expr) => {
+                    expr.evaluate(self.env);
+                }
                 Token::Chain => {
                     let mut functions = Vec::new();
 
-                    let first_input = match self.tokens_peeker.previous().unwrap() {
-                        Token::List(content) => Token::List(content),
-                        _ => panic!(),
-                    };
+                    let first_input = self.tokens_peeker.previous().unwrap();
 
                     while let Some(next_token) = self.tokens_peeker.next() {
                         if next_token == Token::Chain {
@@ -66,7 +65,7 @@ impl<'a> Parser<'a> {
                                             panic!()
                                         }
                                     }
-                                    _ => panic!(),
+                                    _ => {}
                                 }
 
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
@@ -202,7 +201,8 @@ impl<'a> Parser<'a> {
                 }
                 Token::Newline => {}
                 _ => {}
-            }
+            };
         }
+        None
     }
 }

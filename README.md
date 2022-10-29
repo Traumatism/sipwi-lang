@@ -67,6 +67,20 @@ end
 
 ```
 
+## Using expressions
+
+```
+main <- fnc [] do
+    a <- 1
+    b <- 100
+
+    `store the sum of all numbers from 1 to 100 in 'x'`
+    x <- {[a; b] |> irange |> sum} 
+
+    [x; nl] |> puts
+end
+```
+
 ## Writing standard function
 
 ```rust

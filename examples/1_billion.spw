@@ -1,3 +1,0 @@
-main <- fnc [] do
-    [1; 10000000] |> irange |> sum |> puts
-end

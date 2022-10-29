@@ -78,6 +78,7 @@ impl Sipwi {
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::puts::std_puts);
         self.register_std_func("sum", standard::operations::std_sum);
+        self.register_std_func("gauss_sum", standard::operations::std_gauss_sum);
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
         self.register_std_func("for_each", standard::iter::std_for_each);
@@ -85,10 +86,8 @@ impl Sipwi {
 
         self.register_variable("true", Variable::Bool(true));
         self.register_immutable("true");
-
         self.register_variable("false", Variable::Bool(false));
         self.register_immutable("false");
-
         self.register_variable("nl", Variable::Str(String::from("\n")));
         self.register_immutable("nl");
 

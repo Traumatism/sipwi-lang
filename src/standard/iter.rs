@@ -21,5 +21,5 @@ pub fn std_for_each(env: &Sipwi, token: Token) -> StdFuncResult {
         }
     }
 
-    StdFuncResult::new(Token::List(Vec::new()))
+    StdFuncResult::empty()
 }

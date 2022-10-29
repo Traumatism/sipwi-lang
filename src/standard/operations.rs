@@ -17,15 +17,18 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
                                 Some(Variable::Number(number)) => {
                                     sum += number;
                                 }
-                                _ => panic!(),
+                                Some(variable_type) => panic!("Cannot add a {:?}", variable_type),
+                                _ => panic!("{} is not defined", identifier),
                             };
                         }
-                        _ => panic!(),
+                        token => panic!("Cannot add a {:?}", token),
                     }
                 }
             }
         }
-        _ => {}
+        _ => {
+            panic!("'sum' expect a list of integers/identifiers as arguments!")
+        }
     }
 
     StdFuncResult::new(Token::Number(sum))

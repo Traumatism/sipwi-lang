@@ -35,11 +35,7 @@ pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
         }
     }
 
-    StdFuncResult::new(Token::List(std::vec::from_elem(
-        std::vec::from_elem(
-            Token::Number(Rng::new().isize(start_end[0].to_owned()..start_end[1].to_owned())),
-            1,
-        ),
-        1,
-    )))
+    let random_number = Rng::new().isize(start_end[0].to_owned()..start_end[1].to_owned());
+
+    StdFuncResult::new(Token::Number(random_number))
 }

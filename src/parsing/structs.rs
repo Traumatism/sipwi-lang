@@ -41,6 +41,12 @@ impl StdFuncResult {
         Self { token }
     }
 
+    pub fn empty() -> Self {
+        Self {
+            token: Token::List(Vec::new()),
+        }
+    }
+
     pub fn get_tokens(&self) -> &Token {
         &self.token
     }

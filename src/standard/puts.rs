@@ -34,5 +34,5 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
         _ => {}
     }
 
-    StdFuncResult::new(Token::List(Vec::new()))
+    StdFuncResult::empty()
 }

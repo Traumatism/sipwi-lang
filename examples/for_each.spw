@@ -1,0 +1,3 @@
+main <- fnc [] do
+    [["hello"; " "; "world"; nl"]; puts] |> for_each
+end

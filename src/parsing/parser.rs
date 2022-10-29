@@ -7,7 +7,6 @@ use crate::peeker::Peeker;
 use crate::sipwi::Sipwi;
 
 /// Parse tokens <=> run the program
-#[allow(dead_code)]
 pub struct Parser<'a> {
     tokens_peeker: Peeker<Token>,
     env: &'a mut Sipwi,

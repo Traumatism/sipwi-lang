@@ -27,14 +27,12 @@ impl<'a> Parser<'a> {
             match token {
                 Token::Expression(expr) => expr.evaluate(self.env),
                 Token::Chain => {
-                    let first_input = self.tokens_peeker.previous().unwrap();
-
-                    match first_input {
-                        Token::List(_) => {}
-                        _ => panic!(),
-                    }
-
                     let mut functions = Vec::new();
+
+                    let first_input = match self.tokens_peeker.previous().unwrap() {
+                        Token::List(content) => Token::List(content),
+                        _ => panic!(),
+                    };
 
                     while let Some(next_token) = self.tokens_peeker.next() {
                         if next_token == Token::Chain {
@@ -43,10 +41,8 @@ impl<'a> Parser<'a> {
                             } else {
                                 panic!();
                             }
-
                             continue;
                         }
-
                         self.tokens_peeker.cursor -= 1;
                         break;
                     }

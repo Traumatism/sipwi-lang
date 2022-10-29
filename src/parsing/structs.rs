@@ -26,6 +26,7 @@ impl Expression {
         Self { tokens }
     }
 
+    /// Evaluate the expression
     pub fn evaluate(self, env: &mut Sipwi) -> Option<Token> {
         Parser::new(self.tokens, env, true).parse_tokens()
     }
@@ -41,12 +42,14 @@ impl StdFuncResult {
         Self { token }
     }
 
+    /// Empty result
     pub fn empty() -> Self {
         Self {
             token: Token::List(Vec::new()),
         }
     }
 
+    /// Get tokens
     pub fn get_tokens(&self) -> &Token {
         &self.token
     }

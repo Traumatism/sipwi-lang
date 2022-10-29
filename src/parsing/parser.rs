@@ -1,5 +1,3 @@
-use core::panic;
-
 use crate::lexing::consts::MAIN_FUNCTION;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{Func, Function, Variable};

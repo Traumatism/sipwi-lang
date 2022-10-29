@@ -1,6 +1,6 @@
 sum_a_to_b <- fnc [a; b] do
-    [a; b] |> range |> sum |> puts
-    [nl] |> puts
+    value <- {[a; b] |> range |> sum}
+    [value; nl] |> puts
 end
 
 sum_1_to_100_included <- fnc [] do

@@ -3,7 +3,6 @@ main <- fnc [] do
 
 end
 
-`
 f <- fnc [a; b; c] do
     [
         "this is arg a: "; a; nl;

@@ -1,4 +1,5 @@
 main <- fnc [] do
     x <- {[1; 1] |> sum}
-    [x] |> puts
+    [x; nl] |> puts
 end
+

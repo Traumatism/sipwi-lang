@@ -21,7 +21,7 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
             } else if let Some(Variable::Str(string)) = value {
                 write_to_stdout(&string)
             } else {
-                panic!()
+                panic!("Cannot print a {:?}", value)
             }
         }
         Token::List(list) => {
@@ -31,7 +31,9 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
                 }
             }
         }
-        _ => {}
+        token => {
+            panic!("Cannot print a {:?}", token)
+        }
     }
 
     StdFuncResult::empty()

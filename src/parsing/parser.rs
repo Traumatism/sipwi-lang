@@ -26,9 +26,7 @@ impl<'a> Parser<'a> {
     pub fn parse_tokens(&mut self) -> Option<Token> {
         while let Some(token) = self.tokens_peeker.next() {
             match token {
-                Token::Expression(expr) => {
-                    expr.evaluate(self.env);
-                }
+                Token::Expression(expr) => return expr.evaluate(self.env),
                 Token::Chain => {
                     let mut functions = Vec::new();
 
@@ -94,11 +92,31 @@ impl<'a> Parser<'a> {
                             }
                         }
                     }
+
+                    if self.expression == true && last_output.len() == 1 {
+                        return Some(last_output.get(0).unwrap().to_owned());
+                    }
                 }
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {
                         // name <- ...
                         Some(Token::Assignement) => match self.tokens_peeker.next() {
+                            Some(Token::Expression(expression)) => {
+                                match expression.evaluate(self.env).unwrap() {
+                                    Token::String(value) => {
+                                        self.env
+                                            .register_variable(&identifier, Variable::Str(value));
+                                    }
+                                    Token::Number(value) => {
+                                        self.env.register_variable(
+                                            &identifier,
+                                            Variable::Number(value),
+                                        );
+                                    }
+                                    _ => panic!(),
+                                }
+                            }
+
                             // name <- "Hello, World!"
                             Some(Token::String(value)) => {
                                 self.env

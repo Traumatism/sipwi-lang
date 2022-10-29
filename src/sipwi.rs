@@ -8,6 +8,7 @@ use crate::standard;
 
 use std::collections::HashMap;
 
+/// Sipwi environment (manages variables, functions...)
 pub struct Sipwi {
     pub variables: HashMap<String, Variable>,
     pub functions: HashMap<String, Func>,
@@ -27,6 +28,7 @@ impl Sipwi {
         }
     }
 
+    /// Register a new standard function
     pub fn register_std_func(
         &mut self,
         identifier: &str,
@@ -36,10 +38,26 @@ impl Sipwi {
             .insert(String::from(identifier), StdFunc::new(func));
     }
 
+    /// Register a function
+    pub fn register_function(&mut self, identifier: &str, fnc: Func) {
+        self.functions.insert(String::from(identifier), fnc);
+    }
+
+    /// Register a variable
+    pub fn register_variable(&mut self, identifier: &str, variable: Variable) {
+        if self.immutables.contains(&identifier.to_string()) {
+            panic!()
+        }
+
+        self.variables.insert(String::from(identifier), variable);
+    }
+
+    /// Get a variable
     pub fn get_variable(&self, identifier: &str) -> Option<&Variable> {
         self.variables.get(identifier)
     }
 
+    /// Get a function
     pub fn get_function(&self, identifier: &str) -> Option<Function> {
         if let Some(fnc) = self.std_functions.get(&String::from(identifier)) {
             return Some(Function::Std(fnc));
@@ -52,18 +70,7 @@ impl Sipwi {
         return None;
     }
 
-    pub fn register_function(&mut self, identifier: &str, fnc: Func) {
-        self.functions.insert(String::from(identifier), fnc);
-    }
-
-    pub fn register_variable(&mut self, identifier: &str, variable: Variable) {
-        if self.immutables.contains(&identifier.to_string()) {
-            panic!()
-        }
-
-        self.variables.insert(String::from(identifier), variable);
-    }
-
+    /// Set a variable as immutable
     pub fn register_immutable(&mut self, identifier: &str) {
         self.immutables.push(String::from(identifier))
     }

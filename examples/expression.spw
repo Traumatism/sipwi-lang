@@ -1,5 +1,10 @@
 main <- fnc [] do
-    x <- {[1; 1] |> sum}
+    a <- 1
+    b <- 100
+
+    x <- {
+        [a; b] |> irange |> sum
+    } 
+
     [x; nl] |> puts
 end
-

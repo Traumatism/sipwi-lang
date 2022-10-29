@@ -21,9 +21,8 @@ impl<T: Clone> Peeker<T> {
             return None;
         }
 
-        let value = self.values[self.cursor].to_owned();
         self.cursor += 1;
 
-        Some(value)
+        Some(self.values[self.cursor - 1].to_owned())
     }
 }

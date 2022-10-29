@@ -1,5 +1,5 @@
 sum_a_to_b <- fnc [a; b] do
-    value <- {[a; b] |> range |> sum}
+    value <- {[a; b] |> irange |> sum}
     [value; nl] |> puts
 end
 

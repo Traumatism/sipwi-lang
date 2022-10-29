@@ -361,7 +361,7 @@ impl Lexer {
                     None => panic!("EOF"),
                 },
 
-                _ => panic!("Unknown token!"),
+                token => panic!("Unknown token: {:?}", token),
             })
         }
 

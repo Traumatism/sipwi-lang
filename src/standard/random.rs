@@ -5,7 +5,11 @@ use crate::sipwi::Sipwi;
 use fastrand::Rng;
 
 pub fn _std_shuffle(_env: &Sipwi, _token: Token) -> StdFuncResult {
-    StdFuncResult::new(Token::List(Vec::new()))
+    todo!()
+}
+
+pub fn _std_randchoice(_env: &Sipwi, _token: Token) -> StdFuncResult {
+    todo!()
 }
 
 pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {

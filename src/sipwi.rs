@@ -77,6 +77,7 @@ impl Sipwi {
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::puts::std_puts);
+        self.register_std_func("mul", standard::operations::std_mul);
         self.register_std_func("sum", standard::operations::std_sum);
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);

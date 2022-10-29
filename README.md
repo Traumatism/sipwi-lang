@@ -148,4 +148,3 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     StdFuncResult::new(Token::Number(sum))
 }
 ```
-

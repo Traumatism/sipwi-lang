@@ -100,6 +100,7 @@ impl<'a> Parser<'a> {
                     match self.tokens_peeker.next() {
                         // name <- ...
                         Some(Token::Assignement) => match self.tokens_peeker.next() {
+                            // name <- { ... }
                             Some(Token::Expression(expression)) => {
                                 match expression.evaluate(self.env).unwrap() {
                                     Token::String(value) => {
@@ -115,7 +116,6 @@ impl<'a> Parser<'a> {
                                     _ => panic!(),
                                 }
                             }
-
                             // name <- "Hello, World!"
                             Some(Token::String(value)) => {
                                 self.env

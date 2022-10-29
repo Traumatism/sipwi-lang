@@ -11,8 +11,11 @@ fn write_to_stdout(content: &str) {
 
 pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
     match token {
-        Token::Number(number) => write_to_stdout(&number.to_string()),
+        // Print a string
         Token::String(string) => write_to_stdout(&string),
+        // Print a number
+        Token::Number(number) => write_to_stdout(&number.to_string()),
+        // Print a variable
         Token::Identifier(identifier) => {
             let value = env.get_variable(&identifier);
 
@@ -24,6 +27,7 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
                 panic!("Cannot print a {:?}", value)
             }
         }
+        // Print a list of elements
         Token::List(list) => {
             for sub_list in list {
                 for element in sub_list {

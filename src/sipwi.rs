@@ -32,7 +32,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'b> fn(&'b Sipwi, Token) -> StdFuncResult,
+        func: for<'a> fn(&'a Sipwi, Token) -> StdFuncResult,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));
@@ -77,11 +77,16 @@ impl Sipwi {
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::puts::std_puts);
+
         self.register_std_func("sum", standard::operations::std_sum);
         self.register_std_func("gauss_sum", standard::operations::std_gauss_sum);
+
         self.register_std_func("range", standard::range::std_range);
         self.register_std_func("irange", standard::range::std_range_inclusive);
+
         self.register_std_func("for_each", standard::iter::std_for_each);
+        self.register_std_func("head", standard::iter::std_head);
+
         self.register_std_func("randint", standard::random::std_randint);
 
         self.register_variable("true", Variable::Bool(true));

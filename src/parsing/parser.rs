@@ -94,120 +94,126 @@ impl<'a> Parser<'a> {
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {
                         // name <- ...
-                        Some(Token::Assignement) => match self.tokens_peeker.next() {
-                            // name <- { ... }
-                            Some(Token::Expression(expression)) => {
-                                match expression.evaluate(self.env).unwrap() {
-                                    Token::String(value) => {
-                                        self.env
-                                            .register_variable(&identifier, Variable::Str(value));
+                        Some(Token::Assignement) => {
+                            match self.tokens_peeker.next() {
+                                // name <- { ... }
+                                Some(Token::Expression(expression)) => {
+                                    match expression.evaluate(self.env).unwrap() {
+                                        Token::String(value) => {
+                                            self.env.register_variable(
+                                                &identifier,
+                                                Variable::Str(value),
+                                            );
+                                        }
+                                        Token::Number(value) => {
+                                            self.env.register_variable(
+                                                &identifier,
+                                                Variable::Number(value),
+                                            );
+                                        }
+                                        _ => panic!(),
                                     }
-                                    Token::Number(value) => {
-                                        self.env.register_variable(
-                                            &identifier,
-                                            Variable::Number(value),
-                                        );
-                                    }
-                                    _ => panic!(),
                                 }
-                            }
-                            // name <- "Hello, World!"
-                            Some(Token::String(value)) => {
-                                self.env
-                                    .register_variable(&identifier, Variable::Str(value));
-                            }
-                            // name <- 123
-                            Some(Token::Number(value)) => {
-                                self.env
-                                    .register_variable(&identifier, Variable::Number(value));
-                            }
-                            // name <- fnc
-                            Some(Token::Keyword(keyword)) => match keyword.as_str() {
-                                "fnc" => {
-                                    let mut fnc_tokens: Vec<Token> = Vec::new();
-                                    let mut fnc_args = Vec::new();
+                                // name <- "Hello, World!"
+                                Some(Token::String(value)) => {
+                                    self.env
+                                        .register_variable(&identifier, Variable::Str(value));
+                                }
+                                // name <- 123
+                                Some(Token::Number(value)) => {
+                                    self.env
+                                        .register_variable(&identifier, Variable::Number(value));
+                                }
+                                // name <- fnc
+                                Some(Token::Keyword(keyword)) => match keyword.as_str() {
+                                    "fnc" => {
+                                        let mut fnc_tokens: Vec<Token> = Vec::new();
+                                        let mut fnc_args = Vec::new();
 
-                                    // get function arguments names
-                                    if let Some(Token::List(list)) = self.tokens_peeker.next() {
-                                        for element in &list {
-                                            // we want a single identifier <=> a single token
-                                            if element.len() != 1 {
-                                                panic!()
-                                            }
-
-                                            if let Some(Token::Identifier(argument_name)) =
-                                                element.first()
-                                            {
-                                                fnc_args.push(argument_name.to_owned())
-                                            } else {
-                                                panic!()
-                                            }
-                                        }
-                                    } else {
-                                        panic!()
-                                    }
-
-                                    // verify "do"
-                                    if let Some(Token::Keyword(keyword)) = self.tokens_peeker.next()
-                                    {
-                                        if keyword != "do" {
-                                            panic!()
-                                        }
-                                    } else {
-                                        panic!()
-                                    }
-
-                                    // prevent stopping a function after the
-                                    // first 'end', even if a 'do' was used inside
-                                    // that function
-                                    let mut ignore_dos = 0;
-
-                                    loop {
-                                        // too much 'end'
-                                        if ignore_dos < 0 {
-                                            panic!()
-                                        }
-
-                                        match self.tokens_peeker.next() {
-                                            Some(Token::Keyword(keyword)) => {
-                                                if keyword == String::from("do") {
-                                                    // 'do' joined the game
-                                                    ignore_dos += 1
-                                                } else if keyword == String::from("end") {
-                                                    // the final 'end'
-                                                    if ignore_dos == 0 {
-                                                        break;
-                                                    }
-                                                    // the end of the nearest 'do'
-                                                    ignore_dos -= 1
+                                        // get function arguments names
+                                        if let Some(Token::List(list)) = self.tokens_peeker.next() {
+                                            for element in &list {
+                                                // we want a single identifier <=> a single token
+                                                if element.len() != 1 {
+                                                    panic!()
                                                 }
 
-                                                // we want the keyword still
-                                                fnc_tokens.push(Token::Keyword(keyword.to_owned()));
+                                                if let Some(Token::Identifier(argument_name)) =
+                                                    element.first()
+                                                {
+                                                    fnc_args.push(argument_name.to_owned())
+                                                } else {
+                                                    panic!()
+                                                }
+                                            }
+                                        } else {
+                                            panic!()
+                                        }
+
+                                        // verify "do"
+                                        if let Some(Token::Keyword(keyword)) =
+                                            self.tokens_peeker.next()
+                                        {
+                                            if keyword != "do" {
+                                                panic!()
+                                            }
+                                        } else {
+                                            panic!()
+                                        }
+
+                                        // prevent stopping a function after the
+                                        // first 'end', even if a 'do' was used inside
+                                        // that function
+                                        let mut ignore_dos = 0;
+
+                                        loop {
+                                            // too much 'end'
+                                            if ignore_dos < 0 {
+                                                panic!()
                                             }
 
-                                            Some(token) => fnc_tokens.push(token),
+                                            match self.tokens_peeker.next() {
+                                                Some(Token::Keyword(keyword)) => {
+                                                    if keyword == String::from("do") {
+                                                        // 'do' joined the game
+                                                        ignore_dos += 1
+                                                    } else if keyword == String::from("end") {
+                                                        // the final 'end'
+                                                        if ignore_dos == 0 {
+                                                            break;
+                                                        }
+                                                        // the end of the nearest 'do'
+                                                        ignore_dos -= 1
+                                                    }
 
-                                            // forgot 'end'
-                                            None => panic!(),
+                                                    // we want the keyword still
+                                                    fnc_tokens
+                                                        .push(Token::Keyword(keyword.to_owned()));
+                                                }
+
+                                                Some(token) => fnc_tokens.push(token),
+
+                                                // forgot 'end'
+                                                None => panic!(),
+                                            }
                                         }
-                                    }
 
-                                    if identifier == String::from(MAIN_FUNCTION)
-                                        && fnc_args.len() > 0
-                                    {
-                                        panic!()
-                                    }
+                                        if identifier == String::from(MAIN_FUNCTION)
+                                            && fnc_args.len() > 0
+                                        {
+                                            panic!()
+                                        }
 
-                                    self.env.register_function(
-                                        &identifier,
-                                        Func::new(fnc_args, fnc_tokens),
-                                    );
-                                }
+                                        self.env.register_function(
+                                            &identifier,
+                                            Func::new(fnc_args, fnc_tokens),
+                                        );
+                                    }
+                                    _ => {}
+                                },
                                 _ => {}
-                            },
-                            _ => {}
-                        },
+                            }
+                        }
                         _ => self.tokens_peeker.cursor -= 1,
                     }
                 }

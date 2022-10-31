@@ -24,9 +24,9 @@ pub fn std_for_each(env: &Sipwi, token: Token) -> StdFuncResult {
     StdFuncResult::empty()
 }
 
-pub fn std_head(env: &Sipwi, token: Token) -> StdFuncResult {
+pub fn std_head(_: &Sipwi, token: Token) -> StdFuncResult {
     match token {
-        Token::List(list) => {}
+        Token::List(_) => {}
         _ => panic!(),
     }
 

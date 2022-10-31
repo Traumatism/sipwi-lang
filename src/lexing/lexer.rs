@@ -179,186 +179,36 @@ impl Lexer {
             tokens.push(match char {
                 ' ' => Token::Whitespace,
                 '\n' => Token::Newline,
-                '+' => Token::Sum,
-                '%' => Token::Modulo,
-                '*' => Token::Mul,
-                '.' => Token::Dot,
-                '?' => Token::Question,
-                '∈' => Token::In,
-                '∉' => Token::NotIn,
-                '&' => Token::And,
-                '^' => Token::Caret,
-                '⊽' => Token::InclusiveOr,
-                '⊻' => Token::ExclusiveOr,
                 ';' => Token::Semicolon,
-                ':' => Token::Colon,
-                '(' => Token::OpeningParenthesis,
-                ')' => Token::ClosingParenthesis,
                 '{' => self.parse_expression(),
                 '_' => Token::Underscore,
-                '#' => Token::Cross,
-                '@' => Token::At,
-
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),
-
                 COMMENT_MARK => self.parse_comment(),
-
                 'a'..='z' | 'A'..='Z' => self.parse_identifier(char),
                 '0'..='9' => self.parse_number(char, false),
-
                 '-' => {
                     let next = self.chars_peeker.next();
                     match next {
                         // -123
                         Some('0'..='9') => self.parse_number(next.unwrap(), true),
-
-                        // -
-                        Some(_) => {
-                            self.chars_peeker.cursor -= 1;
-                            todo!();
-                            Token::Min
-                        }
                         None => panic!("EOF"),
+                        _ => panic!(),
                     }
                 }
-
-                '~' => match self.chars_peeker.next() {
-                    // ~>
-                    Some('>') => {
-                        todo!();
-                        Token::WaveArrow
-                    }
-
-                    // ~
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Wave
-                    }
-                    None => panic!("EOF"),
-                },
-
-                '/' => match self.chars_peeker.next() {
-                    // /\
-                    Some('\\') => {
-                        todo!();
-                        Token::Inter
-                    }
-
-                    // /
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Div
-                    }
-                    None => panic!("EOF"),
-                },
-
-                '\\' => match self.chars_peeker.next() {
-                    // \/
-                    Some('/') => {
-                        todo!();
-                        Token::Union
-                    }
-
-                    //  \
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Backslash
-                    }
-                    None => panic!("EOF"),
-                },
-
-                '!' => match self.chars_peeker.next() {
-                    // !=
-                    Some('=') => {
-                        todo!();
-                        Token::NotEqual
-                    }
-
-                    // !
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Exclam
-                    }
-                    None => panic!("EOF"),
-                },
-
-                '=' => match self.chars_peeker.next() {
-                    // ==
-                    Some('=') => {
-                        todo!();
-                        Token::StrictEqual
-                    }
-
-                    // =
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::SingleEqual
-                    }
-                    None => panic!("EOF"),
-                },
 
                 '|' => match self.chars_peeker.next() {
                     // |>
                     Some('>') => Token::Chain,
-
-                    // |
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::Pipe
-                    }
                     None => panic!("EOF"),
-                },
-
-                '>' => match self.chars_peeker.next() {
-                    // >=
-                    Some('=') => {
-                        todo!();
-                        Token::GreaterThan
-                    }
-
-                    // >
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::StrictGreaterThan
-                    }
-                    None => panic!("EOF"),
+                    _ => panic!(),
                 },
 
                 '<' => match self.chars_peeker.next() {
                     // <-
                     Some('-') => Token::Assignement,
-
-                    // <=...
-                    Some('=') => match self.chars_peeker.next() {
-                        // <=>
-                        Some('>') => {
-                            todo!();
-                            Token::Equivalent
-                        }
-
-                        // <=
-                        Some(_) => {
-                            self.chars_peeker.cursor -= 1;
-                            todo!();
-                            Token::LowerThan
-                        }
-                        _ => panic!("EOF"),
-                    },
-                    // <
-                    Some(_) => {
-                        self.chars_peeker.cursor -= 1;
-                        todo!();
-                        Token::StrictLowerThan
-                    }
                     None => panic!("EOF"),
+                    _ => panic!(),
                 },
 
                 token => panic!("Unknown token: {:?}", token),

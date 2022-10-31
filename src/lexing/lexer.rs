@@ -175,7 +175,6 @@ impl Lexer {
             tokens.push(match char {
                 ' ' => Token::Whitespace,
                 '\n' => Token::Newline,
-                ';' => Token::Semicolon,
                 '{' => self.parse_expression(),
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),

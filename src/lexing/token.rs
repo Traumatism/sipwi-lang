@@ -3,7 +3,6 @@
 pub enum Token {
     Newline,                // \n
     Whitespace,             //
-    Semicolon,              // ;
     Chain,                  // |>
     Assignement,            // <-
     List(Vec<Vec<Token>>),  // [a; b; c]

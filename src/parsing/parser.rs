@@ -40,7 +40,8 @@ impl<'a> Parser<'a> {
                             }
                             continue;
                         }
-                        self.tokens_peeker.cursor -= 1;
+
+                        self.tokens_peeker.previous();
                         break;
                     }
 
@@ -219,7 +220,9 @@ impl<'a> Parser<'a> {
                                 _ => {}
                             }
                         }
-                        _ => self.tokens_peeker.cursor -= 1,
+                        _ => {
+                            self.tokens_peeker.previous();
+                        }
                     }
                 }
                 Token::Newline => {}

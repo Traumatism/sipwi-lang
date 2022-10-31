@@ -1,7 +1,7 @@
 /// Get next/previous values in a vector
 pub struct Peeker<T> {
-    pub values: Vec<T>,
-    pub cursor: usize,
+    values: Vec<T>,
+    cursor: usize,
 }
 
 impl<T: Clone> Peeker<T> {

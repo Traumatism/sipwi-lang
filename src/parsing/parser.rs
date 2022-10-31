@@ -21,16 +21,6 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse_tokens(&mut self) -> Option<Token> {
-        let identifiers = self
-            .tokens_peeker
-            .values
-            .clone()
-            .iter()
-            .filter(|token| match token {
-                Token::Identifier(_) => true,
-                _ => false,
-            });
-
         while let Some(token) = self.tokens_peeker.next() {
             match token {
                 Token::Expression(tokens) => {

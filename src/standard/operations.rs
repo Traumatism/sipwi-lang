@@ -1,6 +1,6 @@
+use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
-use crate::sipwi::Sipwi;
 
 pub fn std_gauss_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     let res = match token {

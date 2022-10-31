@@ -1,6 +1,6 @@
+use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
-use crate::sipwi::Sipwi;
 
 pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
     let (start, end) = match token.clone() {

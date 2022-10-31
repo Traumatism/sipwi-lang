@@ -1,6 +1,6 @@
+use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
-use crate::sipwi::Sipwi;
 
 use std::io::Write;
 

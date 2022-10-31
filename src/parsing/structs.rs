@@ -1,5 +1,5 @@
+use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
-use crate::sipwi::Sipwi;
 
 // Every variable type
 #[derive(Debug)]

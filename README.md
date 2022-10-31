@@ -87,7 +87,7 @@ end
 // in src/standard.rs
 
 // import required modules
-use crate::sipwi::Sipwi;
+use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::StdFuncResult;
 
@@ -105,7 +105,7 @@ pub fn std_name(env: &Sipwi, token: Token) -> StdFuncResult {
 ## Register standard function
 
 ```rust
-// in src/sipwi.rs:Sipwi::run()
+// in src/common/sipwi.rs:Sipwi::run()
 self.register_std_func("jame", standard::std_name);
 ```
 
@@ -114,7 +114,7 @@ self.register_std_func("jame", standard::std_name);
 ```rust
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Variable};
-use crate::sipwi::Sipwi;
+use crate::common::sipwi::Sipwi;
 
 pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut sum = 0;

@@ -1,8 +1,8 @@
+use crate::common::peeker::Peeker;
+use crate::common::sipwi::Sipwi;
 use crate::lexing::consts::MAIN_FUNCTION;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{Func, Function, Variable};
-use crate::peeker::Peeker;
-use crate::sipwi::Sipwi;
 
 /// Parse tokens <=> run the program
 pub struct Parser<'a> {

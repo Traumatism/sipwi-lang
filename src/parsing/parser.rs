@@ -46,9 +46,9 @@ impl<'a> Parser<'a> {
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         match self.env.get_function(&func_name) {
-                            Some(Function::Std(func)) => {
-                                let new_output = &(func.call)(
-                                    &self.env,
+                            Function::Std(func) => {
+                                let new_output = (func.call)(
+                                    self.env,
                                     last_output.to_owned().get(0).unwrap().to_owned(),
                                 );
 
@@ -65,17 +65,17 @@ impl<'a> Parser<'a> {
 
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
-                            Some(Function::NonStd(func)) => {
-                                let mut base = Vec::new();
-
+                            Function::NonStd(func) => {
                                 if let Some(Token::List(args_list)) = last_output.get(0) {
-                                    for (idx, arg) in func.args.iter().enumerate() {
-                                        base.push(Token::Identifier(arg.to_owned()));
-                                        base.push(Token::Assignement);
-                                        base.push(
+                                    let mut base = Vec::new();
+
+                                    func.args.iter().enumerate().for_each(|(idx, arg)| {
+                                        base.append(&mut vec![
+                                            Token::Identifier(arg.to_owned()),
+                                            Token::Assignement,
                                             args_list.get(idx).unwrap().get(0).unwrap().to_owned(),
-                                        );
-                                    }
+                                        ]);
+                                    });
 
                                     base.append(&mut func.tokens.to_owned());
 
@@ -83,9 +83,6 @@ impl<'a> Parser<'a> {
                                 } else {
                                     panic!()
                                 }
-                            }
-                            None => {
-                                panic!()
                             }
                         }
                     }

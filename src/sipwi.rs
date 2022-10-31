@@ -39,8 +39,8 @@ impl Sipwi {
     }
 
     /// Register a function
-    pub fn register_function(&mut self, identifier: &str, fnc: Func) {
-        self.functions.insert(String::from(identifier), fnc);
+    pub fn register_function(&mut self, identifier: &str, func: Func) {
+        self.functions.insert(String::from(identifier), func);
     }
 
     /// Register a variable
@@ -58,16 +58,16 @@ impl Sipwi {
     }
 
     /// Get a function
-    pub fn get_function(&self, identifier: &str) -> Option<Function> {
+    pub fn get_function(&self, identifier: &str) -> Function {
         if let Some(fnc) = self.std_functions.get(&String::from(identifier)) {
-            return Some(Function::Std(fnc));
+            return Function::Std(fnc);
         }
 
         if let Some(fnc) = self.functions.get(&String::from(identifier)) {
-            return Some(Function::NonStd(fnc));
+            return Function::NonStd(fnc);
         }
 
-        return None;
+        panic!()
     }
 
     /// Set a variable as immutable

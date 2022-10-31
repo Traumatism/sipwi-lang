@@ -4,7 +4,6 @@ use crate::parsing::structs::Expression;
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Newline,                // \n
-    Underscore,             // _
     Whitespace,             //
     Semicolon,              // ;
     Chain,                  // |>

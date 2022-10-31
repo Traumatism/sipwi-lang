@@ -1,5 +1,3 @@
-#![allow(unreachable_code)]
-
 use crate::lexing::consts::{COMMENT_MARK, KEYWORDS, LC_LETTERS, NUMBERS, UC_LETTERS};
 use crate::lexing::token::Token;
 use crate::parsing::structs::Expression;
@@ -181,7 +179,6 @@ impl Lexer {
                 '\n' => Token::Newline,
                 ';' => Token::Semicolon,
                 '{' => self.parse_expression(),
-                '_' => Token::Underscore,
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),
                 COMMENT_MARK => self.parse_comment(),

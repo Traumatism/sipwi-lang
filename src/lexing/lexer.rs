@@ -1,6 +1,5 @@
 use crate::lexing::consts::{COMMENT_MARK, KEYWORDS, LC_LETTERS, NUMBERS, UC_LETTERS};
 use crate::lexing::token::Token;
-use crate::parsing::structs::Expression;
 use crate::peeker::Peeker;
 
 pub struct Lexer {

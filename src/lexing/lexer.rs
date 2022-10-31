@@ -113,9 +113,7 @@ impl Lexer {
             }
         }
 
-        Token::Expression(Expression::new(
-            Lexer::new(&element_content).lex_into_tokens(),
-        ))
+        Token::Expression(Lexer::new(&element_content).lex_into_tokens())
     }
 
     /// Parse the next list

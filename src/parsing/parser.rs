@@ -33,7 +33,9 @@ impl<'a> Parser<'a> {
 
         while let Some(token) = self.tokens_peeker.next() {
             match token {
-                Token::Expression(expr) => return expr.evaluate(self.env),
+                Token::Expression(tokens) => {
+                    return Parser::new(tokens, self.env, true).parse_tokens()
+                }
                 Token::Chain => {
                     let mut functions = Vec::new();
 
@@ -107,8 +109,11 @@ impl<'a> Parser<'a> {
                         Some(Token::Assignement) => {
                             match self.tokens_peeker.next() {
                                 // name <- { ... }
-                                Some(Token::Expression(expression)) => {
-                                    match expression.evaluate(self.env).unwrap() {
+                                Some(Token::Expression(tokens)) => {
+                                    let expression_output =
+                                        Parser::new(tokens, self.env, true).parse_tokens();
+
+                                    match expression_output.unwrap() {
                                         Token::String(value) => {
                                             self.env.register_variable(
                                                 &identifier,

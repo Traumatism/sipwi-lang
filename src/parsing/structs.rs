@@ -2,7 +2,7 @@ use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 
 // Every variable type
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Variable {
     Str(String),
     Number(isize),

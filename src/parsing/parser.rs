@@ -99,6 +99,12 @@ impl<'a> Parser<'a> {
                         // name <- ...
                         Some(Token::Assignement) => {
                             match self.tokens_peeker.next() {
+                                Some(Token::Identifier(identifier_bis)) => {
+                                    let value =
+                                        self.env.get_variable(identifier_bis.as_str()).clone();
+
+                                    self.env.register_variable(identifier.as_str(), value);
+                                }
                                 // name <- { ... }
                                 Some(Token::Expression(tokens)) => {
                                     let expression_output =
@@ -215,9 +221,13 @@ impl<'a> Parser<'a> {
                                             Func::new(fnc_args, fnc_tokens),
                                         );
                                     }
-                                    _ => {}
+                                    _ => {
+                                        panic!()
+                                    }
                                 },
-                                _ => {}
+                                _ => {
+                                    panic!()
+                                }
                             }
                         }
                         _ => {

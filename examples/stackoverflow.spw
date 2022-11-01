@@ -1,4 +1,3 @@
-
 main <- fnc [] do
     f <- fnc [a] do
         [a; nl] |> puts

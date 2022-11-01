@@ -11,7 +11,7 @@
 ## Variable definition
 
 `name <- "string"` (string)
-
+`name <- true` (bool)
 `name <- -123` (isize)
 
 ## Function calling
@@ -22,11 +22,25 @@
 
 `[arg1; arg2] |> name_a |> name_b` (Sipwi)
 
+
+(Python)
+`name("hello")`
+`name(123)`
+`name(x)`
+
+<=>
+
+(Sipwi)
+`"hello" |> name`
+`123 |> name`
+`x |> name`
+
+
 ## Hello, world!
 
 ```
 main <- fnc [] do
-    ["hello, world!"] |> puts
+    "hello, world!" |> puts
 end
 ```
 
@@ -38,7 +52,7 @@ main <- fnc [] do
 end
 ```
 
-## Calling other 'functions'
+## Calling other functions
 
 ```
 f <- fnc [arg_a; arg_b] do

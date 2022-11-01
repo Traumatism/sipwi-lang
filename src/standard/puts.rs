@@ -19,10 +19,12 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
         Token::Identifier(identifier) => {
             let value = env.get_variable(&identifier);
 
-            if let Some(Variable::Number(number)) = value {
+            if let Variable::Number(number) = value {
                 write_to_stdout(&number.to_string())
-            } else if let Some(Variable::Str(string)) = value {
+            } else if let Variable::Str(string) = value {
                 write_to_stdout(&string)
+            } else if let Variable::Bool(boolean) = value {
+                write_to_stdout(&boolean.to_string())
             } else {
                 panic!("Cannot print a {:?}", value)
             }

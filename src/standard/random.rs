@@ -30,7 +30,7 @@ pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
                     Token::Number(n) => start_end.push(n),
                     Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
                     {
-                        Some(&Variable::Number(value)) => start_end.push(value),
+                        Variable::Number(value) => start_end.push(value),
                         _ => panic!(),
                     },
                     _ => panic!(),

@@ -6,6 +6,7 @@ use crate::parsing::structs::{Func, Function, StdFunc, StdFuncResult, Variable};
 use crate::parsing::verify;
 use crate::standard;
 
+use std::borrow::Borrow;
 use std::collections::HashMap;
 
 /// Sipwi environment (manages variables, functions...)
@@ -53,8 +54,8 @@ impl Sipwi {
     }
 
     /// Get a variable
-    pub fn get_variable(&self, identifier: &str) -> Option<&Variable> {
-        self.variables.get(identifier)
+    pub fn get_variable(&self, identifier: &str) -> &Variable {
+        self.variables.get(identifier).unwrap()
     }
 
     /// Get a function

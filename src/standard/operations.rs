@@ -9,7 +9,7 @@ pub fn std_gauss_sum(env: &Sipwi, token: Token) -> StdFuncResult {
         Token::Identifier(identifier) => {
             let value = env.get_variable(&identifier);
 
-            if let Some(Variable::Number(number)) = value {
+            if let Variable::Number(number) = value {
                 (number * (number + 1)) / 2
             } else {
                 panic!()
@@ -33,11 +33,10 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
                         Token::Identifier(identifier) => {
                             let value = env.get_variable(&identifier);
                             match value {
-                                Some(Variable::Number(number)) => {
+                                Variable::Number(number) => {
                                     total += number;
                                 }
-                                Some(variable_type) => panic!("Cannot add a {:?}", variable_type),
-                                _ => panic!("{} is not defined", identifier),
+                                variable_type => panic!("Cannot add a {:?}", variable_type),
                             };
                         }
                         token => panic!("Cannot add a {:?}", token),

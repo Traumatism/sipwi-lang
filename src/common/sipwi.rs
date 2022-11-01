@@ -1,9 +1,10 @@
-use crate::lexing::consts::MAIN_FUNCTION;
-use crate::lexing::lexer::Lexer;
-use crate::lexing::token::Token;
-use crate::parsing::parser::Parser;
-use crate::parsing::structs::{Func, Function, StdFunc, StdFuncResult, Variable};
-use crate::parsing::verify;
+use crate::lexing::{consts::MAIN_FUNCTION, lexer::Lexer, token::Token};
+use crate::parsing::{
+    parser::Parser,
+    structs::{Func, Function, StdFunc, StdFuncResult, Variable},
+    verify,
+};
+
 use crate::standard;
 
 use std::collections::HashMap;

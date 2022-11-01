@@ -6,7 +6,6 @@ use crate::parsing::structs::{Func, Function, StdFunc, StdFuncResult, Variable};
 use crate::parsing::verify;
 use crate::standard;
 
-use std::borrow::Borrow;
 use std::collections::HashMap;
 
 /// Sipwi environment (manages variables, functions...)

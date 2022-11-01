@@ -127,7 +127,7 @@ self.register_std_func("jame", standard::std_name);
 
 ```rust
 use crate::lexing::token::Token;
-use crate::parsing::structs::{StdFuncResult, Variable};
+use crate::parsing::structs::{StdFuncResult, Type};
 use crate::common::sipwi::Sipwi;
 
 pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
@@ -142,7 +142,7 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
                         Token::Identifier(identifier) => {
                             let value = env.get_variable(&identifier);
                             match value {
-                                Some(Variable::Number(number)) => {
+                                Some(Type::Number(number)) => {
                                     sum += number;
                                 }
                                 Some(variable_type) => panic!("Cannot add a {:?}", variable_type),

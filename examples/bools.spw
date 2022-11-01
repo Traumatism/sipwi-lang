@@ -1,0 +1,4 @@
+main <- fnc [] do
+    x <- true
+    x |> puts
+end

@@ -3,7 +3,7 @@ use crate::lexing::token::Token;
 
 // Every variable type
 #[derive(Debug, Clone)]
-pub enum Variable {
+pub enum Type {
     Str(String),
     Number(isize),
     Bool(bool),

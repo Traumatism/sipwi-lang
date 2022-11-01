@@ -2,7 +2,7 @@ use crate::common::peeker::Peeker;
 use crate::common::sipwi::Sipwi;
 use crate::lexing::consts::MAIN_FUNCTION;
 use crate::lexing::token::Token;
-use crate::parsing::structs::{Func, Function, Variable};
+use crate::parsing::structs::{Func, Function, Type};
 
 /// Parse tokens <=> run the program
 pub struct Parser<'a> {
@@ -112,15 +112,13 @@ impl<'a> Parser<'a> {
 
                                     match expression_output.unwrap() {
                                         Token::String(value) => {
-                                            self.env.register_variable(
-                                                &identifier,
-                                                Variable::Str(value),
-                                            );
+                                            self.env
+                                                .register_variable(&identifier, Type::Str(value));
                                         }
                                         Token::Number(value) => {
                                             self.env.register_variable(
                                                 &identifier,
-                                                Variable::Number(value),
+                                                Type::Number(value),
                                             );
                                         }
                                         _ => panic!(),
@@ -128,13 +126,11 @@ impl<'a> Parser<'a> {
                                 }
                                 // name <- "Hello, World!"
                                 Some(Token::String(value)) => {
-                                    self.env
-                                        .register_variable(&identifier, Variable::Str(value));
+                                    self.env.register_variable(&identifier, Type::Str(value));
                                 }
                                 // name <- 123
                                 Some(Token::Number(value)) => {
-                                    self.env
-                                        .register_variable(&identifier, Variable::Number(value));
+                                    self.env.register_variable(&identifier, Type::Number(value));
                                 }
                                 // name <- fnc
                                 Some(Token::Keyword(keyword)) => match keyword.as_str() {

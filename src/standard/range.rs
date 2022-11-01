@@ -1,6 +1,6 @@
 use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
-use crate::parsing::structs::{StdFuncResult, Variable};
+use crate::parsing::structs::{StdFuncResult, Type};
 
 pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
     let (start, end) = match token.clone() {
@@ -26,7 +26,7 @@ pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
                         env.get_variable(&start_identifier).to_owned(),
                         env.get_variable(&end_identifier).to_owned(),
                     ) {
-                        (Variable::Number(start_value), Variable::Number(end_value)) => {
+                        (Type::Number(start_value), Type::Number(end_value)) => {
                             (start_value.to_owned(), end_value.to_owned())
                         }
                         _ => panic!(),
@@ -34,7 +34,7 @@ pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
                 }
                 (Token::Number(start_value), Token::Identifier(end_identifier)) => {
                     let end_value = match env.get_variable(&end_identifier) {
-                        &Variable::Number(end_value) => end_value,
+                        &Type::Number(end_value) => end_value,
                         _ => panic!(),
                     };
 
@@ -42,7 +42,7 @@ pub fn std_range_inclusive(env: &Sipwi, token: Token) -> StdFuncResult {
                 }
                 (Token::Identifier(start_identifier), Token::Number(end_value)) => {
                     let start_value = match env.get_variable(&start_identifier) {
-                        &Variable::Number(start_value) => start_value,
+                        &Type::Number(start_value) => start_value,
                         _ => panic!(),
                     };
 
@@ -86,7 +86,7 @@ pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
                         env.get_variable(&start_identifier).to_owned(),
                         env.get_variable(&end_identifier).to_owned(),
                     ) {
-                        (Variable::Number(start_value), Variable::Number(end_value)) => {
+                        (Type::Number(start_value), Type::Number(end_value)) => {
                             (start_value.to_owned(), end_value.to_owned())
                         }
                         _ => panic!(),
@@ -94,7 +94,7 @@ pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
                 }
                 (Token::Number(start_value), Token::Identifier(end_identifier)) => {
                     let end_value = match env.get_variable(&end_identifier) {
-                        &Variable::Number(end_value) => end_value,
+                        &Type::Number(end_value) => end_value,
                         _ => panic!(),
                     };
 
@@ -102,7 +102,7 @@ pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
                 }
                 (Token::Identifier(start_identifier), Token::Number(end_value)) => {
                     let start_value = match env.get_variable(&start_identifier) {
-                        &Variable::Number(start_value) => start_value,
+                        &Type::Number(start_value) => start_value,
                         _ => panic!(),
                     };
 

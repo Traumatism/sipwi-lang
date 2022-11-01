@@ -1,7 +1,7 @@
 use crate::lexing::{consts::MAIN_FUNCTION, lexer::Lexer, token::Token};
 use crate::parsing::{
     parser::Parser,
-    structs::{Func, Function, StdFunc, StdFuncResult, Variable},
+    structs::{Func, Function, StdFunc, StdFuncResult, Type},
     verify,
 };
 
@@ -11,7 +11,7 @@ use std::collections::HashMap;
 
 /// Sipwi environment (manages variables, functions...)
 pub struct Sipwi {
-    pub variables: HashMap<String, Variable>,
+    pub variables: HashMap<String, Type>,
     pub functions: HashMap<String, Func>,
     pub std_functions: HashMap<String, StdFunc>,
     pub immutables: Vec<String>,
@@ -45,7 +45,7 @@ impl Sipwi {
     }
 
     /// Register a variable
-    pub fn register_variable(&mut self, identifier: &str, variable: Variable) {
+    pub fn register_variable(&mut self, identifier: &str, variable: Type) {
         if self.immutables.contains(&identifier.to_string()) {
             panic!()
         }
@@ -54,7 +54,7 @@ impl Sipwi {
     }
 
     /// Get a variable
-    pub fn get_variable(&self, identifier: &str) -> &Variable {
+    pub fn get_variable(&self, identifier: &str) -> &Type {
         self.variables.get(identifier).unwrap()
     }
 
@@ -90,11 +90,11 @@ impl Sipwi {
 
         self.register_std_func("randint", standard::random::std_randint);
 
-        self.register_variable("true", Variable::Bool(true));
+        self.register_variable("true", Type::Bool(true));
         self.register_immutable("true");
-        self.register_variable("false", Variable::Bool(false));
+        self.register_variable("false", Type::Bool(false));
         self.register_immutable("false");
-        self.register_variable("nl", Variable::Str(String::from("\n")));
+        self.register_variable("nl", Type::Str(String::from("\n")));
         self.register_immutable("nl");
 
         let tokens = Lexer::new(&self.code).lex_into_tokens();

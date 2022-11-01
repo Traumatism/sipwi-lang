@@ -1,6 +1,6 @@
 use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
-use crate::parsing::structs::{StdFuncResult, Variable};
+use crate::parsing::structs::{StdFuncResult, Type};
 
 pub fn std_gauss_sum(env: &Sipwi, token: Token) -> StdFuncResult {
     let res = match token {
@@ -9,7 +9,7 @@ pub fn std_gauss_sum(env: &Sipwi, token: Token) -> StdFuncResult {
         Token::Identifier(identifier) => {
             let value = env.get_variable(&identifier);
 
-            if let Variable::Number(number) = value {
+            if let Type::Number(number) = value {
                 (number * (number + 1)) / 2
             } else {
                 panic!()
@@ -33,7 +33,7 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
                         Token::Identifier(identifier) => {
                             let value = env.get_variable(&identifier);
                             match value {
-                                Variable::Number(number) => {
+                                Type::Number(number) => {
                                     total += number;
                                 }
                                 variable_type => panic!("Cannot add a {:?}", variable_type),

@@ -1,6 +1,6 @@
 use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
-use crate::parsing::structs::{StdFuncResult, Variable};
+use crate::parsing::structs::{StdFuncResult, Type};
 
 use fastrand::Rng;
 
@@ -30,7 +30,7 @@ pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
                     Token::Number(n) => start_end.push(n),
                     Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
                     {
-                        Variable::Number(value) => start_end.push(value),
+                        Type::Number(value) => start_end.push(value),
                         _ => panic!(),
                     },
                     _ => panic!(),

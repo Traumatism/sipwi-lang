@@ -21,6 +21,8 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse_tokens(&mut self) -> Option<Token> {
+        let mut last_output = Vec::new();
+
         while let Some(token) = self.tokens_peeker.next() {
             match token {
                 Token::Expression(tokens) => {
@@ -29,7 +31,12 @@ impl<'a> Parser<'a> {
                 Token::Chain => {
                     let mut functions = Vec::new();
 
-                    let first_input = self.tokens_peeker.previous().unwrap();
+                    let first_input = match self.tokens_peeker.previous().unwrap() {
+                        Token::Expression(expression) => Parser::new(expression, self.env, true)
+                            .parse_tokens()
+                            .unwrap(),
+                        other => other,
+                    };
 
                     while let Some(next_token) = self.tokens_peeker.next() {
                         if next_token == Token::Chain {
@@ -45,7 +52,7 @@ impl<'a> Parser<'a> {
                         break;
                     }
 
-                    let mut last_output = std::vec::from_elem(first_input, 1);
+                    last_output = std::vec::from_elem(first_input, 1);
 
                     for (idx, func_name) in functions.iter().enumerate() {
                         match self.env.get_callable(&func_name) {
@@ -88,10 +95,6 @@ impl<'a> Parser<'a> {
                                 }
                             }
                         }
-                    }
-
-                    if self.expression == true && last_output.len() == 1 {
-                        return Some(last_output.get(0).unwrap().to_owned());
                     }
                 }
                 Token::Identifier(identifier) => {
@@ -235,6 +238,11 @@ impl<'a> Parser<'a> {
                 _ => {}
             };
         }
-        None
+
+        if self.expression == true {
+            Some(last_output.get(0).unwrap().to_owned())
+        } else {
+            None
+        }
     }
 }

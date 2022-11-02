@@ -1,5 +1,5 @@
-main <- fnc [] do
-    f <- fnc [a] do
+main <- proc [] do
+    f <- proc [a] do
         [a; nl] |> puts
         [a] |> f
     end

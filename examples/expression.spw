@@ -1,15 +1,12 @@
-main <- proc [] do
-    a <- 1
-    b <- 100
-
+f <- proc [a; b] do
     x <- (
-        y <- ([1; 1] |> sum)
-        [a; b]
-            |> irange
-            |> sum
-            |> gauss_sum
+        [a; b] |> irange |> sum |> gauss_sum
     )
 
     x |> puts
     nl |> puts
+end
+
+main <- proc [] do
+    [1; 100] |> f
 end

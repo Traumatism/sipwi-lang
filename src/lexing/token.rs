@@ -1,4 +1,3 @@
-// Tokens
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Chain,                  // |>

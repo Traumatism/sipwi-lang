@@ -83,7 +83,6 @@ impl Sipwi {
         self.register_std_func("gauss_sum", standard::operations::std_gauss_sum);
 
         self.register_std_func("range", standard::range::std_range);
-        self.register_std_func("irange", standard::range::std_range_inclusive);
 
         self.register_std_func("for_each", standard::iter::std_for_each);
         self.register_std_func("head", standard::iter::std_head);

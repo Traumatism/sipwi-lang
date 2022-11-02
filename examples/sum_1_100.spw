@@ -1,5 +1,5 @@
 sum_a_to_b <- proc [a; b] do
-    value <- {[a; b] |> irange |> sum}
+    value <- {[a; b] |> range |> sum}
     [value; nl] |> puts
 end
 

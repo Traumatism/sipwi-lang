@@ -1,6 +1,6 @@
 f <- proc [a; b] do
     x <- (
-        [a; b] |> irange |> sum |> gauss_sum
+        [a; b] |> range |> sum |> gauss_sum
     )
 
     x |> puts

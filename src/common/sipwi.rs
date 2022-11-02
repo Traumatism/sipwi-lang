@@ -88,8 +88,10 @@ impl Sipwi {
 
         self.register_variable("true", Type::Bool(true));
         self.register_immutable("true");
+
         self.register_variable("false", Type::Bool(false));
         self.register_immutable("false");
+
         self.register_variable("nl", Type::Str(String::from("\n")));
         self.register_immutable("nl");
 

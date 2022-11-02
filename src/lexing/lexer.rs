@@ -71,13 +71,12 @@ impl Lexer {
     }
 
     /// Parse the next number (no float)
-    fn parse_number(&mut self, char: char, neg: bool) -> Token {
+    fn parse_number(&mut self, chr: char, neg: bool) -> Token {
         let mut content = String::new();
         if neg == true {
             content.push('-');
         }
-
-        content.push(char);
+        content.push(chr);
 
         while let Some(next_char) = self.chars_peeker.next() {
             if !NUMBERS.contains(&next_char) {
@@ -176,6 +175,7 @@ impl Lexer {
                 COMMENT_MARK => self.parse_comment(),
                 'a'..='z' | 'A'..='Z' => self.parse_identifier(char),
                 '0'..='9' => self.parse_number(char, false),
+
                 '-' => {
                     let next = self.chars_peeker.next();
                     match next {

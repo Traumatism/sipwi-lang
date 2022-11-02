@@ -14,20 +14,22 @@ pub fn _std_randchoice(_env: &Sipwi, _token: Token) -> StdFuncResult {
 pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
-    if let Token::List(list_content) = token {
-        if list_content.len() != 2 {
-            panic!()
-        }
-
-        for element in list_content {
-            match element {
-                Token::Number(n) => start_end.push(n),
-                Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned() {
-                    Type::Number(value) => start_end.push(value),
+    match token {
+        Token::List(list) => {
+            for element in list {
+                match element {
+                    Token::Number(n) => start_end.push(n),
+                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
+                    {
+                        Type::Number(value) => start_end.push(value),
+                        _ => panic!(),
+                    },
                     _ => panic!(),
-                },
-                _ => panic!(),
+                }
             }
+        }
+        _ => {
+            panic!("'sum' expect a list of integers/identifiers as arguments!")
         }
     }
 

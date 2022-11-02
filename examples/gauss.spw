@@ -3,14 +3,20 @@ brain <- proc [n] do
 end
 
 computer <- proc [n] do
-    x <- ([n; 1] |> sum)
+    x <- ([1; n] |> sum)
     [1; x] |> range |> sum |> puts
 end
 
 main <- proc [] do
-    [100] |> brain
+    y <- ([1; 200] |> randint)
+
+    "Using next value: " |> puts
+    y |> puts
     nl |> puts
 
-    [100] |> computer
+    [y] |> brain
+    nl |> puts
+
+    [y] |> computer
     nl |> puts
 end

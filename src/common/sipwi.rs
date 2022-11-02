@@ -1,7 +1,7 @@
 use crate::lexing::{consts::MAIN_FUNCTION, lexer::Lexer, token::Token};
 use crate::parsing::{
     parser::Parser,
-    structs::{Func, Function, StdFunc, StdFuncResult, Type},
+    structs::{Callable, Procedure, StdFunc, StdFuncResult, Type},
     verify,
 };
 
@@ -12,7 +12,7 @@ use std::collections::HashMap;
 /// Sipwi environment (manages variables, functions...)
 pub struct Sipwi {
     pub variables: HashMap<String, Type>,
-    pub functions: HashMap<String, Func>,
+    pub procedures: HashMap<String, Procedure>,
     pub std_functions: HashMap<String, StdFunc>,
     pub immutables: Vec<String>,
     code: String,
@@ -24,7 +24,7 @@ impl Sipwi {
             immutables: Vec::new(),
             variables: HashMap::new(),
             std_functions: HashMap::new(),
-            functions: HashMap::new(),
+            procedures: HashMap::new(),
             code: String::from(code),
         }
     }
@@ -39,9 +39,9 @@ impl Sipwi {
             .insert(String::from(identifier), StdFunc::new(func));
     }
 
-    /// Register a function
-    pub fn register_function(&mut self, identifier: &str, func: Func) {
-        self.functions.insert(String::from(identifier), func);
+    /// Register a procedure
+    pub fn register_procedure(&mut self, identifier: &str, proc: Procedure) {
+        self.procedures.insert(String::from(identifier), proc);
     }
 
     /// Register a variable
@@ -55,20 +55,20 @@ impl Sipwi {
 
     /// Get a variable
     pub fn get_variable(&self, identifier: &str) -> &Type {
-        self.variables.get(identifier).unwrap()
+        self.variables
+            .get(identifier)
+            .expect(&format!("Undefined variable identifier: {}", identifier))
     }
 
-    /// Get a function
-    pub fn get_function(&self, identifier: &str) -> Function {
+    /// Get a callable
+    pub fn get_callable(&self, identifier: &str) -> Callable {
         if let Some(fnc) = self.std_functions.get(&String::from(identifier)) {
-            return Function::Std(fnc);
+            Callable::Std(fnc)
+        } else if let Some(fnc) = self.procedures.get(&String::from(identifier)) {
+            Callable::Procedure(fnc)
+        } else {
+            panic!("Undefined callable identifier: {}", identifier)
         }
-
-        if let Some(fnc) = self.functions.get(&String::from(identifier)) {
-            return Function::NonStd(fnc);
-        }
-
-        panic!()
     }
 
     /// Set a variable as immutable
@@ -106,7 +106,7 @@ impl Sipwi {
         Parser::new(tokens, self, false).parse_tokens();
 
         let main_fn = self
-            .functions
+            .procedures
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 

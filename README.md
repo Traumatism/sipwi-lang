@@ -14,7 +14,7 @@
 `name <- true` (bool)
 `name <- -123` (isize)
 
-## Function calling
+## Procedure calling
 
 `name_b(name_a(arg1, arg2))` (Python)
 
@@ -39,7 +39,7 @@
 ## Hello, world!
 
 ```
-main <- fnc [] do
+main <- proc [] do
     "hello, world!" |> puts
 end
 ```
@@ -47,19 +47,19 @@ end
 ## 1+1
 
 ```
-main <- fnc [] do
+main <- proc [] do
     [1; 1] |> sum |> puts
 end
 ```
 
-## Calling other functions
+## Calling other procedures
 
 ```
-f <- fnc [arg_a; arg_b] do
+f <- proc [arg_a; arg_b] do
     [arg_a; arg_b] |> sum |> puts
 end
 
-main <- fnc [] do
+main <- proc [] do
     [5; 5] |> f
 end
 ```
@@ -67,7 +67,7 @@ end
 ## Sum of all numbers from 25 to 50 (inclusive and exclusive)
 
 ```
-main <- fnc [] do
+main <- proc [] do
     ["25 to 50 exclusive => "] |> puts
     [25; 50] |> range |> sum |> puts
     
@@ -84,7 +84,7 @@ end
 ## Using expressions
 
 ```
-main <- fnc [] do
+main <- proc [] do
     a <- 1
     b <- 100
 

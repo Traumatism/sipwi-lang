@@ -1,15 +1,10 @@
 use std::ops::RangeInclusive;
 
 // Keywords
-pub const KEYWORDS: [&str; 8] = [
-    "fnc",  // define a function
+pub const KEYWORDS: [&str; 3] = [
+    "proc", // define a procedure
     "do",   // define a block starting point
     "end",  // define a block ending point
-    "if",   // if condition
-    "in",   // check if something is in a list
-    "not",  // not
-    "elif", // else if condition
-    "else", // else condition
 ];
 
 // This function name will be used as the main function

@@ -1,7 +1,6 @@
 use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{StdFuncResult, Type};
-
 use fastrand::Rng;
 
 pub fn _std_shuffle(_env: &Sipwi, _token: Token) -> StdFuncResult {
@@ -15,17 +14,17 @@ pub fn _std_randchoice(_env: &Sipwi, _token: Token) -> StdFuncResult {
 pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
     let mut start_end: Vec<isize> = Vec::new();
 
-    if let Token::List(lst_content) = token {
-        if lst_content.len() != 2 {
+    if let Token::List(list_content) = token {
+        if list_content.len() != 2 {
             panic!()
         }
 
-        for lst in lst_content {
-            if lst.len() != 1 {
+        for sub_list in list_content {
+            if sub_list.len() != 1 {
                 panic!()
             }
 
-            for element in lst {
+            for element in sub_list {
                 match element {
                     Token::Number(n) => start_end.push(n),
                     Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()

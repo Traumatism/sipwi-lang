@@ -1,8 +1,8 @@
-dice <- fnc [] do
+dice <- proc [] do
     [1; 6] |> randint |> puts
     [nl] |> puts
 end
 
-main <- fnc [] do
+main <- proc [] do
     [] |> dice
 end

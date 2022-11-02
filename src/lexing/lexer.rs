@@ -172,8 +172,6 @@ impl Lexer {
 
         while let Some(char) = self.chars_peeker.next() {
             tokens.push(match char {
-                ' ' => Token::Whitespace,
-                '\n' => Token::Newline,
                 '{' => self.parse_expression(),
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),
@@ -186,7 +184,7 @@ impl Lexer {
                         // -123
                         Some('0'..='9') => self.parse_number(next.unwrap(), true),
                         None => panic!("EOF"),
-                        _ => panic!(),
+                        _ => panic!("Expected a number after `-`"),
                     }
                 }
 
@@ -194,49 +192,34 @@ impl Lexer {
                     // |>
                     Some('>') => Token::Chain,
                     None => panic!("EOF"),
-                    _ => panic!(),
+                    _ => panic!("Expected a `>` after a `|` to form a `|>`"),
                 },
 
                 '<' => match self.chars_peeker.next() {
                     // <-
                     Some('-') => Token::Assignement,
                     None => panic!("EOF"),
-                    _ => panic!(),
+                    _ => panic!("Expected a `-` after a `<` to form a `<-`"),
                 },
+
+                ' ' | '\n' | '\t' => {
+                    continue;
+                }
 
                 token => panic!("Unknown token: {:?}", token),
             })
         }
 
         let mut filtered_tokens = Vec::new();
-        let mut double_nl = false;
 
         // Remove bloat stuff
         tokens.iter().for_each(|token| match token {
             // Remove comments and whitespaces
-            Token::Comment(_) | Token::Whitespace => {}
-            // Remove doubles-newlines
-            Token::Newline => {
-                if double_nl == false {
-                    filtered_tokens.push(token.to_owned());
-                    double_nl = true;
-                }
-            }
+            Token::Comment(_) => {}
             _ => {
-                double_nl = false;
                 filtered_tokens.push(token.to_owned());
             }
         });
-
-        // Remove first newline
-        if filtered_tokens.first() == Some(&Token::Newline) {
-            filtered_tokens.remove(0);
-        }
-
-        // Remove last newline
-        if filtered_tokens.last() == Some(&Token::Newline) {
-            filtered_tokens.remove(filtered_tokens.len() - 1);
-        }
 
         filtered_tokens
     }

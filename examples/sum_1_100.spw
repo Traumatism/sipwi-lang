@@ -1,17 +1,17 @@
-sum_a_to_b <- fnc [a; b] do
+sum_a_to_b <- proc [a; b] do
     value <- {[a; b] |> irange |> sum}
     [value; nl] |> puts
 end
 
-sum_1_to_100_included <- fnc [] do
+sum_1_to_100_included <- proc [] do
     [1; 101] |> sum_a_to_b
 end
 
-sum_1_to_100 <- fnc [] do
+sum_1_to_100 <- proc [] do
     [1; 100] |> sum_a_to_b
 end
 
-main <- fnc [] do
+main <- proc [] do
     [] |> sum_1_to_100
     [] |> sum_1_to_100_included
 end

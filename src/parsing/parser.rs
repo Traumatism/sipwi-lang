@@ -2,7 +2,7 @@ use crate::common::peeker::Peeker;
 use crate::common::sipwi::Sipwi;
 use crate::lexing::consts::MAIN_FUNCTION;
 use crate::lexing::token::Token;
-use crate::parsing::structs::{Func, Function, Type};
+use crate::parsing::structs::{Callable, Procedure, Type};
 
 /// Parse tokens <=> run the program
 pub struct Parser<'a> {
@@ -48,8 +48,8 @@ impl<'a> Parser<'a> {
                     let mut last_output = std::vec::from_elem(first_input, 1);
 
                     for (idx, func_name) in functions.iter().enumerate() {
-                        match self.env.get_function(&func_name) {
-                            Function::Std(func) => {
+                        match self.env.get_callable(&func_name) {
+                            Callable::Std(func) => {
                                 let new_output = (func.call)(
                                     self.env,
                                     last_output.to_owned().get(0).unwrap().to_owned(),
@@ -68,7 +68,7 @@ impl<'a> Parser<'a> {
 
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
-                            Function::NonStd(func) => {
+                            Callable::Procedure(func) => {
                                 if let Some(Token::List(args_list)) = last_output.get(0) {
                                     let mut base = Vec::new();
 
@@ -132,9 +132,9 @@ impl<'a> Parser<'a> {
                                 Some(Token::Number(value)) => {
                                     self.env.register_variable(&identifier, Type::Number(value));
                                 }
-                                // name <- fnc
+                                // name <- proc
                                 Some(Token::Keyword(keyword)) => match keyword.as_str() {
-                                    "fnc" => {
+                                    "proc" => {
                                         let mut fnc_tokens: Vec<Token> = Vec::new();
                                         let mut fnc_args = Vec::new();
 
@@ -212,13 +212,16 @@ impl<'a> Parser<'a> {
                                             panic!()
                                         }
 
-                                        self.env.register_function(
+                                        self.env.register_procedure(
                                             &identifier,
-                                            Func::new(fnc_args, fnc_tokens),
+                                            Procedure::new(fnc_args, fnc_tokens),
                                         );
                                     }
                                     _ => {
-                                        panic!()
+                                        panic!(
+                                            "Error! did you mean: {} <- proc [...] do ... end",
+                                            identifier
+                                        )
                                     }
                                 },
                                 _ => {
@@ -231,7 +234,6 @@ impl<'a> Parser<'a> {
                         }
                     }
                 }
-                Token::Newline => {}
                 _ => {}
             };
         }

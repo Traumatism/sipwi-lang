@@ -9,9 +9,9 @@ pub enum Type {
     Bool(bool),
 }
 
-// Every function type
-pub enum Function<'a> {
-    NonStd(&'a Func),
+// Every Callable type
+pub enum Callable<'a> {
+    Procedure(&'a Procedure),
     Std(&'a StdFunc),
 }
 
@@ -38,13 +38,13 @@ impl StdFuncResult {
     }
 }
 
-/// Describes a function
-pub struct Func {
+/// Describes a procedure
+pub struct Procedure {
     pub args: Vec<String>,
     pub tokens: Vec<Token>,
 }
 
-impl Func {
+impl Procedure {
     pub fn new(args: Vec<String>, tokens: Vec<Token>) -> Self {
         Self { args, tokens }
     }

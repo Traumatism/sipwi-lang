@@ -4,7 +4,7 @@ pub enum Token {
     Chain,                  // |>
     Assignement,            // <-
     List(Vec<Vec<Token>>),  // [a; b; c]
-    Expression(Vec<Token>), // { ... }
+    Expression(Vec<Token>), // ( ... )
     String(String),         // "hello world"
     Number(isize),          // -123
     Keyword(String),        // do, end, fnc...

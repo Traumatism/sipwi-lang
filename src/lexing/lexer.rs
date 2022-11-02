@@ -101,10 +101,10 @@ impl Lexer {
         loop {
             match self.chars_peeker.next() {
                 // End of list
-                Some('}') => {
+                Some(')') => {
                     break;
                 }
-                Some('{') => content.push(self.parse_expression()),
+                Some('(') => content.push(self.parse_expression()),
                 // Same element
                 Some(next_char) => element_content.push(next_char),
                 // List never ends until EOF
@@ -172,7 +172,7 @@ impl Lexer {
 
         while let Some(char) = self.chars_peeker.next() {
             tokens.push(match char {
-                '{' => self.parse_expression(),
+                '(' => self.parse_expression(),
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),
                 COMMENT_MARK => self.parse_comment(),

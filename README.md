@@ -89,7 +89,7 @@ main <- proc [] do
     b <- 100
 
     `store the sum of all numbers from 1 to 100 in 'x'`
-    x <- {[a; b] |> irange |> sum} 
+    x <- ([a; b] |> irange |> sum)
 
     [x; nl] |> puts
 end

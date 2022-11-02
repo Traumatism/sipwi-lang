@@ -1,10 +1,15 @@
-main <- fnc [] do
+main <- proc [] do
     a <- 1
     b <- 100
 
-    x <- {
-        [a; b] |> irange |> sum
-    } 
+    x <- (
+        y <- ([1; 1] |> sum)
+        [a; b]
+            |> irange
+            |> sum
+            |> gauss_sum
+    )
 
-    [x; nl] |> puts
+    x |> puts
+    nl |> puts
 end

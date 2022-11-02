@@ -1,4 +1,4 @@
-# sipwi programming language
+# The Sipwi Programming Language
 
 ## Compile
 

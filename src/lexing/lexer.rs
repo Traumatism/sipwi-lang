@@ -140,10 +140,9 @@ impl Lexer {
                 // End of element
                 Some(';') => {
                     let element_tokens = Lexer::new(&element_content).lex_into_tokens();
-
                     if element_tokens.len() > 1 {
                         panic!("List element must contains... a single element?");
-                    } else if element_content.len() == 1 {
+                    } else if element_tokens.len() == 1 {
                         // push the current element
                         content.push(element_tokens.get(0).unwrap().to_owned());
                     }

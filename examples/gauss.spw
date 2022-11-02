@@ -1,0 +1,16 @@
+brain <- proc [n] do
+    n |> gauss_sum |> puts
+end
+
+computer <- proc [n] do
+    x <- ([n; 1] |> sum)
+    [1; x] |> range |> sum |> puts
+end
+
+main <- proc [] do
+    [100] |> brain
+    nl |> puts
+
+    [100] |> computer
+    nl |> puts
+end

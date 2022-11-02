@@ -2,11 +2,11 @@
 pub enum Token {
     Chain,                  // |>
     Assignement,            // <-
-    List(Vec<Vec<Token>>),  // [a; b; c]
+    List(Vec<Token>),       // [a; b; c]
     Expression(Vec<Token>), // ( ... )
-    String(String),         // "hello world"
     Number(isize),          // -123
     Keyword(String),        // do, end, fnc...
-    Identifier(String),     // x
+    String(String),         // "hello world"
+    Identifier(String),     // abc
     Comment(String),        // `hello world`
 }

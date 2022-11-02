@@ -118,7 +118,7 @@ impl Lexer {
     /// Parse the next list
     fn parse_list(&mut self) -> Token {
         // The content of the list (vector of tokens)
-        let mut content = Vec::new();
+        let mut content: Vec<Token> = Vec::new();
 
         // The content of the current element
         let mut element_content = String::new();
@@ -129,8 +129,11 @@ impl Lexer {
                 Some(']') => {
                     let element_tokens = Lexer::new(&element_content).lex_into_tokens();
 
-                    if element_content.len() > 0 {
-                        content.push(element_tokens); // push the current element
+                    if element_tokens.len() > 1 {
+                        panic!("List element must contains... a single element?");
+                    } else if element_tokens.len() == 1 {
+                        // push the current element
+                        content.push(element_tokens.get(0).unwrap().to_owned());
                     }
 
                     break;
@@ -139,14 +142,18 @@ impl Lexer {
                 Some(';') => {
                     let element_tokens = Lexer::new(&element_content).lex_into_tokens();
 
-                    if element_content.len() > 0 {
-                        content.push(element_tokens); // push the current element
+                    if element_tokens.len() > 1 {
+                        panic!("List element must contains... a single element?");
+                    } else if element_content.len() == 1 {
+                        // push the current element
+                        content.push(element_tokens.get(0).unwrap().to_owned());
                     }
 
                     element_content = String::new(); // flush content for the next element
+
                     continue;
                 }
-                Some('[') => content.push(std::vec::from_elem(self.parse_list(), 1)),
+                Some('[') => content.push(self.parse_list()),
                 // Same element
                 Some(next_char) => element_content.push(next_char),
                 // List never ends until EOF
@@ -154,16 +161,7 @@ impl Lexer {
             }
         }
 
-        // Remove the empty elements (they doesn't actually exists)
-        let mut new_content = Vec::new();
-
-        content.iter().for_each(|element| {
-            if element.len() > 0 {
-                new_content.push(element.to_owned())
-            }
-        });
-
-        Token::List(new_content)
+        Token::List(content)
     }
 
     /// Lex current code into tokens

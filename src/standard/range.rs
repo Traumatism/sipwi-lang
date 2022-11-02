@@ -9,14 +9,7 @@ pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
                 panic!()
             }
 
-            let (start_tokens, end_tokens) = (list.get(0).unwrap(), list.get(1).unwrap());
-
-            if end_tokens.len() != 1 || end_tokens.len() != 1 {
-                panic!()
-            }
-
-            let (start_token, end_token) =
-                (start_tokens.get(0).unwrap(), end_tokens.get(0).unwrap());
+            let (start_token, end_token) = (list.get(0).unwrap(), list.get(1).unwrap());
 
             let (start, end) = match (start_token, end_token) {
                 (Token::Number(start_value), Token::Number(end_value)) => {
@@ -57,8 +50,7 @@ pub fn std_range(env: &Sipwi, token: Token) -> StdFuncResult {
         _ => panic!(),
     };
 
-    StdFuncResult::new(Token::List(std::vec::from_elem(
+    StdFuncResult::new(Token::List(
         (start..end).map(|n| Token::Number(n)).collect(),
-        1,
-    )))
+    ))
 }

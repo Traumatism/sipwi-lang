@@ -83,7 +83,7 @@ impl<'a> Parser<'a> {
                                         base.append(&mut vec![
                                             Token::Identifier(arg.to_owned()),
                                             Token::Assignement,
-                                            args_list.get(idx).unwrap().get(0).unwrap().to_owned(),
+                                            args_list.get(idx).unwrap().to_owned(),
                                         ]);
                                     });
 
@@ -145,13 +145,7 @@ impl<'a> Parser<'a> {
                                         if let Some(Token::List(list)) = self.tokens_peeker.next() {
                                             for element in &list {
                                                 // we want a single identifier <=> a single token
-                                                if element.len() != 1 {
-                                                    panic!()
-                                                }
-
-                                                if let Some(Token::Identifier(argument_name)) =
-                                                    element.first()
-                                                {
+                                                if let Token::Identifier(argument_name) = element {
                                                     fnc_args.push(argument_name.to_owned())
                                                 } else {
                                                     panic!()

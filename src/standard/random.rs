@@ -19,21 +19,14 @@ pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
             panic!()
         }
 
-        for sub_list in list_content {
-            if sub_list.len() != 1 {
-                panic!()
-            }
-
-            for element in sub_list {
-                match element {
-                    Token::Number(n) => start_end.push(n),
-                    Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned()
-                    {
-                        Type::Number(value) => start_end.push(value),
-                        _ => panic!(),
-                    },
+        for element in list_content {
+            match element {
+                Token::Number(n) => start_end.push(n),
+                Token::Identifier(identifier) => match env.get_variable(&identifier).to_owned() {
+                    Type::Number(value) => start_end.push(value),
                     _ => panic!(),
-                }
+                },
+                _ => panic!(),
             }
         }
     }

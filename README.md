@@ -64,23 +64,6 @@ main <- proc [] do
 end
 ```
 
-### Sum of all numbers from 25 to 50 (inclusive and exclusive)
-
-```
-main <- proc [] do
-    ["25 to 50 exclusive => "] |> puts
-    [25; 50] |> range |> sum |> puts
-    
-    [nl] |> puts
-
-    ["25 to 50 inclusive => "] |> puts
-    [25; 50] |> irange |> sum |> puts
-
-    [nl] |> puts
-end
-
-```
-
 ### Using expressions
 
 ```
@@ -89,7 +72,7 @@ main <- proc [] do
     b <- 100
 
     `store the sum of all numbers from 1 to 100 in 'x'`
-    x <- ([a; b] |> irange |> sum)
+    x <- ([a; b] |> range |> sum)
 
     [x; nl] |> puts
 end
@@ -126,31 +109,24 @@ self.register_std_func("jame", standard::std_name);
 ### Implementing sum() standard function
 
 ```rust
-use crate::lexing::token::Token;
-use crate::parsing::structs::{StdFuncResult, Type};
-use crate::common::sipwi::Sipwi;
-
 pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
-    let mut sum = 0;
+    let mut total = 0;
 
     match token {
         Token::List(list) => {
-            for sub_list in list {
-                for element in sub_list {
-                    match element {
-                        Token::Number(number) => sum += number,
-                        Token::Identifier(identifier) => {
-                            let value = env.get_variable(&identifier);
-                            match value {
-                                Some(Type::Number(number)) => {
-                                    sum += number;
-                                }
-                                Some(variable_type) => panic!("Cannot add a {:?}", variable_type),
-                                _ => panic!("{} is not defined", identifier),
-                            };
-                        }
-                        token => panic!("Cannot add a {:?}", token),
+            for element in list {
+                match element {
+                    Token::Number(number) => total += number,
+                    Token::Identifier(identifier) => {
+                        let value = env.get_variable(&identifier);
+                        match value {
+                            Type::Number(number) => {
+                                total += number;
+                            }
+                            variable_type => panic!("Cannot add a {:?}", variable_type),
+                        };
                     }
+                    token => panic!("Cannot add a {:?}", token),
                 }
             }
         }
@@ -159,6 +135,6 @@ pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
         }
     }
 
-    StdFuncResult::new(Token::Number(sum))
+    StdFuncResult::new(Token::Number(total))
 }
 ```

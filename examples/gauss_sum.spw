@@ -1,4 +1,0 @@
-main <- proc [] do
-    big <- {1000000000 |> gauss_sum}
-    big |> puts 
-end

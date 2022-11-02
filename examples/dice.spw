@@ -1,6 +1,6 @@
 dice <- proc [] do
-    [1; 6] |> randint |> puts
-    [nl] |> puts
+    [1; 7] |> randint |> puts
+    nl |> puts
 end
 
 main <- proc [] do

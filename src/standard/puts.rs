@@ -31,10 +31,8 @@ pub fn std_puts(env: &Sipwi, token: Token) -> StdFuncResult {
         }
         // Print a list of elements
         Token::List(list) => {
-            for sub_list in list {
-                for element in sub_list {
-                    std_puts(env, element);
-                }
+            for element in list {
+                std_puts(env, element);
             }
         }
         token => {

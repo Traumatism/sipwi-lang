@@ -1,20 +1,20 @@
-# The Sipwi Programming Language
+## The Sipwi Programming Language
 
-## Compile
+### Compile
 
 `cargo build --release && mv target/release/sipwi .`
 
-## Execute sipwi file
+### Execute sipwi file
 
 `./sipwi <path.spw>`
 
-## Variable definition
+### Variable definition
 
 `name <- "string"` (string)
 `name <- true` (bool)
 `name <- -123` (isize)
 
-## Procedure calling
+### Procedure calling
 
 `name_b(name_a(arg1, arg2))` (Python)
 
@@ -36,7 +36,7 @@
 `x |> name`
 
 
-## Hello, world!
+### Hello, world!
 
 ```
 main <- proc [] do
@@ -44,7 +44,7 @@ main <- proc [] do
 end
 ```
 
-## 1+1
+### 1+1
 
 ```
 main <- proc [] do
@@ -52,7 +52,7 @@ main <- proc [] do
 end
 ```
 
-## Calling other procedures
+### Calling other procedures
 
 ```
 f <- proc [arg_a; arg_b] do
@@ -64,7 +64,7 @@ main <- proc [] do
 end
 ```
 
-## Sum of all numbers from 25 to 50 (inclusive and exclusive)
+### Sum of all numbers from 25 to 50 (inclusive and exclusive)
 
 ```
 main <- proc [] do
@@ -81,7 +81,7 @@ end
 
 ```
 
-## Using expressions
+### Using expressions
 
 ```
 main <- proc [] do
@@ -116,14 +116,14 @@ pub fn std_name(env: &Sipwi, token: Token) -> StdFuncResult {
 }
 ```
 
-## Register standard function
+### Register standard function
 
 ```rust
 // in src/common/sipwi.rs:Sipwi::run()
 self.register_std_func("jame", standard::std_name);
 ```
 
-## Implementing sum() standard function
+### Implementing sum() standard function
 
 ```rust
 use crate::lexing::token::Token;

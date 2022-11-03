@@ -1,0 +1,7 @@
+import <- proc [] do
+    @"lib.spw"
+end
+
+main <- proc [] do
+    ["Hello"] |> putsln
+end

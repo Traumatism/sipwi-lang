@@ -172,6 +172,13 @@ impl Lexer {
                 '[' => self.parse_list(),
                 '"' => self.parse_string(),
                 COMMENT_MARK => self.parse_comment(),
+                '@' => {
+                    self.chars_peeker.next();
+                    match self.parse_string() {
+                        Token::String(path) => Token::Import(path),
+                        _ => panic!(),
+                    }
+                }
                 'a'..='z' | 'A'..='Z' => self.parse_identifier(char),
                 '0'..='9' => self.parse_number(char, false),
 

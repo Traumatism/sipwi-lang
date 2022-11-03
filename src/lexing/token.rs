@@ -9,4 +9,5 @@ pub enum Token {
     String(String),         // "hello world"
     Identifier(String),     // abc
     Comment(String),        // `hello world`
+    Import(String),         // @"socket.spw"
 }

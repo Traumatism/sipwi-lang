@@ -93,20 +93,48 @@ impl Sipwi {
         self.register_variable("nl", Type::Str(String::from("\n")));
         self.register_immutable("nl");
 
-        let tokens = Lexer::new(&self.code).lex_into_tokens();
+        let mut tokens = Lexer::new(&self.code).lex_into_tokens();
 
         if !verify::verify_do_end(&tokens) {
             panic!()
         }
 
-        Parser::new(tokens, self, false).parse_tokens();
+        Parser::new(tokens.clone(), self, false, None).parse_tokens();
+
+        let import_fn = self.procedures.get("import");
+
+        match import_fn {
+            Some(proc) => {
+                for token in &proc.tokens {
+                    match token {
+                        Token::Import(path) => {
+                            let mut imported_tokens =
+                                Lexer::new(&std::fs::read_to_string(path).unwrap())
+                                    .lex_into_tokens();
+
+                            tokens.append(&mut imported_tokens)
+                        }
+                        _ => panic!(),
+                    }
+                }
+            }
+            _ => {}
+        };
+
+        Parser::new(tokens.clone(), self, false, None).parse_tokens();
 
         let main_fn = self
             .procedures
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
-        Parser::new(main_fn.tokens.to_owned(), self, false).parse_tokens();
+        Parser::new(
+            main_fn.tokens.to_owned(),
+            self,
+            false,
+            Some(String::from("main")),
+        )
+        .parse_tokens();
 
         Ok(())
     }

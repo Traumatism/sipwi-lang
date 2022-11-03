@@ -1,6 +1,7 @@
 use crate::common::peeker::Peeker;
 use crate::common::sipwi::Sipwi;
 use crate::lexing::consts::MAIN_FUNCTION;
+use crate::lexing::lexer::Lexer;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{Callable, Procedure, Type};
 
@@ -9,14 +10,21 @@ pub struct Parser<'a> {
     tokens_peeker: Peeker<Token>,
     env: &'a mut Sipwi,
     expression: bool,
+    function: Option<String>,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(tokens: Vec<Token>, env: &'a mut Sipwi, expression: bool) -> Self {
+    pub fn new(
+        tokens: Vec<Token>,
+        env: &'a mut Sipwi,
+        expression: bool,
+        function: Option<String>,
+    ) -> Self {
         Self {
             expression,
             tokens_peeker: Peeker::new(tokens),
             env,
+            function,
         }
     }
 
@@ -25,17 +33,28 @@ impl<'a> Parser<'a> {
 
         while let Some(token) = self.tokens_peeker.next() {
             match token {
+                Token::Import(_) => match &self.function {
+                    Some(name) => {
+                        if name != &String::from("import") {
+                            panic!()
+                        }
+                    }
+                    _ => panic!(),
+                },
                 Token::Expression(tokens) => {
-                    return Parser::new(tokens, self.env, true).parse_tokens()
+                    return Parser::new(tokens, self.env, true, self.function.clone())
+                        .parse_tokens()
                 }
 
                 Token::Chain => {
                     let mut functions = Vec::new();
 
                     let first_input = match self.tokens_peeker.previous().unwrap() {
-                        Token::Expression(expression) => Parser::new(expression, self.env, true)
-                            .parse_tokens()
-                            .unwrap(),
+                        Token::Expression(expression) => {
+                            Parser::new(expression, self.env, true, self.function.clone())
+                                .parse_tokens()
+                                .unwrap()
+                        }
                         other => other,
                     };
 
@@ -90,7 +109,8 @@ impl<'a> Parser<'a> {
 
                                     base.append(&mut func.tokens.to_owned());
 
-                                    Parser::new(base, self.env, false).parse_tokens();
+                                    Parser::new(base, self.env, false, self.function.clone())
+                                        .parse_tokens();
                                 } else {
                                     panic!()
                                 }
@@ -112,7 +132,8 @@ impl<'a> Parser<'a> {
                                 // name <- { ... }
                                 Some(Token::Expression(tokens)) => {
                                     let expression_output =
-                                        Parser::new(tokens, self.env, true).parse_tokens();
+                                        Parser::new(tokens, self.env, true, self.function.clone())
+                                            .parse_tokens();
 
                                     match expression_output.unwrap() {
                                         Token::String(value) => {

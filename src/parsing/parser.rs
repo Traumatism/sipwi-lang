@@ -1,7 +1,6 @@
 use crate::common::peeker::Peeker;
 use crate::common::sipwi::Sipwi;
 use crate::lexing::consts::MAIN_FUNCTION;
-use crate::lexing::lexer::Lexer;
 use crate::lexing::token::Token;
 use crate::parsing::structs::{Callable, Procedure, Type};
 

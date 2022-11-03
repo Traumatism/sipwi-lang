@@ -7,6 +7,7 @@ pub enum Type {
     Str(String),
     Number(isize),
     Bool(bool),
+    // List(Vec<Type>),
 }
 
 // Every Callable type

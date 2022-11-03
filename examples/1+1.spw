@@ -1,4 +1,4 @@
 main <- proc [] do
-    [1; 1] |> sum |> puts
-    nl |> puts
+    result <- ([1; 1] |> sum)
+    [result; nl] |> puts
 end

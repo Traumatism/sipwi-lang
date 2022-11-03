@@ -1,22 +1,24 @@
+" Solve the problem using Gauss formula "
 brain <- proc [n] do
     n |> gauss_sum |> puts
+    nl |> puts
 end
 
+" Solve the problem using iterations "
 computer <- proc [n] do
     x <- ([1; n] |> sum)
     [1; x] |> range |> sum |> puts
+    nl |> puts
 end
 
 main <- proc [] do
     y <- ([100; 200] |> randint)
 
-    "Using next value: " |> puts
-    y |> puts
-    nl |> puts
+    ["Using next value: "; y; nl] |> puts
 
+    "Output for brain: " |> puts
     [y] |> brain
-    nl |> puts
 
+    "Output for computer: " |> puts
     [y] |> computer
-    nl |> puts
 end

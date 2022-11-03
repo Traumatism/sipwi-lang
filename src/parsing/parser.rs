@@ -28,6 +28,7 @@ impl<'a> Parser<'a> {
                 Token::Expression(tokens) => {
                     return Parser::new(tokens, self.env, true).parse_tokens()
                 }
+
                 Token::Chain => {
                     let mut functions = Vec::new();
 

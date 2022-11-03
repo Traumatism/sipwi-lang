@@ -1,4 +1,3 @@
 main <- proc [] do
-    "hello world" |> puts
-    nl |> puts
+    ["hello world"; nl] |> puts
 end

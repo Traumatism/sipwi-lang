@@ -7,7 +7,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let usage = "Usage: ./sipwi <lex/exec> <file>";
 
     let args = std::env::args().collect::<Vec<String>>();
-
     let action = args.get(1).expect(usage).as_str();
 
     let content = std::fs::read_to_string(args.get(2).expect(usage)).expect("Failed to open file");

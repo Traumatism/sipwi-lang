@@ -6,7 +6,6 @@ use crate::parsing::{
     structs::{Callable, Procedure, StdFunc, StdFuncResult, Type},
     verify,
 };
-
 use crate::standard;
 
 use std::collections::HashMap;

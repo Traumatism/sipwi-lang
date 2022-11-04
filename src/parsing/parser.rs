@@ -175,7 +175,6 @@ impl<'a> Parser<'a> {
                                                     panic!()
                                                 }
                                             });
-                                            panic!()
                                         }
 
                                         // verify "do"

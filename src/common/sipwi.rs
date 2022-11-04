@@ -1,3 +1,4 @@
+use crate::lexing::consts::IMPORT_FUNCTION;
 use crate::lexing::{consts::MAIN_FUNCTION, lexer::Lexer, token::Token};
 
 use crate::parsing::{
@@ -93,7 +94,7 @@ impl Sipwi {
         self.register_variable("nl", Type::Str(String::from("\n")));
         self.register_immutable("nl");
 
-        let mut tokens = Lexer::new(&self.code).lex_into_tokens();
+        let tokens = Lexer::new(&self.code).lex_into_tokens();
 
         if !verify::verify_do_end(&tokens) {
             panic!()
@@ -101,27 +102,25 @@ impl Sipwi {
 
         Parser::new(tokens.clone(), self, false, None).parse_tokens();
 
-        let import_fn = self.procedures.get("import");
-
-        match import_fn {
+        match self.procedures.get(IMPORT_FUNCTION) {
             Some(proc) => {
-                for token in &proc.tokens {
-                    match token {
+                for import_proc_token in proc.tokens.clone() {
+                    match import_proc_token.clone() {
                         Token::Import(path) => {
-                            let mut imported_tokens =
-                                Lexer::new(&std::fs::read_to_string(path).unwrap())
-                                    .lex_into_tokens();
+                            let imported_tokens = Lexer::new(
+                                &std::fs::read_to_string(&path)
+                                    .expect(&format!("Failed to import: {}", path)),
+                            )
+                            .lex_into_tokens();
 
-                            tokens.append(&mut imported_tokens)
+                            Parser::new(imported_tokens, self, false, None).parse_tokens();
                         }
-                        _ => panic!(),
-                    }
+                        _ => panic!("`import` procedure must only contains imports (@\"path.spw\""),
+                    };
                 }
             }
             _ => {}
         };
-
-        Parser::new(tokens.clone(), self, false, None).parse_tokens();
 
         let main_fn = self
             .procedures

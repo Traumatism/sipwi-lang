@@ -35,11 +35,12 @@ impl<'a> Parser<'a> {
                 Token::Import(_) => match &self.function {
                     Some(name) => {
                         if name != &String::from("import") {
-                            panic!()
+                            panic!("`import` procedure must only contains imports (@\"path.spw\"")
                         }
                     }
-                    _ => panic!(),
+                    _ => panic!("imports must be inside of the `import` procedure"),
                 },
+
                 Token::Expression(tokens) => {
                     return Parser::new(tokens, self.env, true, self.function.clone())
                         .parse_tokens()

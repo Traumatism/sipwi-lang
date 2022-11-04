@@ -74,8 +74,9 @@ impl<'a> Parser<'a> {
 
                     last_output = std::vec::from_elem(first_input, 1);
 
-                    for (idx, func_name) in functions.iter().enumerate() {
+                    functions.iter().enumerate().for_each(|(idx, func_name)| {
                         match self.env.get_callable(&func_name) {
+                            // Calling a Rust function
                             Callable::Std(func) => {
                                 let new_output = (func.call)(
                                     self.env,
@@ -95,6 +96,7 @@ impl<'a> Parser<'a> {
 
                                 last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
+                            // Calling a Sipwi procedure
                             Callable::Procedure(func) => {
                                 if let Some(Token::List(args_list)) = last_output.get(0) {
                                     let mut base = Vec::new();
@@ -116,7 +118,7 @@ impl<'a> Parser<'a> {
                                 }
                             }
                         }
-                    }
+                    });
                 }
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {
@@ -165,15 +167,14 @@ impl<'a> Parser<'a> {
 
                                         // get function arguments names
                                         if let Some(Token::List(list)) = self.tokens_peeker.next() {
-                                            for element in &list {
+                                            list.iter().for_each(|element| {
                                                 // we want a single identifier <=> a single token
                                                 if let Token::Identifier(argument_name) = element {
                                                     fnc_args.push(argument_name.to_owned())
                                                 } else {
                                                     panic!()
                                                 }
-                                            }
-                                        } else {
+                                            });
                                             panic!()
                                         }
 

@@ -79,6 +79,11 @@ impl<'a> Parser<'a> {
             Some(Token::String(string)) => {
                 self.env.register_variable(&identifier, Type::Str(string))
             }
+            Some(Token::List(lst)) => {
+                let lst_type = self.token_to_type(Token::List(lst));
+
+                self.env.register_variable(&identifier, lst_type);
+            }
             Some(Token::Number(number)) => self
                 .env
                 .register_variable(&identifier, Type::Number(number)),

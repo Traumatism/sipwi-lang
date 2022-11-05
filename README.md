@@ -54,7 +54,7 @@ end
 
 ### Importing procedures
 
-Imports must be inside the `import` procedure.
+Imports must be inside the `import` procedure inside the main file.
 
 ```
 import <- proc [] do

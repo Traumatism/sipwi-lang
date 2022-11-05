@@ -1,6 +1,6 @@
 ## The Sipwi Programming Language
 
-Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs with a functionnal approach.
+Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs.
 
 ## Compile
 

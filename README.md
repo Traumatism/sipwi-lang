@@ -47,7 +47,7 @@ procedure_name <- proc [argument_1; argument_2; and_so_on] do
 end
 ```
 
-Note that comments are between `\``
+Note that comments are between \`
 
 ## Call a procedure
 
@@ -96,7 +96,7 @@ putsln <- proc [content] do
 end
 
 f <- proc [n] do
-    n <- ([1; n] |> sum) `range returns all digits from start to end excluded`
+    n <- ([1; n] |> sum)
     [1; n] |> range |> sum |> putsln
 end
 

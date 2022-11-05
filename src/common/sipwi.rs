@@ -47,7 +47,7 @@ impl Sipwi {
     /// Register a variable
     pub fn register_variable(&mut self, identifier: &str, variable: Type) {
         if self.immutables.contains(&identifier.to_string()) {
-            panic!()
+            panic!("Can't register immutable identifier: `{}`", identifier)
         }
 
         self.variables.insert(String::from(identifier), variable);
@@ -80,6 +80,7 @@ impl Sipwi {
         self.register_std_func("puts", standard::std_puts);
         self.register_std_func("sum", standard::std_sum);
         self.register_std_func("range", standard::std_range);
+        self.register_std_func("immune", standard::std_immune);
 
         self.register_variable("true", Type::Bool(true));
         self.register_immutable("true");

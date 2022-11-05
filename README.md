@@ -123,10 +123,16 @@ n <- hihi
 n <| putsln
 ```
 
+## Immutability
+
+Make a variable immutable for whatever reason:
+
+`"variable_name" |> immune`
+
 ## Write standard function
 
-Standard functions are located in src/standards.
-To register a standard function use `self.register_std_function` inside src/common/sipwi.rs:Sipwi::run()
+Standard functions are located in `src/standards/...`.
+To register a standard function use `self.register_std_function` inside `src/common/sipwi.rs:Sipwi::run()`
 
 
 ```rust

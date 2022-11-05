@@ -2,6 +2,16 @@ use crate::common::sipwi::Sipwi;
 use crate::parsing::structs::StdFuncResult;
 use crate::parsing::structs::Type;
 
+/// Make an identifier immutable
+pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
+    match input {
+        Type::Str(identifier) => env.register_immutable(&identifier),
+        _ => panic!("`immune` expected a string"),
+    }
+
+    StdFuncResult::empty()
+}
+
 /// Write to stdout
 pub fn std_puts(env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {

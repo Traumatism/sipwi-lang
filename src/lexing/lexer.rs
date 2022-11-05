@@ -79,6 +79,10 @@ impl Lexer {
         content.push(chr);
 
         while let Some(next_char) = self.chars_peeker.next() {
+            if next_char == '_' {
+                continue;
+            }
+
             if !NUMBERS.contains(&next_char) {
                 self.chars_peeker.previous();
                 break;

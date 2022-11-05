@@ -29,7 +29,7 @@ pub fn std_randint(env: &Sipwi, token: Token) -> StdFuncResult {
             }
         }
         _ => {
-            panic!("'sum' expect a list of integers/identifiers as arguments!")
+            panic!()
         }
     }
 

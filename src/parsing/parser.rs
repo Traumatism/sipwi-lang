@@ -126,6 +126,7 @@ impl<'a> Parser<'a> {
                         }
                     });
                 }
+
                 Token::Identifier(identifier) => {
                     match self.tokens_peeker.next() {
                         // name <- ...

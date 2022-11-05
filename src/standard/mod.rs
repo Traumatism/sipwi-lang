@@ -1,6 +1,3 @@
-use core::panic;
-use std::ops::Range;
-
 use crate::common::sipwi::Sipwi;
 use crate::parsing::structs::StdFuncResult;
 use crate::parsing::structs::Type;

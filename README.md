@@ -39,7 +39,7 @@ To define a variable, use the next syntax:
 
 To define a procedure, use the next syntax:
 
-```s
+```
 procedure_name <- proc [argument_1; argument_2; and_so_on] do
 
     `your code here`
@@ -52,12 +52,12 @@ Note that comments are between \`
 ## Call a procedure
 
 Simple call:
-```s
+```
 [arg_1; arg_2; and_so_on] |> procedure_name
 ```
 
 Stacked call:
-```s
+```
 [...] |> first_procedure |> ... |> last_procedure
 ```
 
@@ -90,7 +90,7 @@ end
 ## Sum of all numbers from 1 to n
 
 ### in lib.spw
-```s
+```
 putsln <- proc [content] do
     [content; nl] |> puts
 end
@@ -103,7 +103,7 @@ end
 ```
 
 ### in main.spw
-```s
+```
 @"lib.spw"
 
 n <- 100
@@ -118,7 +118,7 @@ Note that you can import procedures between differents files using `@"file_path"
 ### Errors
 
 Sipwi expection design is the simply the best! just try it yourself ><
-```s
+```
 n <- hihi
 n <| putsln
 ```

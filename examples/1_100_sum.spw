@@ -1,0 +1,3 @@
+main <- proc [] do
+    [1; 100] |> range |> sum |> puts
+end

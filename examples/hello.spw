@@ -1,0 +1,15 @@
+" Differents ways to print 'hello world' "
+
+hello1 <- proc [] do
+    "Hello, world" |> puts
+    nl |> puts
+end
+
+hello2 <- proc [] do
+    ["Hello, world"; nl] |> puts
+end
+
+main <- proc [] do
+    [] |> hello1
+    [] |> hello2
+end

@@ -1,0 +1,7 @@
+import <- proc [] do
+    @"iterative.spw"
+end
+
+main <- proc [] do
+    [100] |> iterative_solution
+end

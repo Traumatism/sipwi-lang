@@ -6,13 +6,15 @@
 
 ### Execute sipwi file
 
-`./sipwi <path.spw>`
+`./sipwi exec <path.spw>`
 
 ### Variable definition
 
 `name <- "string"` (string)
-`name <- true` (bool)
+
 `name <- -123` (isize)
+
+`name <- ["string"; -123; ["hello"; 1337]]` (list)
 
 ### Procedure calling
 

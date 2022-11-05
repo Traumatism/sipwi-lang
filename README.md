@@ -129,6 +129,10 @@ Make a variable immutable for whatever reason:
 
 `"variable_name" |> immune`
 
+## IDE/CE support
+
+To install the vscode extension: `$ make vscode`
+
 ## Write standard function
 
 Standard functions are located in `src/standards/...`.

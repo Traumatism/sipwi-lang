@@ -1,0 +1,25 @@
+{
+  "name": "sipwi-lang",
+  "displayName": "Sipwi-lang",
+  "description": "A cute programming language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "sipwi",
+      "aliases": ["Sipwi", "sipwi"],
+      "extensions": [".spw"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "sipwi",
+      "scopeName": "source.spw",
+      "path": "./syntaxes/sipwi.tmLanguage.json"
+    }]
+  }
+}

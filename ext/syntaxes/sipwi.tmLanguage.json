@@ -1,0 +1,69 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Sipwi",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#operators"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#identifiers"
+		}
+	],
+	"repository": {
+		"identifiers": {
+			"patterns": [
+				{
+					"name": "variable.other.sipwi",
+					"match": "\\b([a-zA-Z][a-zA-Z0-9_]{0,})\\b"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.less",
+					"match": "\\b(proc|do|end)\\b"
+				}
+			]
+		},
+		"numbers": {
+			"name": "constant.numeric",
+			"match": "\\b-?[0-9_]+\\b"
+		},
+		"comments": {
+			"name": "comment.block",
+			"begin": "`",
+			"end": "`"
+		},
+		"strings": {
+			"name": "string.quoted.double.sipwi",
+			"begin": "\"",
+			"end": "\""
+		},
+		"operators": {
+			"patterns": [
+				{
+					"match": "<\\-",
+					"name": "punctuation"
+				},
+				{
+					"match": "\\|>",
+					"name": "punctuation"
+				}
+			]
+		}
+	},
+	"scopeName": "source.spw"
+}

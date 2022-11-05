@@ -34,7 +34,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'b> fn(&'b Sipwi, Token) -> StdFuncResult,
+        func: for<'a> fn(&'a Sipwi, Token) -> StdFuncResult,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));
@@ -101,6 +101,7 @@ impl Sipwi {
 
         Parser::new(tokens.clone(), self, false, None).parse_tokens();
 
+        // Run the import procedure
         match self.procedures.get(IMPORT_FUNCTION) {
             Some(proc) => {
                 for import_proc_token in proc.tokens.clone() {
@@ -126,6 +127,8 @@ impl Sipwi {
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
+
+        // Run the main procedure
         Parser::new(
             main_fn.tokens.to_owned(),
             self,

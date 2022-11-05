@@ -2,12 +2,13 @@ use crate::common::sipwi::Sipwi;
 use crate::lexing::token::Token;
 
 // Every variable type
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Type {
     Str(String),
     Number(isize),
     Bool(bool),
-    // List(Vec<Type>),
+    List(Vec<Type>), // Not implemented yet
 }
 
 // Every Callable type

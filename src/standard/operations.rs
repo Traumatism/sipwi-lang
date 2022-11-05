@@ -7,9 +7,7 @@ pub fn std_gauss_sum(env: &Sipwi, token: Token) -> StdFuncResult {
         Token::Number(number) => (number * (number + 1)) / 2,
         // Print a variable
         Token::Identifier(identifier) => {
-            let value = env.get_variable(&identifier);
-
-            if let Type::Number(number) = value {
+            if let Type::Number(number) = env.get_variable(&identifier) {
                 (number * (number + 1)) / 2
             } else {
                 panic!()

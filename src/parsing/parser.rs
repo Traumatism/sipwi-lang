@@ -105,7 +105,13 @@ impl<'a> Parser<'a> {
                                         base.append(&mut vec![
                                             Token::Identifier(arg.to_owned()),
                                             Token::Assignement,
-                                            args_list.get(idx).unwrap().to_owned(),
+                                            args_list
+                                                .get(idx)
+                                                .expect(&format!(
+                                                    "`{}` expected more arguments!",
+                                                    func_name
+                                                ))
+                                                .to_owned(),
                                         ]);
                                     });
 

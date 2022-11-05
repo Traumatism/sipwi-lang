@@ -1,4 +1,0 @@
-main <- proc [] do
-    x <- ([1; 1] |> sum)
-    [x; nl] |> puts
-end

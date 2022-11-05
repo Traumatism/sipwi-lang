@@ -7,12 +7,6 @@ pub const KEYWORDS: [&str; 3] = [
     "end",  // define a block ending point
 ];
 
-// This function name will be used as the main function
-pub const MAIN_FUNCTION: &str = "main";
-
-// This function name will be used as the import function
-pub const IMPORT_FUNCTION: &str = "import";
-
 // COMMENT_MARK comment_content COMMENT_MARK
 pub const COMMENT_MARK: char = '`';
 

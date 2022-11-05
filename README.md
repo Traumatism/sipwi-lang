@@ -1,139 +1,146 @@
 ## The Sipwi Programming Language
 
-### Compile
+Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs with a functionnal approach.
 
-`cargo build --release && mv target/release/sipwi .`
+## Compile
 
-### Execute sipwi file
+`$ git clone https://github.com/traumatism/sipwi-lang`
 
-`./sipwi exec <path.spw>`
+`$ make install`
 
-### Variable definition
+`$ make build`
 
-`name <- "string"` (string)
+## Execute your scripts
 
-`name <- -123` (isize)
+`$ sipwi exec <path.spw>`
 
-`name <- ["string"; -123; ["hello"; 1337]]` (list)
-
-### Procedure calling
-
-`name_b(name_a(arg1, arg2))` (Python)
-
-<=>
-
-`[arg1; arg2] |> name_a |> name_b` (Sipwi)
-
-
-(Python)
-`name("hello")`
-`name(123)`
-`name(x)`
-
-<=>
-
-(Sipwi)
-`"hello" |> name`
-`123 |> name`
-`x |> name`
-
-
-### Hello, world!
+## Hello, world!
 
 ```
-main <- proc [] do
-    "hello, world!" |> puts
+["Hello world"; nl] |> puts
+```
+
+## Types
+
+Sipwi uses a bunch of differents types:
+
+* String (`"foo bar"`)
+* Int (`-123`, `123`)
+* List (`[123; -123; "foo"; [hihi; "bar"]]`)
+* Bool (`false`, `true`) boolean operations aren't implemented yet!
+
+## Define a variable
+
+To define a variable, use the next syntax:
+
+`variable_name <- data` where data must be one of the types
+
+## Define a procedure
+
+To define a procedure, use the next syntax:
+
+```
+procedure_name <- proc [argument_1; argument_2; and_so_on] do
+
+    `your code here`
+
 end
 ```
 
-### 1+1
+Note that comments are between `\``
+
+## Call a procedure
+
+Simple call:
+```
+[arg_1; arg_2; and_so_on] |> procedure_name
+```
+
+Stacked call:
+```
+[...] |> first_procedure |> ... |> last_procedure
+```
+
+## Expressions
+
+An expression is a code snippet that MUST return a value.
+To define an expression, use the next syntax:
+
+`variable_name <- ([-1; 2; 3] |> sum)`
+
+Will execute as:
+
+`variable_name <- 4`
+
+## 1 + 1
 
 ```
-main <- proc [] do
-    [1; 1] |> sum |> puts
+[1; 1] |> sum |> puts
+nl |> puts
+```
+
+## Implement putsln
+
+```
+putsln <- proc [content] do
+    [content; nl] |> puts
 end
 ```
 
-### Importing procedures
+## Sum of all numbers from 1 to n
 
-Imports must be inside the `import` procedure inside the main file.
-
+### in lib.spw
 ```
-import <- proc [] do
-    @"lib.spw"
-    @"logging.spw"
-end
-```
-
-### Calling other procedures
-
-```
-f <- proc [arg_a; arg_b] do
-    [arg_a; arg_b] |> sum |> puts
+putsln <- proc [content] do
+    [content; nl] |> puts
 end
 
-main <- proc [] do
-    [5; 5] |> f
+f <- proc [n] do
+    n <- ([1; n] |> sum) `range returns all digits from start to end excluded`
+    [1; n] |> range |> sum |> putsln
 end
-```
-
-### Using expressions
 
 ```
-main <- proc [] do
-    a <- 1
-    b <- 100
 
-    `store the sum of all numbers from 1 to 100 in 'x'`
-    x <- ([a; b] |> range |> sum)
+### in main.spw
+```
+@"lib.spw"
 
-    [x; nl] |> puts
-end
+n <- 100
+
+["Using next n value: "; n; nl] |> puts
+
+n |> f
 ```
 
-## Writing standard function
+Note that you can import procedures between differents files using `@"file_path"`
+
+### Errors
+
+Sipwi expection design is the simply the best! just try it yourself ><
+```
+n <- hihi
+n <| putsln
+```
+
+## Write standard function
+
+Standard functions are located in src/standards.
+To register a standard function use `self.register_std_function` inside src/common/sipwi.rs:Sipwi::run()
+
 
 ```rust
-// in src/standard/mod.rs
-
-// - 'env' can be used to read variables ect.
-// - 'token' should be a Token::List
-pub fn std_name(env: &Sipwi, input: Type) -> StdFuncResult {
- 
-    // your code here ...
-
-    StdFuncResult::new(...)
-}
-```
-
-### Register standard function
-
-```rust
-// in src/common/sipwi.rs:Sipwi::run()
-self.register_std_func("name", standard::std_name);
-```
-
-### Implementing sum() standard function
-
-```rust
-pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
-    let mut sum = 0 as isize;
-
+/// Implements puts standard function
+pub fn std_puts(env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
-        Type::List(elements) => elements.iter().for_each(|tpe| match tpe {
-            Type::Number(number) => sum += number,
-            _ => panic!(
-                "`sum` arguments must be a list of numbers, not `{:?}`.",
-                tpe
-            ),
+        Type::Str(string) => print!("{}", string),
+        Type::Number(number) => print!("{}", number),
+        Type::List(elements) => elements.iter().for_each(|tpe| {
+            std_puts(env, tpe.to_owned());
         }),
-        _ => panic!(
-            "`sum` arguments must be a list of numbers, not `{:?}`.",
-            input
-        ),
+        _ => panic!("`{:?}` is not printable.", input),
     }
 
-    StdFuncResult::new(Type::Number(sum))
+    StdFuncResult::empty()
 }
-
 ```

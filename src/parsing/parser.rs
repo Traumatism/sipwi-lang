@@ -101,7 +101,7 @@ impl<'a> Parser<'a> {
 
     fn parse_expression(&mut self, expression: Token) -> Option<Type> {
         match expression {
-            Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens(None),
+            Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens(),
             _ => panic!(),
         }
     }
@@ -135,20 +135,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    pub fn parse_tokens(&mut self, from: Option<String>) -> Option<Type> {
+    pub fn parse_tokens(&mut self) -> Option<Type> {
         let mut last_output = None;
 
         while let Some(token) = self.tokens.next() {
             match token {
-                Token::Import(_) => match &from {
-                    Some(name) => {
-                        if name != &String::from("import") {
-                            panic!("`import` procedure must only contains imports (@\"path.spw\"")
-                        }
-                    }
-                    _ => panic!("imports must be inside of the `import` procedure"),
-                },
-
                 Token::Expression(_) => last_output = self.parse_expression(token),
 
                 Token::Assignement => {
@@ -188,27 +179,26 @@ impl<'a> Parser<'a> {
                             Callable::Procedure(procedure) => {
                                 let mut proc_tokens = Vec::new();
 
-                                match &last_output {
-                                    Some(Type::List(content)) => {
-                                        procedure.args.iter().enumerate().for_each(|(idx, arg)| {
-                                            proc_tokens.append(&mut vec![
-                                                Token::Identifier(arg.to_owned()),
-                                                Token::Assignement,
-                                                self.type_to_token(
-                                                    content.get(idx).unwrap().to_owned(),
-                                                ),
-                                            ])
-                                        })
+                                let args = match &last_output {
+                                    Some(Type::List(content)) => content.to_owned(),
+                                    Some(tpe) => {
+                                        vec![tpe.to_owned()]
                                     }
-                                    _ => panic!(),
-                                }
+                                    token => panic!("{:?}", token),
+                                };
+
+                                procedure.args.iter().enumerate().for_each(|(idx, arg)| {
+                                    proc_tokens.append(&mut vec![
+                                        Token::Identifier(arg.to_owned()),
+                                        Token::Assignement,
+                                        self.type_to_token(args.get(idx).unwrap().to_owned()),
+                                    ])
+                                });
 
                                 proc_tokens.append(&mut procedure.tokens.clone());
 
                                 last_output = Some(
-                                    Parser::new(proc_tokens, self.env)
-                                        .parse_tokens(None)
-                                        .unwrap(),
+                                    Parser::new(proc_tokens, self.env).parse_tokens().unwrap(),
                                 );
                             }
                             Callable::Std(function) => {

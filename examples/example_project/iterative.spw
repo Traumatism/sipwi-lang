@@ -1,5 +1,0 @@
-iterative_solution <- proc [n] do
-    m <- ([1; n] |> sum)
-    [1; m] |> range |> sum |> puts
-    nl |> puts
-end

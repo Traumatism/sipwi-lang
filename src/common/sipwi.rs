@@ -1,5 +1,4 @@
-use crate::lexing::consts::IMPORT_FUNCTION;
-use crate::lexing::{consts::MAIN_FUNCTION, lexer::Lexer, token::Token};
+use crate::lexing::{lexer::Lexer, token::Token};
 
 use crate::parsing::{
     parser::Parser,
@@ -77,29 +76,6 @@ impl Sipwi {
         self.immutables.push(String::from(identifier))
     }
 
-    fn resolve_imports(&mut self) {
-        match self.procedures.get(IMPORT_FUNCTION) {
-            Some(proc) => {
-                for import_proc_token in proc.tokens.clone() {
-                    match import_proc_token.clone() {
-                        Token::Import(path) => {
-                            let imported_tokens = Lexer::new(
-                                &std::fs::read_to_string(&path)
-                                    .expect(&format!("Failed to import: {}", path)),
-                            )
-                            .lex_into_tokens();
-
-                            Parser::new(imported_tokens, self)
-                                .parse_tokens(Some(String::from(IMPORT_FUNCTION)));
-                        }
-                        _ => panic!("`import` procedure must only contains imports (@\"path.spw\""),
-                    };
-                }
-            }
-            _ => {}
-        };
-    }
-
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.register_std_func("puts", standard::std_puts);
         self.register_std_func("sum", standard::std_sum);
@@ -114,24 +90,31 @@ impl Sipwi {
         self.register_variable("nl", Type::Str(String::from("\n")));
         self.register_immutable("nl");
 
-        let tokens = Lexer::new(&self.code).lex_into_tokens();
+        let mut final_tokens = Vec::new();
+        let mut tokens = Lexer::new(&self.code).lex_into_tokens();
 
         if !verify::verify_do_end(&tokens) {
             panic!()
         }
 
-        Parser::new(tokens.clone(), self).parse_tokens(None);
+        for token in &tokens {
+            match token {
+                Token::Import(path) => {
+                    final_tokens.append(
+                        &mut Lexer::new(
+                            &std::fs::read_to_string(&path)
+                                .expect(&format!("Failed to import: {}", path)),
+                        )
+                        .lex_into_tokens(),
+                    );
+                }
+                _ => {}
+            }
+        }
 
-        self.resolve_imports();
+        final_tokens.append(&mut tokens);
 
-        let main_fn = self
-            .procedures
-            .get(MAIN_FUNCTION)
-            .expect(&format!("{} function not found", MAIN_FUNCTION));
-
-        // Run the main procedure
-        Parser::new(main_fn.tokens.to_owned(), self)
-            .parse_tokens(Some(String::from(MAIN_FUNCTION)));
+        Parser::new(final_tokens, self).parse_tokens();
 
         Ok(())
     }

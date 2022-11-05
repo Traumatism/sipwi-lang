@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-fastrand = "1.8.0"
 
 [profile.release]
 strip = true

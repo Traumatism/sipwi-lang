@@ -1,0 +1,11 @@
+" Simulate a dice "
+dice <- proc [] do
+    output <- ([1; 7] |> randint)
+    [output] |> puts
+end
+
+" Simulate a coinflip "
+coinflip <- proc [] do
+    output <- ([0; 1] |> randint)
+    [output] |> puts
+end

@@ -1,3 +1,0 @@
-putsln <- proc [content] do
-    [content; nl] |> puts
-end

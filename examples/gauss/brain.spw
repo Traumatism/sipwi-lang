@@ -1,0 +1,5 @@
+" Solve the problem using Gauss formula "
+brain <- proc [n] do
+    n |> gauss_sum |> puts
+    nl |> puts
+end

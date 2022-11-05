@@ -1,0 +1,16 @@
+import <- proc [] do
+    @"brain.spw"
+    @"computer.spw"
+end
+
+main <- proc [] do
+    y <- ([100_000; 200_000] |> randint)
+
+    ["Using next value: "; y; nl] |> puts
+
+    "Output for brain: " |> puts
+    [y] |> brain
+
+    "Output for computer: " |> puts
+    [y] |> computer
+end

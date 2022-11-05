@@ -52,6 +52,17 @@ main <- proc [] do
 end
 ```
 
+### Importing procedures
+
+Imports must be inside the `import` procedure.
+
+```
+import <- proc [] do
+    @"lib.spw"
+    @"logging.spw"
+end
+```
+
 ### Calling other procedures
 
 ```

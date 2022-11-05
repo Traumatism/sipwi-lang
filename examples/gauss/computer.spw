@@ -1,0 +1,6 @@
+" Solve the problem using iterations "
+computer <- proc [n] do
+    x <- ([1; n] |> sum)
+    [1; x] |> range |> sum |> puts
+    nl |> puts
+end

@@ -34,7 +34,7 @@ impl Sipwi {
     pub fn register_std_func(
         &mut self,
         identifier: &str,
-        func: for<'a> fn(&'a Sipwi, Token) -> StdFuncResult,
+        func: fn(&mut Sipwi, Type) -> StdFuncResult,
     ) {
         self.std_functions
             .insert(String::from(identifier), StdFunc::new(func));
@@ -77,12 +77,33 @@ impl Sipwi {
         self.immutables.push(String::from(identifier))
     }
 
+    fn resolve_imports(&mut self) {
+        match self.procedures.get(IMPORT_FUNCTION) {
+            Some(proc) => {
+                for import_proc_token in proc.tokens.clone() {
+                    match import_proc_token.clone() {
+                        Token::Import(path) => {
+                            let imported_tokens = Lexer::new(
+                                &std::fs::read_to_string(&path)
+                                    .expect(&format!("Failed to import: {}", path)),
+                            )
+                            .lex_into_tokens();
+
+                            Parser::new(imported_tokens, self)
+                                .parse_tokens(Some(String::from(IMPORT_FUNCTION)));
+                        }
+                        _ => panic!("`import` procedure must only contains imports (@\"path.spw\""),
+                    };
+                }
+            }
+            _ => {}
+        };
+    }
+
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        self.register_std_func("puts", standard::puts::std_puts);
-        self.register_std_func("randint", standard::random::std_randint);
-        self.register_std_func("sum", standard::operations::std_sum);
-        self.register_std_func("gauss_sum", standard::operations::std_gauss_sum);
-        self.register_std_func("range", standard::range::std_range);
+        self.register_std_func("puts", standard::std_puts);
+        self.register_std_func("sum", standard::std_sum);
+        self.register_std_func("range", standard::std_range);
 
         self.register_variable("true", Type::Bool(true));
         self.register_immutable("true");
@@ -99,43 +120,18 @@ impl Sipwi {
             panic!()
         }
 
-        Parser::new(tokens.clone(), self, false, None).parse_tokens();
+        Parser::new(tokens.clone(), self).parse_tokens(None);
 
-        // Run the import procedure
-        match self.procedures.get(IMPORT_FUNCTION) {
-            Some(proc) => {
-                for import_proc_token in proc.tokens.clone() {
-                    match import_proc_token.clone() {
-                        Token::Import(path) => {
-                            let imported_tokens = Lexer::new(
-                                &std::fs::read_to_string(&path)
-                                    .expect(&format!("Failed to import: {}", path)),
-                            )
-                            .lex_into_tokens();
-
-                            Parser::new(imported_tokens, self, false, None).parse_tokens();
-                        }
-                        _ => panic!("`import` procedure must only contains imports (@\"path.spw\""),
-                    };
-                }
-            }
-            _ => {}
-        };
+        self.resolve_imports();
 
         let main_fn = self
             .procedures
             .get(MAIN_FUNCTION)
             .expect(&format!("{} function not found", MAIN_FUNCTION));
 
-
         // Run the main procedure
-        Parser::new(
-            main_fn.tokens.to_owned(),
-            self,
-            false,
-            Some(String::from("main")),
-        )
-        .parse_tokens();
+        Parser::new(main_fn.tokens.to_owned(), self)
+            .parse_tokens(Some(String::from(MAIN_FUNCTION)));
 
         Ok(())
     }

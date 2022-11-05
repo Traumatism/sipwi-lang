@@ -1,7 +1,0 @@
-uwu <- proc [] do
-    [] |> uwu
-end
-
-main <- proc [] do
-    [] |> uwu
-end

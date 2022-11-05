@@ -1,38 +1,141 @@
-use crate::common::peeker::Peeker;
-use crate::common::sipwi::Sipwi;
-use crate::lexing::consts::MAIN_FUNCTION;
-use crate::lexing::token::Token;
-use crate::parsing::structs::{Callable, Procedure, Type};
+use crate::{
+    common::{peeker::Peeker, sipwi::Sipwi},
+    lexing::token::Token,
+};
 
-/// Parse tokens <=> run the program
+use super::structs::{Callable, Procedure, Type};
+
 pub struct Parser<'a> {
-    tokens_peeker: Peeker<Token>,
+    tokens: Peeker<Token>,
     env: &'a mut Sipwi,
-    expression: bool,
-    function: Option<String>,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(
-        tokens: Vec<Token>,
-        env: &'a mut Sipwi,
-        expression: bool,
-        function: Option<String>,
-    ) -> Self {
+    pub fn new(tokens: Vec<Token>, env: &'a mut Sipwi) -> Self {
         Self {
-            expression,
-            tokens_peeker: Peeker::new(tokens),
+            tokens: Peeker::new(tokens),
             env,
-            function,
         }
     }
 
-    pub fn parse_tokens(&mut self) -> Option<Token> {
-        let mut last_output = Vec::new();
+    fn parse_proc(&mut self, identifier: String) {
+        let mut proc_arguments = Vec::new();
+        let mut proc_tokens = Vec::new();
 
-        while let Some(token) = self.tokens_peeker.next() {
+        match self.tokens.next() {
+            Some(Token::List(arguments)) => arguments,
+            _ => panic!(),
+        }
+        .iter()
+        .for_each(|token| match token {
+            Token::Identifier(argument) => proc_arguments.push(argument.to_owned()),
+            _ => panic!(),
+        });
+
+        match self.tokens.next() {
+            Some(Token::Keyword(keyword)) => {
+                if keyword != String::from("do") {
+                    panic!()
+                }
+            }
+            _ => panic!(),
+        }
+
+        let mut n = 0;
+
+        loop {
+            match self.tokens.next() {
+                Some(token) => match &token {
+                    Token::Keyword(keyword) => {
+                        if keyword == &String::from("end") && n == 0 {
+                            break;
+                        }
+
+                        if keyword == &String::from("do") {
+                            n += 1;
+                            continue;
+                        }
+
+                        if keyword == &String::from("end") {
+                            n -= 1;
+                            continue;
+                        }
+
+                        proc_tokens.push(token)
+                    }
+                    _ => proc_tokens.push(token),
+                },
+                _ => panic!(),
+            }
+        }
+
+        let procedure = Procedure::new(proc_arguments, proc_tokens);
+
+        self.env.register_procedure(&identifier, procedure)
+    }
+
+    fn parse_assignement(&mut self, identifier: String) {
+        match self.tokens.next() {
+            Some(Token::String(string)) => {
+                self.env.register_variable(&identifier, Type::Str(string))
+            }
+            Some(Token::Number(number)) => self
+                .env
+                .register_variable(&identifier, Type::Number(number)),
+            Some(Token::Keyword(keyword)) => match keyword.as_str() {
+                "proc" => self.parse_proc(identifier),
+                _ => panic!(),
+            },
+            Some(Token::Expression(expression)) => {
+                let output = self.parse_expression(Token::Expression(expression));
+                self.env.register_variable(&identifier, output.unwrap());
+            }
+            _ => panic!(),
+        }
+    }
+
+    fn parse_expression(&mut self, expression: Token) -> Option<Type> {
+        match expression {
+            Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens(None),
+            _ => panic!(),
+        }
+    }
+
+    fn token_to_type(&mut self, token: Token) -> Type {
+        match token {
+            Token::String(string) => Type::Str(string),
+            Token::Number(number) => Type::Number(number),
+            Token::Identifier(identifier) => self.env.get_variable(&identifier).to_owned(),
+            Token::Expression(tokens) => self.parse_expression(Token::Expression(tokens)).unwrap(),
+            Token::List(tokens) => Type::List(
+                tokens
+                    .iter()
+                    .map(|token| self.token_to_type(token.to_owned()))
+                    .collect(),
+            ),
+            _ => panic!("Can't convert `{:?}`", token),
+        }
+    }
+
+    fn type_to_token(&self, tpe: Type) -> Token {
+        match tpe {
+            Type::Str(string) => Token::String(string),
+            Type::Number(number) => Token::Number(number),
+            Type::List(tpes) => Token::List(
+                tpes.iter()
+                    .map(|tpe| self.type_to_token(tpe.to_owned()))
+                    .collect(),
+            ),
+            _ => panic!(),
+        }
+    }
+
+    pub fn parse_tokens(&mut self, from: Option<String>) -> Option<Type> {
+        let mut last_output = None;
+
+        while let Some(token) = self.tokens.next() {
             match token {
-                Token::Import(_) => match &self.function {
+                Token::Import(_) => match &from {
                     Some(name) => {
                         if name != &String::from("import") {
                             panic!("`import` procedure must only contains imports (@\"path.spw\"")
@@ -41,231 +144,81 @@ impl<'a> Parser<'a> {
                     _ => panic!("imports must be inside of the `import` procedure"),
                 },
 
-                Token::Expression(tokens) => {
-                    return Parser::new(tokens, self.env, true, self.function.clone())
-                        .parse_tokens()
+                Token::Expression(_) => last_output = self.parse_expression(token),
+
+                Token::Assignement => {
+                    let identifier = match self.tokens.previous().unwrap() {
+                        Token::Identifier(identifier) => identifier,
+                        _ => panic!(),
+                    };
+
+                    self.tokens.next();
+                    self.parse_assignement(String::from(identifier))
                 }
 
                 Token::Chain => {
-                    let mut functions = Vec::new();
+                    let previous_token = self.tokens.previous().unwrap();
+                    let first_input = self.token_to_type(previous_token);
+                    let mut chain = Vec::new();
 
-                    let first_input = match self.tokens_peeker.previous().unwrap() {
-                        Token::Expression(expression) => {
-                            Parser::new(expression, self.env, true, self.function.clone())
-                                .parse_tokens()
-                                .unwrap()
-                        }
-                        other => other,
-                    };
+                    last_output = Some(first_input);
 
-                    while let Some(next_token) = self.tokens_peeker.next() {
+                    while let Some(next_token) = self.tokens.next() {
                         if next_token == Token::Chain {
-                            if let Some(Token::Identifier(identifier)) = self.tokens_peeker.next() {
-                                functions.push(identifier)
+                            if let Some(Token::Identifier(identifier)) = self.tokens.next() {
+                                chain.push(identifier)
                             } else {
                                 panic!();
                             }
                             continue;
                         }
 
-                        self.tokens_peeker.previous();
+                        self.tokens.previous();
                         break;
                     }
 
-                    last_output = std::vec::from_elem(first_input, 1);
+                    chain
+                        .iter()
+                        .for_each(|identifier| match self.env.get_callable(identifier) {
+                            Callable::Procedure(procedure) => {
+                                let mut proc_tokens = Vec::new();
 
-                    functions.iter().enumerate().for_each(|(idx, func_name)| {
-                        match self.env.get_callable(&func_name) {
-                            // Calling a Rust function
-                            Callable::Std(func) => {
-                                let new_output = (func.call)(
-                                    self.env,
-                                    last_output.to_owned().get(0).unwrap().to_owned(),
+                                match &last_output {
+                                    Some(Type::List(content)) => {
+                                        procedure.args.iter().enumerate().for_each(|(idx, arg)| {
+                                            proc_tokens.append(&mut vec![
+                                                Token::Identifier(arg.to_owned()),
+                                                Token::Assignement,
+                                                self.type_to_token(
+                                                    content.get(idx).unwrap().to_owned(),
+                                                ),
+                                            ])
+                                        })
+                                    }
+                                    _ => panic!(),
+                                }
+
+                                proc_tokens.append(&mut procedure.tokens.clone());
+
+                                last_output = Some(
+                                    Parser::new(proc_tokens, self.env)
+                                        .parse_tokens(None)
+                                        .unwrap(),
                                 );
-
-                                let new_output_tokens = new_output.get_tokens();
-
-                                match new_output_tokens {
-                                    Token::List(list_content) => {
-                                        if list_content.len() <= 0 && idx != functions.len() - 1 {
-                                            panic!()
-                                        }
-                                    }
-                                    _ => {}
-                                }
-
-                                last_output = std::vec::from_elem(new_output_tokens.to_owned(), 1);
                             }
-                            // Calling a Sipwi procedure
-                            Callable::Procedure(func) => {
-                                if let Some(Token::List(args_list)) = last_output.get(0) {
-                                    let mut base = Vec::new();
-
-                                    func.args.iter().enumerate().for_each(|(idx, arg)| {
-                                        base.append(&mut vec![
-                                            Token::Identifier(arg.to_owned()),
-                                            Token::Assignement,
-                                            args_list
-                                                .get(idx)
-                                                .expect(&format!(
-                                                    "`{}` expected more arguments!",
-                                                    func_name
-                                                ))
-                                                .to_owned(),
-                                        ]);
-                                    });
-
-                                    base.append(&mut func.tokens.to_owned());
-
-                                    Parser::new(base, self.env, false, self.function.clone())
-                                        .parse_tokens();
-                                } else {
-                                    panic!()
-                                }
+                            Callable::Std(function) => {
+                                last_output = Some(
+                                    (function.call)(self.env, last_output.clone().unwrap())
+                                        .get_output()
+                                        .to_owned(),
+                                )
                             }
-                        }
-                    });
-                }
-
-                Token::Identifier(identifier) => {
-                    match self.tokens_peeker.next() {
-                        // name <- ...
-                        Some(Token::Assignement) => {
-                            match self.tokens_peeker.next() {
-                                Some(Token::Identifier(identifier_bis)) => {
-                                    let value =
-                                        self.env.get_variable(identifier_bis.as_str()).clone();
-
-                                    self.env.register_variable(identifier.as_str(), value);
-                                }
-                                // name <- { ... }
-                                Some(Token::Expression(tokens)) => {
-                                    let expression_output =
-                                        Parser::new(tokens, self.env, true, self.function.clone())
-                                            .parse_tokens();
-
-                                    match expression_output.unwrap() {
-                                        Token::String(value) => {
-                                            self.env
-                                                .register_variable(&identifier, Type::Str(value));
-                                        }
-                                        Token::Number(value) => {
-                                            self.env.register_variable(
-                                                &identifier,
-                                                Type::Number(value),
-                                            );
-                                        }
-                                        _ => panic!(),
-                                    }
-                                }
-                                // name <- "Hello, World!"
-                                Some(Token::String(value)) => {
-                                    self.env.register_variable(&identifier, Type::Str(value));
-                                }
-                                // name <- 123
-                                Some(Token::Number(value)) => {
-                                    self.env.register_variable(&identifier, Type::Number(value));
-                                }
-                                // name <- proc
-                                Some(Token::Keyword(keyword)) => match keyword.as_str() {
-                                    "proc" => {
-                                        let mut fnc_tokens: Vec<Token> = Vec::new();
-                                        let mut fnc_args = Vec::new();
-
-                                        // get function arguments names
-                                        if let Some(Token::List(list)) = self.tokens_peeker.next() {
-                                            list.iter().for_each(|element| {
-                                                // we want a single identifier <=> a single token
-                                                if let Token::Identifier(argument_name) = element {
-                                                    fnc_args.push(argument_name.to_owned())
-                                                } else {
-                                                    panic!()
-                                                }
-                                            });
-                                        }
-
-                                        // verify "do"
-                                        if let Some(Token::Keyword(keyword)) =
-                                            self.tokens_peeker.next()
-                                        {
-                                            if keyword != "do" {
-                                                panic!()
-                                            }
-                                        } else {
-                                            panic!()
-                                        }
-
-                                        // prevent stopping a function after the
-                                        // first 'end', even if a 'do' was used inside
-                                        // that function
-                                        let mut ignore_dos = 0;
-
-                                        loop {
-                                            // too much 'end'
-                                            if ignore_dos < 0 {
-                                                panic!()
-                                            }
-
-                                            match self.tokens_peeker.next() {
-                                                Some(Token::Keyword(keyword)) => {
-                                                    if keyword == String::from("do") {
-                                                        // 'do' joined the game
-                                                        ignore_dos += 1
-                                                    } else if keyword == String::from("end") {
-                                                        // the final 'end'
-                                                        if ignore_dos == 0 {
-                                                            break;
-                                                        }
-                                                        // the end of the nearest 'do'
-                                                        ignore_dos -= 1
-                                                    }
-
-                                                    // we want the keyword still
-                                                    fnc_tokens
-                                                        .push(Token::Keyword(keyword.to_owned()));
-                                                }
-
-                                                Some(token) => fnc_tokens.push(token),
-
-                                                // forgot 'end'
-                                                None => panic!(),
-                                            }
-                                        }
-
-                                        if identifier == String::from(MAIN_FUNCTION)
-                                            && fnc_args.len() > 0
-                                        {
-                                            panic!()
-                                        }
-
-                                        self.env.register_procedure(
-                                            &identifier,
-                                            Procedure::new(fnc_args, fnc_tokens),
-                                        );
-                                    }
-                                    _ => {
-                                        panic!(
-                                            "Error! did you mean: {} <- proc [...] do ... end",
-                                            identifier
-                                        )
-                                    }
-                                },
-                                _ => {}
-                            }
-                        }
-                        _ => {
-                            self.tokens_peeker.previous();
-                        }
-                    }
+                        })
                 }
                 _ => {}
             };
         }
 
-        if self.expression == true {
-            Some(last_output.get(0).unwrap().to_owned())
-        } else {
-            None
-        }
+        last_output
     }
 }

@@ -19,24 +19,24 @@ pub enum Callable<'a> {
 
 /// Describes a standard function output
 pub struct StdFuncResult {
-    token: Token,
+    output: Type,
 }
 
 impl StdFuncResult {
-    pub fn new(token: Token) -> Self {
-        Self { token }
+    pub fn new(output: Type) -> Self {
+        Self { output }
     }
 
     /// Empty result
     pub fn empty() -> Self {
         Self {
-            token: Token::List(Vec::new()),
+            output: Type::List(Vec::new()),
         }
     }
 
     /// Get tokens
-    pub fn get_tokens(&self) -> &Token {
-        &self.token
+    pub fn get_output(&self) -> &Type {
+        &self.output
     }
 }
 
@@ -54,11 +54,11 @@ impl Procedure {
 
 /// Describes a standard function written in Rust
 pub struct StdFunc {
-    pub call: fn(&Sipwi, Token) -> StdFuncResult,
+    pub call: fn(&mut Sipwi, Type) -> StdFuncResult,
 }
 
 impl StdFunc {
-    pub fn new(func: for<'a> fn(&'a Sipwi, Token) -> StdFuncResult) -> Self {
+    pub fn new(func: fn(&mut Sipwi, Type) -> StdFuncResult) -> Self {
         Self { call: func }
     }
 }

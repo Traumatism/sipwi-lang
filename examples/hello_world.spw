@@ -1,3 +1,0 @@
-main <- proc [] do
-    ["hello world"; nl] |> puts
-end

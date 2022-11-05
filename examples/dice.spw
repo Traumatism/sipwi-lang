@@ -1,8 +1,0 @@
-dice <- proc [] do
-    output <- ([1; 7] |> randint)
-    [output; nl] |> puts
-end
-
-main <- proc [] do
-    [] |> dice
-end

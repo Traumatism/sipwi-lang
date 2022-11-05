@@ -92,21 +92,15 @@ end
 ## Writing standard function
 
 ```rust
-// in src/standard.rs
-
-// import required modules
-use crate::common::sipwi::Sipwi;
-use crate::lexing::token::Token;
-use crate::parsing::structs::StdFuncResult;
+// in src/standard/mod.rs
 
 // - 'env' can be used to read variables ect.
 // - 'token' should be a Token::List
-pub fn std_name(env: &Sipwi, token: Token) -> StdFuncResult {
+pub fn std_name(env: &Sipwi, input: Type) -> StdFuncResult {
  
     // your code here ...
 
-    // The result should also be a Token::List
-    StdFuncResult::new(Token::List(...))
+    StdFuncResult::new(...)
 }
 ```
 
@@ -114,38 +108,30 @@ pub fn std_name(env: &Sipwi, token: Token) -> StdFuncResult {
 
 ```rust
 // in src/common/sipwi.rs:Sipwi::run()
-self.register_std_func("jame", standard::std_name);
+self.register_std_func("name", standard::std_name);
 ```
 
 ### Implementing sum() standard function
 
 ```rust
-pub fn std_sum(env: &Sipwi, token: Token) -> StdFuncResult {
-    let mut total = 0;
+pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
+    let mut sum = 0 as isize;
 
-    match token {
-        Token::List(list) => {
-            for element in list {
-                match element {
-                    Token::Number(number) => total += number,
-                    Token::Identifier(identifier) => {
-                        let value = env.get_variable(&identifier);
-                        match value {
-                            Type::Number(number) => {
-                                total += number;
-                            }
-                            variable_type => panic!("Cannot add a {:?}", variable_type),
-                        };
-                    }
-                    token => panic!("Cannot add a {:?}", token),
-                }
-            }
-        }
-        _ => {
-            panic!("'sum' expect a list of integers/identifiers as arguments!")
-        }
+    match input {
+        Type::List(elements) => elements.iter().for_each(|tpe| match tpe {
+            Type::Number(number) => sum += number,
+            _ => panic!(
+                "`sum` arguments must be a list of numbers, not `{:?}`.",
+                tpe
+            ),
+        }),
+        _ => panic!(
+            "`sum` arguments must be a list of numbers, not `{:?}`.",
+            input
+        ),
     }
 
-    StdFuncResult::new(Token::Number(total))
+    StdFuncResult::new(Type::Number(sum))
 }
+
 ```

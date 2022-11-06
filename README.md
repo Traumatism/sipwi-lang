@@ -1,6 +1,7 @@
-<img style="float: left;" src="logo.png" width="100" height="100" />
 
 ## The Sipwi Programming Language
+
+<img style="float: left;" src="logo.png" width="100" height="100" />
 
 Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs.
 

@@ -1,4 +1,4 @@
-<img src="logo.png" width="100" height="100" />
+<img style="float: left;" src="logo.png" width="100" height="100" />
 
 ## The Sipwi Programming Language
 

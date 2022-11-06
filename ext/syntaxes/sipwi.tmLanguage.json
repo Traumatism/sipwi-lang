@@ -31,7 +31,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.less",
-					"match": "\\b(proc|do|end)\\b"
+					"match": "\\b(proc|do|end|for|in)\\b"
 				}
 			]
 		},

@@ -2,6 +2,8 @@
 
 Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs.
 
+![](example.png)
+
 ## Compile
 
 `$ git clone https://github.com/traumatism/sipwi-lang`
@@ -34,6 +36,10 @@ Sipwi uses a bunch of differents types:
 To define a variable, use the next syntax:
 
 `variable_name <- data` where data must be one of the types
+
+You can also use:
+
+`variable_name = data`
 
 ## Define a procedure
 

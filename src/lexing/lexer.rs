@@ -210,6 +210,8 @@ impl Lexer {
                     _ => panic!("Expected a `-` after a `<` to form a `<-`"),
                 },
 
+                '=' => Token::Assignement,
+
                 ' ' | '\n' | '\t' => {
                     continue;
                 }

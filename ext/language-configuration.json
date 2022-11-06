@@ -20,8 +20,12 @@
     // symbols that are auto closed when typing
     "autoClosingPairs": [
         [
+            "proc",
+            " [] do end"
+        ],
+        [
             "do",
-            "\n\t\nend"
+            " end"
         ],
         [
             "[",

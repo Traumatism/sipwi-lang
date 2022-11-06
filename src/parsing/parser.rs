@@ -18,6 +18,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Parse a procedure definition (proc [...] do ... end)
     fn parse_proc(&mut self, identifier: String) {
         let mut proc_arguments = Vec::new();
         let mut proc_tokens = Vec::new();
@@ -52,11 +53,13 @@ impl<'a> Parser<'a> {
                         }
 
                         if keyword == &String::from("do") {
+                            proc_tokens.push(token);
                             n += 1;
                             continue;
                         }
 
                         if keyword == &String::from("end") {
+                            proc_tokens.push(token);
                             n -= 1;
                             continue;
                         }
@@ -74,6 +77,7 @@ impl<'a> Parser<'a> {
         self.env.register_procedure(&identifier, procedure)
     }
 
+    /// Parse an assignement (a <- ...)
     fn parse_assignement(&mut self, identifier: String) {
         match self.tokens.next() {
             Some(Token::String(string)) => {
@@ -99,6 +103,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Parse an expression
     fn parse_expression(&mut self, expression: Token) -> Option<Type> {
         match expression {
             Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens(),
@@ -106,6 +111,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Convert a token into a type
     fn token_to_type(&mut self, token: Token) -> Type {
         match token {
             Token::String(string) => Type::Str(string),
@@ -122,6 +128,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Convert a type into a token
     fn type_to_token(&self, tpe: Type) -> Token {
         match tpe {
             Type::Str(string) => Token::String(string),
@@ -141,6 +148,76 @@ impl<'a> Parser<'a> {
         while let Some(token) = self.tokens.next() {
             match token {
                 Token::Expression(_) => last_output = self.parse_expression(token),
+
+                Token::Keyword(keyword) => match keyword.as_str() {
+                    "for" => {
+                        let name = match self.tokens.next() {
+                            Some(Token::Identifier(identifier)) => identifier,
+                            _ => panic!(),
+                        };
+
+                        match self.tokens.next() {
+                            Some(Token::Keyword(keyword)) => match keyword.as_str() {
+                                "in" => {}
+                                _ => panic!(),
+                            },
+                            _ => panic!(),
+                        }
+
+                        let next = self.tokens.next().unwrap();
+
+                        let elements = match self.token_to_type(next) {
+                            Type::List(elements) => elements,
+                            _ => panic!(),
+                        };
+
+                        let mut tokens = Vec::new();
+
+                        let mut n = 0;
+
+                        loop {
+                            match self.tokens.next() {
+                                Some(token) => match &token {
+                                    Token::Keyword(keyword) => {
+                                        if keyword == &String::from("end") && n == 0 {
+                                            break;
+                                        }
+
+                                        if keyword == &String::from("do") {
+                                            n += 1;
+                                            continue;
+                                        }
+
+                                        if keyword == &String::from("end") {
+                                            n -= 1;
+                                            continue;
+                                        }
+
+                                        tokens.push(token)
+                                    }
+                                    _ => tokens.push(token),
+                                },
+                                _ => break,
+                            }
+                        }
+
+                        let proc = Procedure::new(vec![name], tokens);
+                        let proc_identifier = String::from("for_proc");
+
+                        self.env.register_procedure(proc_identifier.as_str(), proc);
+
+                        for element in elements {
+                            let base = vec![
+                                self.type_to_token(element),
+                                Token::Chain,
+                                Token::Identifier(proc_identifier.clone()),
+                            ];
+
+                            Parser::new(base, self.env).parse_tokens();
+                        }
+                    }
+                    _ => panic!(),
+                },
 
                 Token::Assignement => {
                     let identifier = match self.tokens.previous().unwrap() {
@@ -197,9 +274,7 @@ impl<'a> Parser<'a> {
 
                                 proc_tokens.append(&mut procedure.tokens.clone());
 
-                                last_output = Some(
-                                    Parser::new(proc_tokens, self.env).parse_tokens().unwrap(),
-                                );
+                                last_output = Parser::new(proc_tokens, self.env).parse_tokens();
                             }
                             Callable::Std(function) => {
                                 last_output = Some(

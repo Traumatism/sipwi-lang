@@ -1,10 +1,12 @@
 use std::ops::RangeInclusive;
 
 // Keywords
-pub const KEYWORDS: [&str; 3] = [
+pub const KEYWORDS: [&str; 5] = [
     "proc", // define a procedure
     "do",   // define a block starting point
     "end",  // define a block ending point
+    "for",  // define a loop
+    "in",   // loop
 ];
 
 // COMMENT_MARK comment_content COMMENT_MARK

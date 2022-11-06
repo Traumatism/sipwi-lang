@@ -12,9 +12,6 @@
 			"include": "#numbers"
 		},
 		{
-			"include": "#operators"
-		},
-		{
 			"include": "#comments"
 		},
 		{
@@ -51,18 +48,6 @@
 			"name": "string.quoted.double.sipwi",
 			"begin": "\"",
 			"end": "\""
-		},
-		"operators": {
-			"patterns": [
-				{
-					"match": "<\\-",
-					"name": "punctuation"
-				},
-				{
-					"match": "\\|>",
-					"name": "punctuation"
-				}
-			]
 		}
 	},
 	"scopeName": "source.spw"

@@ -35,7 +35,7 @@ impl<'a> Parser<'a> {
 
         match self.tokens.next() {
             Some(Token::Keyword(keyword)) => {
-                if keyword != String::from("do") {
+                if keyword != *"do" {
                     panic!()
                 }
             }
@@ -129,13 +129,13 @@ impl<'a> Parser<'a> {
     }
 
     /// Convert a type into a token
-    fn type_to_token(&self, tpe: Type) -> Token {
+    pub fn type_to_token(tpe: Type) -> Token {
         match tpe {
             Type::Str(string) => Token::String(string),
             Type::Number(number) => Token::Number(number),
             Type::List(tpes) => Token::List(
                 tpes.iter()
-                    .map(|tpe| self.type_to_token(tpe.to_owned()))
+                    .map(|tpe| Parser::type_to_token(tpe.to_owned()))
                     .collect(),
             ),
             _ => panic!(),
@@ -175,29 +175,26 @@ impl<'a> Parser<'a> {
 
                         let mut n = 0;
 
-                        loop {
-                            match self.tokens.next() {
-                                Some(token) => match &token {
-                                    Token::Keyword(keyword) => {
-                                        if keyword == &String::from("end") && n == 0 {
-                                            break;
-                                        }
-
-                                        if keyword == &String::from("do") {
-                                            n += 1;
-                                            continue;
-                                        }
-
-                                        if keyword == &String::from("end") {
-                                            n -= 1;
-                                            continue;
-                                        }
-
-                                        tokens.push(token)
+                        while let Some(token) = self.tokens.next() {
+                            match token {
+                                Token::Keyword(keyword) => {
+                                    if keyword == *"end" && n == 0 {
+                                        break;
                                     }
-                                    _ => tokens.push(token),
-                                },
-                                _ => break,
+
+                                    if keyword == *"do" {
+                                        n += 1;
+                                        continue;
+                                    }
+
+                                    if keyword == *"end" {
+                                        n -= 1;
+                                        continue;
+                                    }
+
+                                    tokens.push(Token::Keyword(keyword))
+                                }
+                                _ => tokens.push(token),
                             }
                         }
 
@@ -208,7 +205,7 @@ impl<'a> Parser<'a> {
 
                         for element in elements {
                             let base = vec![
-                                self.type_to_token(element),
+                                Parser::type_to_token(element),
                                 Token::Chain,
                                 Token::Identifier(proc_identifier.clone()),
                             ];
@@ -226,7 +223,7 @@ impl<'a> Parser<'a> {
                     };
 
                     self.tokens.next();
-                    self.parse_assignement(String::from(identifier))
+                    self.parse_assignement(identifier)
                 }
 
                 Token::Chain => {
@@ -268,7 +265,7 @@ impl<'a> Parser<'a> {
                                     proc_tokens.append(&mut vec![
                                         Token::Identifier(arg.to_owned()),
                                         Token::Assignement,
-                                        self.type_to_token(args.get(idx).unwrap().to_owned()),
+                                        Parser::type_to_token(args.get(idx).unwrap().to_owned()),
                                     ])
                                 });
 

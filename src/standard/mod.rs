@@ -13,12 +13,12 @@ pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
 }
 
 /// Write to stdout
-pub fn std_puts(env: &mut Sipwi, input: Type) -> StdFuncResult {
+pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
         Type::Str(string) => print!("{}", string),
         Type::Number(number) => print!("{}", number),
         Type::List(elements) => elements.iter().for_each(|tpe| {
-            std_puts(env, tpe.to_owned());
+            std_puts(_env, tpe.to_owned());
         }),
         _ => panic!("`{:?}` is not printable.", input),
     }
@@ -28,7 +28,7 @@ pub fn std_puts(env: &mut Sipwi, input: Type) -> StdFuncResult {
 
 /// Sum
 pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
-    let mut sum = 0 as isize;
+    let mut sum = 0_isize;
 
     match input {
         Type::List(elements) => elements.iter().for_each(|tpe| match tpe {
@@ -64,7 +64,7 @@ pub fn std_range(_: &mut Sipwi, input: Type) -> StdFuncResult {
 
     StdFuncResult::new(Type::List(
         (start.to_owned()..end.to_owned())
-            .map(|n| (Type::Number(n)))
+            .map(Type::Number)
             .collect(),
     ))
 }

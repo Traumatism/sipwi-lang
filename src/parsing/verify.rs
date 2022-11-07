@@ -15,7 +15,7 @@ pub fn verify_do_end(tokens: &Vec<Token>) -> bool {
                 "end" => s -= 1, // block end
                 _ => {}          // keyword ∉ {"do", "end"} => ignore
             },
-            _ => {} // token != keyword
+            _ => continue, // token != keyword
         }
     }
 

@@ -73,7 +73,7 @@ impl Lexer {
     /// Parse the next number (no float)
     fn parse_number(&mut self, chr: char, neg: bool) -> Token {
         let mut content = String::new();
-        if neg == true {
+        if neg {
             content.push('-');
         }
         content.push(chr);
@@ -132,11 +132,12 @@ impl Lexer {
                 Some(']') => {
                     let element_tokens = Lexer::new(&element_content).lex_into_tokens();
 
-                    if element_tokens.len() > 1 {
-                        panic!("List element must contains... a single element?");
-                    } else if element_tokens.len() == 1 {
-                        // push the current element
-                        content.push(element_tokens.get(0).unwrap().to_owned());
+                    let len = element_tokens.len();
+
+                    match len {
+                        1 => content.push(element_tokens.get(0).unwrap().to_owned()),
+                        len if len > 1 => panic!("List element must contains... a single element?"),
+                        _ => {}
                     }
 
                     break;
@@ -144,11 +145,13 @@ impl Lexer {
                 // End of element
                 Some(';') => {
                     let element_tokens = Lexer::new(&element_content).lex_into_tokens();
-                    if element_tokens.len() > 1 {
-                        panic!("List element must contains... a single element?");
-                    } else if element_tokens.len() == 1 {
-                        // push the current element
-                        content.push(element_tokens.get(0).unwrap().to_owned());
+
+                    let len = element_tokens.len();
+
+                    match len {
+                        1 => content.push(element_tokens.get(0).unwrap().to_owned()),
+                        len if len > 1 => panic!("List element must contains... a single element?"),
+                        _ => {}
                     }
 
                     element_content = String::new(); // flush content for the next element

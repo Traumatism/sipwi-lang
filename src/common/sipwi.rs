@@ -57,7 +57,7 @@ impl Sipwi {
     pub fn get_variable(&self, identifier: &str) -> &Type {
         self.variables
             .get(identifier)
-            .expect(&format!("Undefined variable identifier: {}", identifier))
+            .unwrap_or_else(|| panic!("Undefined variable identifier: {}", identifier))
     }
 
     /// Get a callable
@@ -103,13 +103,13 @@ impl Sipwi {
                 Token::Import(path) => {
                     final_tokens.append(
                         &mut Lexer::new(
-                            &std::fs::read_to_string(&path)
-                                .expect(&format!("Failed to import: {}", path)),
+                            &std::fs::read_to_string(path)
+                                .unwrap_or_else(|_| panic!("Failed to import: {}", path)),
                         )
                         .lex_into_tokens(),
                     );
                 }
-                _ => {}
+                _ => continue,
             }
         }
 

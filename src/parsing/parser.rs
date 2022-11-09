@@ -95,18 +95,10 @@ impl<'a> Parser<'a> {
                 "proc" => self.parse_proc(identifier),
                 _ => panic!(),
             },
-            Some(Token::Expression(expression)) => {
-                let output = self.parse_expression(Token::Expression(expression));
-                self.env.register_variable(&identifier, output.unwrap());
+            Some(Token::Expression(tokens)) => {
+                let output = Parser::new(tokens, self.env).parse_tokens().unwrap();
+                self.env.register_variable(&identifier, output);
             }
-            _ => panic!(),
-        }
-    }
-
-    /// Parse an expression
-    fn parse_expression(&mut self, expression: Token) -> Option<Type> {
-        match expression {
-            Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens(),
             _ => panic!(),
         }
     }
@@ -117,7 +109,7 @@ impl<'a> Parser<'a> {
             Token::String(string) => Type::Str(string),
             Token::Number(number) => Type::Number(number),
             Token::Identifier(identifier) => self.env.get_variable(&identifier).to_owned(),
-            Token::Expression(tokens) => self.parse_expression(Token::Expression(tokens)).unwrap(),
+            Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens().unwrap(),
             Token::List(tokens) => Type::List(
                 tokens
                     .iter()
@@ -147,7 +139,9 @@ impl<'a> Parser<'a> {
 
         while let Some(token) = self.tokens.next() {
             match token {
-                Token::Expression(_) => last_output = self.parse_expression(token),
+                Token::Expression(tokens) => {
+                    last_output = Parser::new(tokens, self.env).parse_tokens()
+                }
 
                 Token::Keyword(keyword) => match keyword.as_str() {
                     "for" => {

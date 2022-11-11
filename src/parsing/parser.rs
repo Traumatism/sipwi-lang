@@ -25,7 +25,7 @@ impl<'a> Parser<'a> {
                     panic!()
                 }
             }
-            _ => panic!(),
+            token => panic!("{:?}", token),
         }
 
         let mut n = 0;
@@ -37,10 +37,12 @@ impl<'a> Parser<'a> {
             match next_token {
                 Some(Token::Keyword(keyword)) => {
                     if keyword == "do" {
+                        tokens.push(Token::Keyword(keyword));
                         n += 1;
                     } else if keyword == "end" && n == 0 {
                         break;
                     } else if keyword == "end" {
+                        tokens.push(Token::Keyword(keyword));
                         n -= 1;
                     } else {
                         tokens.push(Token::Keyword(keyword));
@@ -155,7 +157,6 @@ impl<'a> Parser<'a> {
                         }
 
                         let next = self.tokens.next().unwrap();
-
                         let elements = match self.token_to_type(next) {
                             Type::List(elements) => elements,
                             _ => panic!(),

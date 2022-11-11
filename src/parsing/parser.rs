@@ -18,24 +18,10 @@ impl<'a> Parser<'a> {
         }
     }
 
-    /// Parse a procedure definition (proc [...] do ... end)
-    fn parse_proc(&mut self, identifier: String) {
-        let mut proc_arguments = Vec::new();
-        let mut proc_tokens = Vec::new();
-
-        match self.tokens.next() {
-            Some(Token::List(arguments)) => arguments,
-            _ => panic!(),
-        }
-        .iter()
-        .for_each(|token| match token {
-            Token::Identifier(argument) => proc_arguments.push(argument.to_owned()),
-            _ => panic!(),
-        });
-
+    fn parse_next_codeblock(&mut self) -> Vec<Token> {
         match self.tokens.next() {
             Some(Token::Keyword(keyword)) => {
-                if keyword != *"do" {
+                if keyword != "do" {
                     panic!()
                 }
             }
@@ -43,38 +29,48 @@ impl<'a> Parser<'a> {
         }
 
         let mut n = 0;
+        let mut tokens = Vec::new();
 
         loop {
-            match self.tokens.next() {
-                Some(token) => match &token {
-                    Token::Keyword(keyword) => {
-                        if keyword == &String::from("end") && n == 0 {
-                            break;
-                        }
+            let next_token = self.tokens.next();
 
-                        if keyword == &String::from("do") {
-                            proc_tokens.push(token);
-                            n += 1;
-                            continue;
-                        }
-
-                        if keyword == &String::from("end") {
-                            proc_tokens.push(token);
-                            n -= 1;
-                            continue;
-                        }
-
-                        proc_tokens.push(token)
+            match next_token {
+                Some(Token::Keyword(keyword)) => {
+                    if keyword == "do" {
+                        n += 1;
+                    } else if keyword == "end" && n == 0 {
+                        break;
+                    } else if keyword == "end" {
+                        n -= 1;
+                    } else {
+                        tokens.push(Token::Keyword(keyword));
                     }
-                    _ => proc_tokens.push(token),
-                },
+                }
+                Some(token) => tokens.push(token),
                 _ => panic!(),
             }
         }
 
-        let procedure = Procedure::new(proc_arguments, proc_tokens);
+        tokens
+    }
 
-        self.env.register_procedure(&identifier, procedure)
+    /// Parse a procedure definition (proc [...] do ... end)
+    fn parse_proc(&mut self, identifier: String) {
+        let proc_arguments = match self.tokens.next() {
+            Some(Token::List(arguments)) => arguments,
+            _ => panic!(),
+        }
+        .iter()
+        .map(|token| match token {
+            Token::Identifier(argument) => argument.to_owned(),
+            _ => panic!(),
+        })
+        .collect();
+
+        let tokens = self.parse_next_codeblock();
+
+        self.env
+            .register_procedure(&identifier, Procedure::new(proc_arguments, tokens))
     }
 
     /// Parse an assignement (a <- ...)
@@ -165,46 +161,21 @@ impl<'a> Parser<'a> {
                             _ => panic!(),
                         };
 
-                        let mut tokens = Vec::new();
+                        let tokens = self.parse_next_codeblock();
 
-                        let mut n = 0;
-
-                        while let Some(token) = self.tokens.next() {
-                            match token {
-                                Token::Keyword(keyword) => {
-                                    if keyword == *"end" && n == 0 {
-                                        break;
-                                    }
-
-                                    if keyword == *"do" {
-                                        n += 1;
-                                        continue;
-                                    }
-
-                                    if keyword == *"end" {
-                                        n -= 1;
-                                        continue;
-                                    }
-
-                                    tokens.push(Token::Keyword(keyword))
-                                }
-                                _ => tokens.push(token),
-                            }
-                        }
-
-                        let proc = Procedure::new(vec![name], tokens);
-                        let proc_identifier = String::from("for_proc");
-
-                        self.env.register_procedure(proc_identifier.as_str(), proc);
+                        self.env
+                            .register_procedure("for_proc", Procedure::new(vec![name], tokens));
 
                         for element in elements {
-                            let base = vec![
-                                Parser::type_to_token(element),
-                                Token::Chain,
-                                Token::Identifier(proc_identifier.clone()),
-                            ];
-
-                            Parser::new(base, self.env).parse_tokens();
+                            Parser::new(
+                                vec![
+                                    Parser::type_to_token(element),
+                                    Token::Chain,
+                                    Token::Identifier(String::from("for_proc")),
+                                ],
+                                self.env,
+                            )
+                            .parse_tokens();
                         }
                     }
                     _ => panic!(),

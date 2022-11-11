@@ -2,7 +2,6 @@ use crate::common::sipwi::Sipwi;
 use crate::parsing::structs::StdFuncResult;
 use crate::parsing::structs::Type;
 
-/// Make an identifier immutable
 pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
         Type::Str(identifier) => env.register_immutable(&identifier),
@@ -12,7 +11,6 @@ pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
     StdFuncResult::empty()
 }
 
-/// Write to stdout
 pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
         Type::Str(string) => print!("{}", string),
@@ -26,7 +24,6 @@ pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
     StdFuncResult::empty()
 }
 
-/// Sum
 pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
     let mut sum = 0_isize;
 

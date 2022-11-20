@@ -2,3 +2,4 @@
 sipwi
 *.py
 examples/
+*.spw

@@ -35,7 +35,7 @@ impl Sipwi {
         func: fn(&mut Sipwi, Type) -> StdFuncResult,
     ) {
         self.std_functions
-            .insert(String::from(identifier), StdFunc::new(func));
+            .insert(String::from(identifier), StdFunc { call: func });
     }
 
     /// Register a procedure

@@ -71,8 +71,13 @@ impl<'a> Parser<'a> {
 
         let tokens = self.parse_next_codeblock();
 
-        self.env
-            .register_procedure(&identifier, Procedure::new(proc_arguments, tokens))
+        self.env.register_procedure(
+            &identifier,
+            Procedure {
+                args: proc_arguments,
+                tokens,
+            },
+        )
     }
 
     /// Parse an assignement (a <- ...)
@@ -164,8 +169,13 @@ impl<'a> Parser<'a> {
 
                         let tokens = self.parse_next_codeblock();
 
-                        self.env
-                            .register_procedure("for_proc", Procedure::new(vec![name], tokens));
+                        self.env.register_procedure(
+                            "for_proc",
+                            Procedure {
+                                args: vec![name],
+                                tokens,
+                            },
+                        );
 
                         for element in elements {
                             Parser::new(
@@ -241,9 +251,7 @@ impl<'a> Parser<'a> {
                             }
                             Callable::Std(function) => {
                                 last_output = Some(
-                                    (function.call)(self.env, last_output.clone().unwrap())
-                                        .get_output()
-                                        .to_owned(),
+                                    (function.call)(self.env, last_output.clone().unwrap()).output,
                                 )
                             }
                         })

@@ -3,7 +3,6 @@ use crate::lexing::{lexer::Lexer, token::Token};
 use crate::parsing::{
     parser::Parser,
     structs::{Callable, Procedure, StdFunc, StdFuncResult, Type},
-    verify,
 };
 use crate::standard;
 
@@ -94,24 +93,17 @@ impl Sipwi {
         let mut final_tokens = Vec::new();
         let mut tokens = Lexer::new(&self.code).lex_into_tokens();
 
-        if !verify::verify_do_end(&tokens) {
-            panic!()
-        }
-
-        for token in &tokens {
-            match token {
-                Token::Import(path) => {
-                    final_tokens.append(
-                        &mut Lexer::new(
-                            &std::fs::read_to_string(path)
-                                .unwrap_or_else(|_| panic!("Failed to import: {}", path)),
-                        )
-                        .lex_into_tokens(),
-                    );
-                }
-                _ => continue,
+        tokens.iter().for_each(|token| {
+            if let Token::Import(path) = token {
+                final_tokens.append(
+                    &mut Lexer::new(
+                        &std::fs::read_to_string(path)
+                            .unwrap_or_else(|_| panic!("Failed to import: {}", path)),
+                    )
+                    .lex_into_tokens(),
+                );
             }
-        }
+        });
 
         final_tokens.append(&mut tokens);
 

@@ -3,7 +3,7 @@ use crate::{
     lexing::token::Token,
 };
 
-use super::structs::{Callable, Procedure, Type};
+use super::types::{Callable, Type};
 
 pub struct Parser<'a> {
     tokens: Peeker<Token>,
@@ -71,13 +71,8 @@ impl<'a> Parser<'a> {
 
         let tokens = self.parse_next_codeblock();
 
-        self.env.register_procedure(
-            &identifier,
-            Procedure {
-                args: proc_arguments,
-                tokens,
-            },
-        )
+        self.env
+            .register_procedure(&identifier, (proc_arguments, tokens))
     }
 
     /// Parse an assignement (a <- ...)
@@ -119,7 +114,7 @@ impl<'a> Parser<'a> {
                     .map(|token| self.token_to_type(token.to_owned()))
                     .collect(),
             ),
-            _ => panic!("Can't convert `{:?}`", token),
+            _ => panic!("Can't convert `{token:?}`"),
         }
     }
 
@@ -165,13 +160,8 @@ impl<'a> Parser<'a> {
 
                         let tokens = self.parse_next_codeblock();
 
-                        self.env.register_procedure(
-                            "for_proc",
-                            Procedure {
-                                args: vec![name],
-                                tokens,
-                            },
-                        );
+                        self.env
+                            .register_procedure("for_proc", (vec![name], tokens));
 
                         for element in elements {
                             Parser::new(
@@ -232,10 +222,10 @@ impl<'a> Parser<'a> {
                                     Some(tpe) => {
                                         vec![tpe.to_owned()]
                                     }
-                                    token => panic!("{:?}", token),
+                                    token => panic!("{token:?}"),
                                 };
 
-                                procedure.args.iter().enumerate().for_each(|(idx, arg)| {
+                                procedure.0.iter().enumerate().for_each(|(idx, arg)| {
                                     /*
                                     f = proc [a; b; c] do
                                         a <- 1
@@ -252,14 +242,13 @@ impl<'a> Parser<'a> {
                                     ])
                                 });
 
-                                proc_tokens.append(&mut procedure.tokens.clone());
+                                proc_tokens.append(&mut procedure.1.clone());
 
                                 last_output = Parser::new(proc_tokens, self.env).parse_tokens();
                             }
                             Callable::Std(function) => {
-                                last_output = Some(
-                                    (function.call)(self.env, last_output.clone().unwrap()).output,
-                                )
+                                last_output =
+                                    Some((function)(self.env, last_output.clone().unwrap()))
                             }
                         })
                 }

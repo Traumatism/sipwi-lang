@@ -1,6 +1,6 @@
 use crate::common::sipwi::Sipwi;
-use crate::parsing::structs::StdFuncResult;
-use crate::parsing::structs::Type;
+use crate::parsing::types::StdFuncResult;
+use crate::parsing::types::Type;
 
 pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
@@ -8,7 +8,7 @@ pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
         _ => panic!("`immune` expected a string"),
     }
 
-    StdFuncResult::empty()
+    StdFuncResult::List(vec![])
 }
 
 pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
@@ -21,7 +21,7 @@ pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
         _ => panic!("`{input:?}` is not printable."),
     }
 
-    StdFuncResult::empty()
+    StdFuncResult::List(vec![])
 }
 
 pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
@@ -30,16 +30,12 @@ pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
         Type::List(elements) => elements.iter().for_each(|tpe| match tpe {
             Type::Number(number) => sum += number,
-            _ => panic!(
-                "`sum` arguments must be a list of numbers, not `{tpe:?}`."
-            ),
+            _ => panic!("`sum` arguments must be a list of numbers, not `{tpe:?}`."),
         }),
-        _ => panic!(
-            "`sum` arguments must be a list of numbers, not `{input:?}`."
-        ),
+        _ => panic!("`sum` arguments must be a list of numbers, not `{input:?}`."),
     }
 
-    StdFuncResult::new(Type::Number(sum))
+    StdFuncResult::Number(sum)
 }
 
 pub fn std_range(_: &mut Sipwi, input: Type) -> StdFuncResult {
@@ -57,9 +53,9 @@ pub fn std_range(_: &mut Sipwi, input: Type) -> StdFuncResult {
         _ => panic!(),
     };
 
-    StdFuncResult::new(Type::List(
+    StdFuncResult::List(
         (start.to_owned()..end.to_owned())
             .map(Type::Number)
             .collect(),
-    ))
+    )
 }

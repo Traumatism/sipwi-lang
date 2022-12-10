@@ -2,7 +2,7 @@ use crate::lexing::{lexer::Lexer, token::Token};
 
 use crate::parsing::{
     parser::Parser,
-    structs::{Callable, Procedure, StdFunc, StdFuncResult, Type},
+    types::{Callable, Procedure, StdFunc, StdFuncResult, Type},
 };
 
 use crate::standard;
@@ -35,8 +35,7 @@ impl Sipwi {
         identifier: &str,
         func: fn(&mut Sipwi, Type) -> StdFuncResult,
     ) {
-        self.std_functions
-            .insert(String::from(identifier), StdFunc { call: func });
+        self.std_functions.insert(String::from(identifier), func);
     }
 
     /// Register a procedure

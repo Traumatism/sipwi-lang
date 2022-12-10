@@ -4,6 +4,7 @@ use crate::parsing::{
     parser::Parser,
     structs::{Callable, Procedure, StdFunc, StdFuncResult, Type},
 };
+
 use crate::standard;
 
 use std::collections::HashMap;
@@ -41,6 +42,11 @@ impl Sipwi {
     /// Register a procedure
     pub fn register_procedure(&mut self, identifier: &str, proc: Procedure) {
         self.procedures.insert(String::from(identifier), proc);
+    }
+
+    /// Unregister a procedure
+    pub fn unregister_procedure(&mut self, identifier: &str) {
+        self.procedures.remove(identifier);
     }
 
     /// Register a variable
@@ -82,15 +88,15 @@ impl Sipwi {
         self.register_std_func("immune", standard::std_immune);
 
         self.register_variable("true", Type::Bool(true));
-        self.register_immutable("true");
-
         self.register_variable("false", Type::Bool(false));
-        self.register_immutable("false");
-
         self.register_variable("nl", Type::Str(String::from("\n")));
+
+        self.register_immutable("true");
+        self.register_immutable("false");
         self.register_immutable("nl");
 
         let mut final_tokens = Vec::new();
+
         let mut tokens = Lexer::new(&self.code).lex_into_tokens();
 
         tokens.iter().for_each(|token| {

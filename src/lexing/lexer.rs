@@ -188,7 +188,6 @@ impl Lexer {
                 }
                 'a'..='z' | 'A'..='Z' => self.parse_identifier(char),
                 '0'..='9' => self.parse_number(char, false),
-
                 '-' => {
                     let next = self.chars_peeker.next();
                     match next {

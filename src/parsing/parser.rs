@@ -25,7 +25,7 @@ impl<'a> Parser<'a> {
                     panic!()
                 }
             }
-            token => panic!("{:?}", token),
+            token => panic!("{token:?}"),
         }
 
         let mut n = 0;
@@ -153,13 +153,9 @@ impl<'a> Parser<'a> {
                             _ => panic!(),
                         };
 
-                        match self.tokens.next() {
-                            Some(Token::Keyword(keyword)) => match keyword.as_str() {
-                                "in" => {}
-                                _ => panic!(),
-                            },
-                            _ => panic!(),
-                        }
+                        let Some(Token::Assignement) = self.tokens.next() else {
+                            panic!()
+                        };
 
                         let next = self.tokens.next().unwrap();
                         let elements = match self.token_to_type(next) {
@@ -188,6 +184,8 @@ impl<'a> Parser<'a> {
                             )
                             .parse_tokens();
                         }
+
+                        self.env.unregister_procedure("for_proc")
                     }
                     _ => panic!(),
                 },
@@ -238,6 +236,15 @@ impl<'a> Parser<'a> {
                                 };
 
                                 procedure.args.iter().enumerate().for_each(|(idx, arg)| {
+                                    /*
+                                    f = proc [a; b; c] do
+                                        a <- 1
+                                        b <- 2
+                                        c <- 3
+                                    end
+
+                                    [1; 2; 3] |> f
+                                    */
                                     proc_tokens.append(&mut vec![
                                         Token::Identifier(arg.to_owned()),
                                         Token::Assignement,

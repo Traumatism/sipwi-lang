@@ -11,8 +11,13 @@ impl<T: Clone> Peeker<T> {
 
     /// Get the previous value
     pub fn previous(&mut self) -> Option<T> {
-        self.cursor -= 2;
-        self.next()
+        if self.cursor == 0 {
+            return None;
+        }
+
+        self.cursor -= 1;
+
+        Some(self.values[self.cursor - 1].to_owned())
     }
 
     /// Get the next value

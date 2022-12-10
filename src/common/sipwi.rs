@@ -52,7 +52,7 @@ impl Sipwi {
     /// Register a variable
     pub fn register_variable(&mut self, identifier: &str, variable: Type) {
         if self.immutables.contains(&identifier.to_string()) {
-            panic!("Can't register immutable identifier: `{}`", identifier)
+            panic!("Can't register immutable identifier: `{identifier}`")
         }
 
         self.variables.insert(String::from(identifier), variable);
@@ -62,7 +62,7 @@ impl Sipwi {
     pub fn get_variable(&self, identifier: &str) -> &Type {
         self.variables
             .get(identifier)
-            .unwrap_or_else(|| panic!("Undefined variable identifier: {}", identifier))
+            .unwrap_or_else(|| panic!("Undefined variable identifier: {identifier}"))
     }
 
     /// Get a callable
@@ -72,7 +72,7 @@ impl Sipwi {
         } else if let Some(fnc) = self.procedures.get(&String::from(identifier)) {
             Callable::Procedure(fnc)
         } else {
-            panic!("Undefined callable identifier: {}", identifier)
+            panic!("Undefined callable identifier: {identifier}")
         }
     }
 
@@ -104,7 +104,7 @@ impl Sipwi {
                 final_tokens.append(
                     &mut Lexer::new(
                         &std::fs::read_to_string(path)
-                            .unwrap_or_else(|_| panic!("Failed to import: {}", path)),
+                            .unwrap_or_else(|_| panic!("Failed to import: {path}")),
                     )
                     .lex_into_tokens(),
                 );

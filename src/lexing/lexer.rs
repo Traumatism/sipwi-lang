@@ -218,7 +218,7 @@ impl Lexer {
                     continue;
                 }
 
-                token => panic!("Unknown token: {:?}", token),
+                token => panic!("Unknown token: {token:?}"),
             })
         }
 

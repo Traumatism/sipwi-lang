@@ -13,12 +13,12 @@ pub fn std_immune(env: &mut Sipwi, input: Type) -> StdFuncResult {
 
 pub fn std_puts(_env: &mut Sipwi, input: Type) -> StdFuncResult {
     match input {
-        Type::Str(string) => print!("{}", string),
-        Type::Number(number) => print!("{}", number),
+        Type::Str(string) => print!("{string}"),
+        Type::Number(number) => print!("{number}"),
         Type::List(elements) => elements.iter().for_each(|tpe| {
             std_puts(_env, tpe.to_owned());
         }),
-        _ => panic!("`{:?}` is not printable.", input),
+        _ => panic!("`{input:?}` is not printable."),
     }
 
     StdFuncResult::empty()
@@ -31,13 +31,11 @@ pub fn std_sum(_: &mut Sipwi, input: Type) -> StdFuncResult {
         Type::List(elements) => elements.iter().for_each(|tpe| match tpe {
             Type::Number(number) => sum += number,
             _ => panic!(
-                "`sum` arguments must be a list of numbers, not `{:?}`.",
-                tpe
+                "`sum` arguments must be a list of numbers, not `{tpe:?}`."
             ),
         }),
         _ => panic!(
-            "`sum` arguments must be a list of numbers, not `{:?}`.",
-            input
+            "`sum` arguments must be a list of numbers, not `{input:?}`."
         ),
     }
 

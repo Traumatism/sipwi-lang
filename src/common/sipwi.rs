@@ -1,83 +1,54 @@
 use crate::lexing::{lexer::Lexer, token::Token};
-
-use crate::parsing::{
-    parser::Parser,
-    types::{Callable, Procedure, StdFunc, StdFuncResult, Type},
-};
-
+use crate::parsing::{parser::Parser, types::Type};
 use crate::standard;
 
 use std::collections::HashMap;
+use std::fmt::Display;
 
-/// Sipwi environment (manages variables, functions...)
 pub struct Sipwi {
     pub variables: HashMap<String, Type>,
-    pub procedures: HashMap<String, Procedure>,
-    pub std_functions: HashMap<String, StdFunc>,
+    pub procedures: HashMap<String, (Vec<String>, Vec<Token>)>,
+    pub std_functions: HashMap<String, fn(&mut Sipwi, Type) -> Type>,
     pub immutables: Vec<String>,
     code: String,
 }
 
 impl Sipwi {
-    pub fn new(code: &str) -> Self {
+    pub fn new(code: impl Into<String>) -> Self {
         Self {
             immutables: Vec::new(),
             variables: HashMap::new(),
             std_functions: HashMap::new(),
             procedures: HashMap::new(),
-            code: String::from(code),
+            code: code.into(),
         }
     }
 
     /// Register a new standard function
     pub fn register_std_func(
         &mut self,
-        identifier: &str,
-        func: fn(&mut Sipwi, Type) -> StdFuncResult,
+        identifier: impl Into<String>,
+        func: fn(&mut Sipwi, Type) -> Type,
     ) {
-        self.std_functions.insert(String::from(identifier), func);
-    }
-
-    /// Register a procedure
-    pub fn register_procedure(&mut self, identifier: &str, proc: Procedure) {
-        self.procedures.insert(String::from(identifier), proc);
-    }
-
-    /// Unregister a procedure
-    pub fn unregister_procedure(&mut self, identifier: &str) {
-        self.procedures.remove(identifier);
+        self.std_functions.insert(identifier.into(), func);
     }
 
     /// Register a variable
-    pub fn register_variable(&mut self, identifier: &str, variable: Type) {
-        if self.immutables.contains(&identifier.to_string()) {
+    pub fn register_variable(
+        &mut self,
+        identifier: impl Into<String> + Display + Clone,
+        variable: Type,
+    ) {
+        if self.immutables.contains(&identifier.clone().into()) {
             panic!("Can't register immutable identifier: `{identifier}`")
         }
 
-        self.variables.insert(String::from(identifier), variable);
-    }
-
-    /// Get a variable
-    pub fn get_variable(&self, identifier: &str) -> &Type {
-        self.variables
-            .get(identifier)
-            .unwrap_or_else(|| panic!("Undefined variable identifier: {identifier}"))
-    }
-
-    /// Get a callable
-    pub fn get_callable(&self, identifier: &str) -> Callable {
-        if let Some(fnc) = self.std_functions.get(&String::from(identifier)) {
-            Callable::Std(fnc)
-        } else if let Some(fnc) = self.procedures.get(&String::from(identifier)) {
-            Callable::Procedure(fnc)
-        } else {
-            panic!("Undefined callable identifier: {identifier}")
-        }
+        self.variables.insert(identifier.to_string(), variable);
     }
 
     /// Set a variable as immutable
-    pub fn register_immutable(&mut self, identifier: &str) {
-        self.immutables.push(String::from(identifier))
+    pub fn register_immutable(&mut self, identifier: impl Into<String>) {
+        self.immutables.push(identifier.into())
     }
 
     pub fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
@@ -95,7 +66,6 @@ impl Sipwi {
         self.register_immutable("nl");
 
         let mut final_tokens = Vec::new();
-
         let mut tokens = Lexer::new(&self.code).lex_into_tokens();
 
         tokens.iter().for_each(|token| {

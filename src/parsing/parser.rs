@@ -1,6 +1,6 @@
 use crate::{
     common::{peeker::Peeker, sipwi::Sipwi},
-    lexing::token::Token,
+    lexing::{consts, token::Token},
 };
 
 use super::types::{Callable, Type};
@@ -21,11 +21,11 @@ impl<'a> Parser<'a> {
     fn parse_next_codeblock(&mut self) -> Vec<Token> {
         match self.tokens.next() {
             Some(Token::Keyword(keyword)) => {
-                if keyword != "do" {
+                if keyword != consts::BLOCK_OPENING_MARK {
                     panic!()
                 }
             }
-            token => panic!("{token:?}"),
+            _ => panic!(),
         }
 
         let mut n = 0;
@@ -36,12 +36,12 @@ impl<'a> Parser<'a> {
 
             match next_token {
                 Some(Token::Keyword(keyword)) => {
-                    if keyword == "do" {
+                    if keyword == consts::BLOCK_OPENING_MARK {
                         tokens.push(Token::Keyword(keyword));
                         n += 1;
-                    } else if keyword == "end" && n == 0 {
+                    } else if keyword == consts::BLOCK_CLOSING_MARK && n == 0 {
                         break;
-                    } else if keyword == "end" {
+                    } else if keyword == consts::BLOCK_CLOSING_MARK {
                         tokens.push(Token::Keyword(keyword));
                         n -= 1;
                     } else {
@@ -72,30 +72,34 @@ impl<'a> Parser<'a> {
         let tokens = self.parse_next_codeblock();
 
         self.env
-            .register_procedure(&identifier, (proc_arguments, tokens))
+            .procedures
+            .insert(identifier, (proc_arguments, tokens));
     }
 
     /// Parse an assignement (a <- ...)
     fn parse_assignement(&mut self, identifier: String) {
         match self.tokens.next() {
             Some(Token::String(string)) => {
-                self.env.register_variable(&identifier, Type::Str(string))
+                self.env.register_variable(identifier, Type::Str(string))
             }
             Some(Token::List(lst)) => {
                 let lst_type = self.token_to_type(Token::List(lst));
 
-                self.env.register_variable(&identifier, lst_type);
+                self.env.register_variable(identifier, lst_type);
             }
-            Some(Token::Number(number)) => self
-                .env
-                .register_variable(&identifier, Type::Number(number)),
-            Some(Token::Keyword(keyword)) => match keyword.as_str() {
-                "proc" => self.parse_proc(identifier),
-                _ => panic!(),
-            },
+            Some(Token::Number(number)) => {
+                self.env.register_variable(identifier, Type::Number(number))
+            }
+            Some(Token::Keyword(keyword)) => {
+                if keyword == consts::PROC_DEF_MARK {
+                    self.parse_proc(identifier)
+                } else {
+                    panic!()
+                }
+            }
             Some(Token::Expression(tokens)) => {
                 let output = Parser::new(tokens, self.env).parse_tokens().unwrap();
-                self.env.register_variable(&identifier, output);
+                self.env.register_variable(identifier, output);
             }
             _ => panic!(),
         }
@@ -106,7 +110,13 @@ impl<'a> Parser<'a> {
         match token {
             Token::String(string) => Type::Str(string),
             Token::Number(number) => Type::Number(number),
-            Token::Identifier(identifier) => self.env.get_variable(&identifier).to_owned(),
+            Token::Identifier(identifier) => {
+                self.env
+                    .variables
+                    .get(&identifier)
+                    .unwrap_or_else(|| panic!())
+            }
+            .to_owned(),
             Token::Expression(tokens) => Parser::new(tokens, self.env).parse_tokens().unwrap(),
             Token::List(tokens) => Type::List(
                 tokens
@@ -114,7 +124,7 @@ impl<'a> Parser<'a> {
                     .map(|token| self.token_to_type(token.to_owned()))
                     .collect(),
             ),
-            _ => panic!("Can't convert `{token:?}`"),
+            _ => panic!(),
         }
     }
 
@@ -141,8 +151,8 @@ impl<'a> Parser<'a> {
                     last_output = Parser::new(tokens, self.env).parse_tokens()
                 }
 
-                Token::Keyword(keyword) => match keyword.as_str() {
-                    "for" => {
+                Token::Keyword(keyword) => {
+                    if keyword.as_str() == consts::FOR_LOOP_MARK {
                         let name = match self.tokens.next() {
                             Some(Token::Identifier(identifier)) => identifier,
                             _ => panic!(),
@@ -153,6 +163,7 @@ impl<'a> Parser<'a> {
                         };
 
                         let next = self.tokens.next().unwrap();
+
                         let elements = match self.token_to_type(next) {
                             Type::List(elements) => elements,
                             _ => panic!(),
@@ -161,7 +172,8 @@ impl<'a> Parser<'a> {
                         let tokens = self.parse_next_codeblock();
 
                         self.env
-                            .register_procedure("for_proc", (vec![name], tokens));
+                            .procedures
+                            .insert(String::from("for_proc"), (vec![name], tokens));
 
                         for element in elements {
                             Parser::new(
@@ -175,10 +187,9 @@ impl<'a> Parser<'a> {
                             .parse_tokens();
                         }
 
-                        self.env.unregister_procedure("for_proc")
+                        self.env.procedures.remove("for_proc");
                     }
-                    _ => panic!(),
-                },
+                }
 
                 Token::Assignement => {
                     let identifier = match self.tokens.previous().unwrap() {
@@ -211,9 +222,16 @@ impl<'a> Parser<'a> {
                         break;
                     }
 
-                    chain
-                        .iter()
-                        .for_each(|identifier| match self.env.get_callable(identifier) {
+                    chain.iter().for_each(|identifier| {
+                        match {
+                            if let Some(fnc) = &self.env.std_functions.get(identifier) {
+                                Callable::Std(fnc)
+                            } else if let Some(fnc) = &self.env.procedures.get(identifier) {
+                                Callable::Procedure(fnc)
+                            } else {
+                                panic!()
+                            }
+                        } {
                             Callable::Procedure(procedure) => {
                                 let mut proc_tokens = Vec::new();
 
@@ -222,19 +240,11 @@ impl<'a> Parser<'a> {
                                     Some(tpe) => {
                                         vec![tpe.to_owned()]
                                     }
-                                    token => panic!("{token:?}"),
+                                    _ => panic!(),
                                 };
 
                                 procedure.0.iter().enumerate().for_each(|(idx, arg)| {
-                                    /*
-                                    f = proc [a; b; c] do
-                                        a <- 1
-                                        b <- 2
-                                        c <- 3
-                                    end
-
-                                    [1; 2; 3] |> f
-                                    */
+                                    /* arg_name = value */
                                     proc_tokens.append(&mut vec![
                                         Token::Identifier(arg.to_owned()),
                                         Token::Assignement,
@@ -250,7 +260,8 @@ impl<'a> Parser<'a> {
                                 last_output =
                                     Some((function)(self.env, last_output.clone().unwrap()))
                             }
-                        })
+                        }
+                    })
                 }
                 _ => {}
             };

@@ -7,11 +7,11 @@ fn main() {
     let args = std::env::args().collect::<Vec<String>>();
 
     if args.len() != 2 {
-        panic!("Usage: sipwi <file>")
+        panic!("Missing file")
     }
 
     common::sipwi::Sipwi::new(
-        &std::fs::read_to_string(args.get(1).unwrap()).expect("Failed to open file"),
+        std::fs::read_to_string(args.get(1).unwrap()).expect("Failed to open file"),
     )
     .run()
     .unwrap();

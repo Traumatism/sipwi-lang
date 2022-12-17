@@ -41,8 +41,8 @@
 		},
 		"comments": {
 			"name": "comment.block",
-			"begin": "`",
-			"end": "`"
+			"begin": "\\*",
+			"end": "\\*"
 		},
 		"strings": {
 			"name": "string.quoted.double.sipwi",

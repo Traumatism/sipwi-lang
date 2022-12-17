@@ -10,12 +10,6 @@ pub enum Type {
 }
 
 pub enum Callable<'a> {
-    Procedure(&'a Procedure),
-    Std(&'a StdFunc),
+    Procedure(&'a (Vec<String>, Vec<Token>)),
+    Std(&'a fn(&mut Sipwi, Type) -> Type),
 }
-
-pub type Procedure = (Vec<String>, Vec<Token>);
-
-pub type StdFuncResult = Type;
-
-pub type StdFunc = fn(&mut Sipwi, Type) -> StdFuncResult;

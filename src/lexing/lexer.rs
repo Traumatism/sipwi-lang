@@ -205,13 +205,6 @@ impl Lexer {
                     _ => panic!("Expected a `>` after a `|` to form a `|>`"),
                 },
 
-                '<' => match self.chars_peeker.next() {
-                    // <-
-                    Some('-') => Token::Assignement,
-                    None => panic!("EOF"),
-                    _ => panic!("Expected a `-` after a `<` to form a `<-`"),
-                },
-
                 '=' => Token::Assignement,
 
                 ' ' | '\n' | '\t' => {

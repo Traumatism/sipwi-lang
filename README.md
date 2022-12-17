@@ -5,8 +5,6 @@
 
 Sipwi is a _(trashy)_ dynamic weakly typed toy programming language fully made on top of Rust (for safety and high performances). It have been designed for writing cute short programs.
 
-![](example.png)
-
 ## Compile
 
 `$ git clone https://github.com/traumatism/sipwi-lang`
@@ -38,25 +36,21 @@ Sipwi uses a bunch of differents types:
 
 To define a variable, use the next syntax:
 
-`variable_name <- data` where data must be one of the types
-
-You can also use:
-
-`variable_name = data`
+`variable_name = data` where data must be one of the types
 
 ## Define a procedure
 
 To define a procedure, use the next syntax:
 
 ```
-procedure_name <- proc [argument_1; argument_2; and_so_on] do
+procedure_name = proc [argument_1; argument_2; and_so_on] do
 
-    `your code here`
+    *your code here*
 
 end
 ```
 
-Note that comments are between \`
+Note that comments are between *
 
 ## Call a procedure
 
@@ -75,11 +69,11 @@ Stacked call:
 An expression is a code snippet that MUST return a value.
 To define an expression, use the next syntax:
 
-`variable_name <- ([-1; 2; 3] |> sum)`
+`variable_name = ([-1; 2; 3] |> sum)`
 
 Will execute as:
 
-`variable_name <- 4`
+`variable_name = 4`
 
 ## 1 + 1
 
@@ -91,7 +85,7 @@ nl |> puts
 ## Implement putsln
 
 ```
-putsln <- proc [content] do
+putsln = proc [content] do
     [content; nl] |> puts
 end
 ```
@@ -100,12 +94,12 @@ end
 
 ### in lib.spw
 ```
-putsln <- proc [content] do
+putsln = proc [content] do
     [content; nl] |> puts
 end
 
-f <- proc [n] do
-    n <- ([1; n] |> sum)
+f = proc [n] do
+    n = ([1; n] |> sum)
     [1; n] |> range |> sum |> putsln
 end
 
@@ -115,7 +109,7 @@ end
 ```
 @"lib.spw"
 
-n <- 100
+n = 100
 
 ["Using next n value: "; n; nl] |> puts
 
@@ -126,9 +120,9 @@ Note that you can import procedures between differents files using `@"file_path"
 
 ### Errors
 
-Sipwi expection design is the simply the best! just try it yourself ><
+Sipwi exception design is the simply the best! just try it yourself ><
 ```
-n <- hihi
+n = hihi
 n <| putsln
 ```
 
